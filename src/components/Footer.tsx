@@ -20,8 +20,7 @@ const Footer = () => {
             <div className="flex flex-col gap-2">
               <Link to="/shop?cat=stickers" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Stickers</Link>
               <Link to="/shop?cat=posters" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Posters</Link>
-              <Link to="/shop" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Apparel</Link>
-              <Link to="/shop" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Accessories</Link>
+              <Link to="/shop?cat=combo" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Combo Packs</Link>
             </div>
           </div>
 
@@ -31,8 +30,8 @@ const Footer = () => {
             </h4>
             <div className="flex flex-col gap-2">
               <Link to="/about" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">About</Link>
-              <span className="text-foreground text-sm font-body">Terms</span>
-              <span className="text-foreground text-sm font-body">Contact</span>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">Instagram</a>
+              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="text-foreground text-sm font-body hover:text-primary transition-colors duration-150">WhatsApp</a>
             </div>
           </div>
 
