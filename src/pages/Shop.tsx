@@ -12,7 +12,7 @@ const Shop = () => {
   const [activeCategory, setActiveCategory] = useState<string>(catFilter || "all");
   const [activeSub, setActiveSub] = useState<string>(subFilter || "all");
 
-  const categories = ["all", "stickers", "posters"];
+  const categories = ["all", "stickers", "posters", "combo"];
   const subcategories = ["all", "cars", "bikes", "jdm", "f1", "motogp", "quotes"];
 
   const filtered = products.filter((p) => {
