@@ -140,6 +140,14 @@ declare global {
   }
 }
 
+/* ---------------- API BASE ---------------- */
+
+// 🔥 AUTO SWITCH (local vs production)
+const API_BASE =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://imprinto.onrender.com";
+
 /* ---------------- COMPONENT ---------------- */
 
 const Checkout = () => {
@@ -159,7 +167,12 @@ const Checkout = () => {
         return;
       }
 
-      const res = await fetch("http://localhost:5000/create-order", {
+      if (items.length === 0) {
+        alert("Cart is empty");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/create-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -182,13 +195,24 @@ const Checkout = () => {
         description: "Order Payment",
 
         handler: async function (response: RazorpayResponse) {
-          await fetch("http://localhost:5000/verify-payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(response),
-          });
+          try {
+            const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
 
-          alert("Payment Successful");
+            const result = await verifyRes.json();
+
+            if (result.status === "success") {
+              alert("Payment Successful");
+            } else {
+              alert("Payment verification failed");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Verification failed");
+          }
         },
       };
 
