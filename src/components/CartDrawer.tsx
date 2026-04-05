@@ -26,10 +26,19 @@ const CartDrawer = () => {
           ) : (
             <div className="flex flex-col gap-4">
               {items.map((item) => (
-                <div key={item.product.id} className="flex gap-4 bg-surface-low p-4">
-                  <div className="w-20 h-20 bg-surface-highest flex-shrink-0" />
+                <div key={`${item.product.id}-${item.selectedSize || ""}`} className="flex gap-4 bg-surface-low p-4">
+                  <div className="w-20 h-20 bg-surface-highest flex-shrink-0 overflow-hidden">
+                    {item.product.image_url ? (
+                      <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />
+                    ) : null}
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-display text-xs tracking-wider uppercase">{item.product.name}</h3>
+                    {item.selectedSize && (
+                      <p className="font-display text-[10px] tracking-widest text-muted-foreground uppercase">
+                        Size: {item.selectedSize}
+                      </p>
+                    )}
                     <p className="font-display text-sm font-bold text-primary mt-1">₹{item.product.price}</p>
                     <div className="flex items-center gap-3 mt-2">
                       <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="text-muted-foreground hover:text-foreground">
