@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
+import { useProducts } from "@/hooks/use-products";
 
 const TrendingSection = () => {
+  const { data: products = [] } = useProducts();
   const trending = products.slice(0, 4);
 
   return (

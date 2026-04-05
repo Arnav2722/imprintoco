@@ -3,7 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+import PromoBanner from "@/components/PromoBanner";
+import { useProducts } from "@/hooks/use-products";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
@@ -12,14 +13,17 @@ const Shop = () => {
   const [activeCategory, setActiveCategory] = useState<string>(catFilter || "all");
   const [activeSub, setActiveSub] = useState<string>(subFilter || "all");
 
-  const categories = ["all", "stickers", "posters", "combo"];
-  const subcategories = ["all", "cars", "bikes", "jdm", "f1", "motogp", "quotes"];
-
-  const filtered = products.filter((p) => {
-    if (activeCategory !== "all" && p.category !== activeCategory) return false;
-    if (activeSub !== "all" && p.subcategory !== activeSub) return false;
-    return true;
+  const { data: products = [], isLoading } = useProducts({
+    category: activeCategory,
+    subcategory: activeSub,
   });
+
+  const categories = ["all", "stickers", "posters", "combo"];
+  const subcategories = [
+    "all", "cars", "bikes", "f1", "motogp", "superhero",
+    "movies", "tv_series", "music", "video_games",
+    "motivation", "cricket", "football", "custom",
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,11 +31,13 @@ const Shop = () => {
       <div className="pt-24 pb-20">
         <div className="max-w-[1400px] mx-auto px-6">
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-4">THE SHOP</h1>
-          <p className="text-muted-foreground font-body text-sm mb-12 max-w-md">
+          <p className="text-muted-foreground font-body text-sm mb-8 max-w-md">
             Premium vinyl stickers and wall posters. Every piece is designed for the underground.
           </p>
 
-          <div className="flex flex-wrap gap-3 mb-6">
+          <PromoBanner />
+
+          <div className="flex flex-wrap gap-3 mt-10 mb-6">
             {categories.map((cat) => (
               <button
                 key={cat}
@@ -42,7 +48,7 @@ const Shop = () => {
                     : "bg-surface-container text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {cat}
+                {cat === "tv_series" ? "TV SERIES" : cat}
               </button>
             ))}
           </div>
@@ -58,18 +64,30 @@ const Shop = () => {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {sub}
+                {sub.replace("_", " ")}
               </button>
             ))}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-surface-container aspect-square mb-3" />
+                  <div className="h-3 bg-surface-container w-3/4 mb-2" />
+                  <div className="h-3 bg-surface-container w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!isLoading && products.length === 0 && (
             <div className="text-center py-20">
               <p className="text-muted-foreground font-body">No products found. Try a different filter.</p>
             </div>

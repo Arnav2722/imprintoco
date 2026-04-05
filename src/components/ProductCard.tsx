@@ -1,24 +1,9 @@
 import { Link } from "react-router-dom";
-import { Product } from "@/data/products";
+import { DbProduct } from "@/hooks/use-products";
 import { useCart } from "@/contexts/CartContext";
-import heroCarImg from "@/assets/hero-car.jpg";
-import stickersImg from "@/assets/product-stickers.jpg";
-import posterF1Img from "@/assets/product-poster-f1.jpg";
-import bikeImg from "@/assets/product-bike.jpg";
-import jdmImg from "@/assets/product-jdm.jpg";
-import quoteImg from "@/assets/product-quote.jpg";
-
-const imageMap: Record<string, string> = {
-  "hero-car": heroCarImg,
-  "product-stickers": stickersImg,
-  "product-poster-f1": posterF1Img,
-  "product-bike": bikeImg,
-  "product-jdm": jdmImg,
-  "product-quote": quoteImg,
-};
 
 interface ProductCardProps {
-  product: Product;
+  product: DbProduct;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
@@ -28,14 +13,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <div className="group">
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative bg-surface-low overflow-hidden mb-3 aspect-square">
-          <img
-            src={imageMap[product.image] || stickersImg}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-150"
-            loading="lazy"
-            width={800}
-            height={800}
-          />
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-150"
+              loading="lazy"
+              width={800}
+              height={800}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-surface-container">
+              <span className="font-display text-xs tracking-widest text-muted-foreground uppercase">
+                {product.category}
+              </span>
+            </div>
+          )}
           {product.badge && (
             <span className="absolute top-3 left-3 bg-secondary text-foreground font-display text-[10px] tracking-widest font-bold px-2 py-1 uppercase">
               {product.badge}

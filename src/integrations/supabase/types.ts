@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      products: {
+        Row: {
+          available_sizes: Database["public"]["Enums"]["poster_size"][] | null
+          badge: string | null
+          category: Database["public"]["Enums"]["product_category"]
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          price: number
+          subcategory: Database["public"]["Enums"]["product_subcategory"]
+          updated_at: string
+        }
+        Insert: {
+          available_sizes?: Database["public"]["Enums"]["poster_size"][] | null
+          badge?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          price: number
+          subcategory?: Database["public"]["Enums"]["product_subcategory"]
+          updated_at?: string
+        }
+        Update: {
+          available_sizes?: Database["public"]["Enums"]["poster_size"][] | null
+          badge?: string | null
+          category?: Database["public"]["Enums"]["product_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          price?: number
+          subcategory?: Database["public"]["Enums"]["product_subcategory"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +67,22 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      poster_size: "A5" | "A4" | "A3" | "A2" | "13x19"
+      product_category: "stickers" | "posters" | "combo"
+      product_subcategory:
+        | "custom"
+        | "superhero"
+        | "cars"
+        | "f1"
+        | "motogp"
+        | "bikes"
+        | "movies"
+        | "tv_series"
+        | "music"
+        | "video_games"
+        | "motivation"
+        | "cricket"
+        | "football"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +209,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      poster_size: ["A5", "A4", "A3", "A2", "13x19"],
+      product_category: ["stickers", "posters", "combo"],
+      product_subcategory: [
+        "custom",
+        "superhero",
+        "cars",
+        "f1",
+        "motogp",
+        "bikes",
+        "movies",
+        "tv_series",
+        "music",
+        "video_games",
+        "motivation",
+        "cricket",
+        "football",
+      ],
+    },
   },
 } as const
