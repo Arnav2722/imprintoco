@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           <div>
-            <h3 className="font-display text-lg font-bold tracking-widest mb-4">VELOCITY</h3>
+            <h3 className="font-display text-lg font-bold tracking-widest mb-4">Imprinto Co.</h3>
             <p className="text-muted-foreground text-xs font-body leading-relaxed">
               The original source for underground car and bike artifacts.
               Designed and shipped from the streets.
@@ -57,7 +57,7 @@ const Footer = () => {
 
         <div className="pt-8" style={{ borderTop: '1px solid hsl(0 0% 15%)' }}>
           <p className="text-muted-foreground text-[10px] font-display tracking-widest">
-            © 2026 VELOCITY NETWORK. ALL RIGHTS RESERVED.
+            © 2026 Imprinto Co. ALL RIGHTS RESERVED.
           </p>
         </div>
       </div>

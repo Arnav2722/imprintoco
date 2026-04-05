@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+
 export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
@@ -14,8 +15,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
-        body: ['"Inter"', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', 'sans-serif'],
+        // display: ['"Space Grotesk"', 'sans-serif'],
+        body: ['"Poppins"', 'sans-serif'],
+        // body: ['"Inter"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

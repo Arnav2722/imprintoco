@@ -17,7 +17,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl">
       <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-16">
         <Link to="/" className="font-display text-xl font-bold tracking-widest text-foreground">
-          VELOCITY
+          Imprinto Co.
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

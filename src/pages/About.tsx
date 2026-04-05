@@ -17,7 +17,7 @@ const About = () => {
           <div className="grid md:grid-cols-[40%_60%] gap-12 mb-20">
             <div>
               <p className="text-foreground font-body text-sm leading-relaxed mb-6">
-                Velocity was born from late-night garage sessions, the smell of fresh vinyl, and a
+                Imprinto Co. was born from late-night garage sessions, the smell of fresh vinyl, and a
                 refusal to settle for generic wall art. We design stickers and posters for people
                 who live and breathe automotive culture.
               </p>
