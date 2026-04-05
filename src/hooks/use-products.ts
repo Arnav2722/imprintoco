@@ -21,10 +21,10 @@ export const useProducts = (filters?: { category?: string; subcategory?: string 
       let query = supabase.from("products").select("*").eq("is_active", true);
 
       if (filters?.category && filters.category !== "all") {
-        query = query.eq("category", filters.category);
+        query = query.eq("category", filters.category as any);
       }
       if (filters?.subcategory && filters.subcategory !== "all") {
-        query = query.eq("subcategory", filters.subcategory);
+        query = query.eq("subcategory", filters.subcategory as any);
       }
 
       const { data, error } = await query.order("created_at", { ascending: false });
