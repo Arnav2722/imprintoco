@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -36,7 +36,6 @@
 
     --radius: 0rem;
 
-    /* Surface hierarchy */
     --surface: 0 0% 5.5%;
     --surface-container-low: 0 0% 7.5%;
     --surface-container: 0 0% 10%;
@@ -73,7 +72,6 @@
   }
 }
 
-/* Marquee animation */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -88,7 +86,6 @@
   animation: marquee 20s linear infinite;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -101,7 +98,6 @@
   background: hsl(var(--surface-container-high));
 }
 
-/* Selection */
 ::selection {
   background: hsl(var(--primary) / 0.3);
   color: hsl(var(--foreground));
@@ -121,4 +117,108 @@
 .input:focus {
   border-color: #00e5ff;
   background: rgba(255, 255, 255, 0.05);
+} */
+
+/* Index.css */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 5.5%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 7.5%;
+    --card-foreground: 0 0% 95%;
+
+    --primary: 189 100% 75%;
+    --primary-foreground: 189 100% 17%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 70%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 50%;
+
+    --accent: 189 100% 50%;
+    --accent-foreground: 0 0% 3%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 189 100% 75%;
+
+    --radius: 0rem;
+
+    --surface: 0 0% 5.5%;
+    --surface-container-high: 0 0% 12.5%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    /* Satoshi Font Enforced */
+    font-family: 'Satoshi', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight font-bold;
+  }
+}
+
+/* Custom Utilities */
+.input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input:focus {
+  border-color: #00e5ff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--surface));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--surface-container-high));
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
 }
