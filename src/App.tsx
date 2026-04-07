@@ -74,10 +74,10 @@ const GlobalTitleHandler = () => {
 
   useEffect(() => {
     // Default titles based on routes
-    let originalTitle = "IMPRINTO. | Premium Posters";
+    let originalTitle = "IMPRINTO CO. | Premium Posters";
 
     const path = location.pathname;
-    if (path === "/") originalTitle = "IMPRINTO. | Home";
+    if (path === "/") originalTitle = "IMPRINTO CO. | Home";
     else if (path === "/shop") originalTitle = "Shop Collection | IMPRINTO.";
     else if (path === "/auth") originalTitle = "Join the Obsession | IMPRINTO.";
     else if (path === "/about") originalTitle = "Our Story | IMPRINTO.";

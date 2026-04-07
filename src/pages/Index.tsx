@@ -66,7 +66,7 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   useEffect(() => {
-    const originalTitle = "IMPRINTO. | Premium Posters & Stickers";
+    const originalTitle = "IMPRINTO CO. | Premium Posters & Stickers";
     const handleVisibilityChange = () => {
       document.title = document.hidden ? "Still Thinking? 👀" : originalTitle;
     };
