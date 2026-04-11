@@ -358,6 +358,9 @@
 
 // export default Admin;
 
+
+// Experimental Code (Refactored with better structure, error handling, and UI improvements)
+
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
