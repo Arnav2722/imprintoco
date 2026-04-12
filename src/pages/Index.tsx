@@ -5,10 +5,11 @@ import HeroSection from "@/components/HeroSection";
 import CollectionsSection from "@/components/CollectionsSection";
 import TrendingRow from "@/components/TrendingRow";
 import PromoSection from "@/components/PromoSection";
-import ArchivesSection from "@/components/ArchivesSection";
-import LifestyleSection from "@/components/LifestyleSection";
+// import ArchivesSection from "@/components/ArchivesSection";
+import LifestyleSection from "@/components/WhyChooseUse";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ShippingCTA from "@/components/ShippingCTA";
+import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -31,10 +32,11 @@ const Index = () => {
       <CollectionsSection />
       <TrendingRow />
       <PromoSection />
-      <ArchivesSection />
+      {/* <ArchivesSection /> */}
       <LifestyleSection />
       <TestimonialsSection />
       <ShippingCTA />
+      <FAQSection />  
       <Footer />
     </div>
   );

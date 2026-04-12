@@ -1,4 +1,4 @@
-// import { useState } from "react";
+// import { useState, useEffect } from "react"; // ✅ Added useEffect
 // import { useNavigate } from "react-router-dom";
 // import Navbar from "@/components/Navbar";
 // import Footer from "@/components/Footer";
@@ -21,6 +21,7 @@
 //   createUserWithEmailAndPassword,
 //   signInWithPopup,
 //   UserCredential,
+//   onAuthStateChanged, // ✅ Added this
 // } from "firebase/auth";
 
 // import { auth, googleProvider } from "@/lib/firebase";
@@ -54,6 +55,16 @@
 
 //   const navigate = useNavigate();
 //   const { toast } = useToast();
+
+//   // ✅ REDIRECT IF ALREADY LOGGED IN
+//   useEffect(() => {
+//     const unsubscribe = onAuthStateChanged(auth, (user) => {
+//       if (user) {
+//         navigate("/"); // Agar pehle se login hai toh home bhejo
+//       }
+//     });
+//     return () => unsubscribe();
+//   }, [navigate]);
 
 //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 //     setForm((prev) => ({
@@ -141,7 +152,6 @@
 //           animate={{ opacity: 1, y: 0 }}
 //           className="w-full max-w-[450px] bg-[#0a0a0a] border border-white/5 p-8 md:p-12 relative overflow-hidden"
 //         >
-//           {/* Subtle Background Glow */}
 //           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
 
 //           <div className="mb-10 text-center">
@@ -316,7 +326,6 @@
 
 //       <Footer />
 
-//       {/* Global CSS for Inputs - Add to your index.css or a style tag */}
 //       <style>{`
 //         .auth-input {
 //           width: 100%;
@@ -332,7 +341,7 @@
 //           transition: border-color 0.3s;
 //         }
 //         .auth-input:focus {
-//           border-bottom-color: #FAFF00; /* Primary Color */
+//           border-bottom-color: #FAFF00;
 //         }
 //         .auth-input::placeholder {
 //           color: #333;
@@ -344,13 +353,13 @@
 
 // export default Auth;
 
-import { useState, useEffect } from "react"; // ✅ Added useEffect
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { saveUser } from "@/lib/user";
+import { saveUser } from "@/lib/user"; // Is function ko update karna padega agar ye phone accept nahi kar raha
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Chrome,
@@ -367,7 +376,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   UserCredential,
-  onAuthStateChanged, // ✅ Added this
+  onAuthStateChanged,
 } from "firebase/auth";
 
 import { auth, googleProvider } from "@/lib/firebase";
@@ -402,11 +411,10 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // ✅ REDIRECT IF ALREADY LOGGED IN
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/"); // Agar pehle se login hai toh home bhejo
+        navigate("/");
       }
     });
     return () => unsubscribe();
@@ -423,6 +431,7 @@ const Auth = () => {
     try {
       setLoading(true);
       const res: UserCredential = await signInWithPopup(auth, googleProvider);
+      // Google login mein phone humare paas nahi hota, isliye sirf user bhej rahe hain
       await saveUser(res.user);
       toast({ title: "Welcome to the Crew!" });
       navigate("/");
@@ -450,6 +459,7 @@ const Auth = () => {
 
     try {
       if (!isLogin) {
+        // Validation logic
         if (!validatePassword(form.password)) {
           throw new Error(
             "Password needs 12+ chars, uppercase, lowercase & symbol",
@@ -467,15 +477,16 @@ const Auth = () => {
           form.email,
           form.password,
         );
-        await saveUser(res.user);
+
+        // ✅ Yahan form ka extra data (name, phone) saveUser mein bhej rahe hain
+        await saveUser(res.user, {
+          displayName: `${form.firstName} ${form.lastName}`,
+          phoneNumber: form.phone,
+        });
+
         toast({ title: "Membership Activated!" });
       } else {
-        const res: UserCredential = await signInWithEmailAndPassword(
-          auth,
-          form.email,
-          form.password,
-        );
-        await saveUser(res.user);
+        await signInWithEmailAndPassword(auth, form.email, form.password);
         toast({ title: "Welcome back, Legend." });
       }
       navigate("/");
@@ -491,7 +502,6 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-white font-bricolage">
       <Navbar />
-
       <div className="flex items-center justify-center min-h-screen px-6 pt-24 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -499,7 +509,6 @@ const Auth = () => {
           className="w-full max-w-[450px] bg-[#0a0a0a] border border-white/5 p-8 md:p-12 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
-
           <div className="mb-10 text-center">
             <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase leading-none mb-4">
               {isLogin ? "JOIN THE" : "CREATE"}
@@ -508,11 +517,6 @@ const Auth = () => {
                 {isLogin ? "VAULT." : "IDENTITY."}
               </span>
             </h1>
-            <p className="text-[10px] font-bold tracking-[0.4em] text-gray-500 uppercase">
-              {isLogin
-                ? "Enter your credentials"
-                : "Join the independent movement"}
-            </p>
           </div>
 
           <Button
@@ -620,11 +624,10 @@ const Auth = () => {
                   required
                   className="auth-input"
                 />
-
                 <div className="p-4 border border-white/5 bg-white/[0.02]">
                   <p className="text-[10px] font-black tracking-widest text-gray-600 uppercase mb-3 flex items-center gap-2">
                     <ShieldCheck size={12} className="text-primary" />
-                    Security Verification:{" "}
+                    Verification:{" "}
                     <span className="text-white italic">
                       {generatedCaptcha}
                     </span>
@@ -669,29 +672,11 @@ const Auth = () => {
           </div>
         </motion.div>
       </div>
-
       <Footer />
-
       <style>{`
-        .auth-input {
-          width: 100%;
-          background: transparent;
-          border: none;
-          border-bottom: 1px solid rgba(255,255,255,0.1);
-          padding: 12px 0;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          outline: none;
-          transition: border-color 0.3s;
-        }
-        .auth-input:focus {
-          border-bottom-color: #FAFF00;
-        }
-        .auth-input::placeholder {
-          color: #333;
-        }
+        .auth-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 0; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; outline: none; transition: border-color 0.3s; }
+        .auth-input:focus { border-bottom-color: #FAFF00; }
+        .auth-input::placeholder { color: #333; }
       `}</style>
     </div>
   );
