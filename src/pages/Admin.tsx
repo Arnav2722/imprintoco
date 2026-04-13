@@ -3,7 +3,6 @@
 // import { useToast } from "@/hooks/use-toast";
 // import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
 // import {
 //   Plus,
 //   Trash2,
@@ -12,11 +11,6 @@
 //   Loader2,
 //   Upload,
 //   Image as ImageIcon,
-//   X,
-//   Star,
-//   Edit,
-//   Mail,
-//   MessageCircle,
 // } from "lucide-react";
 // import { auth, db } from "@/lib/firebase";
 // import { onAuthStateChanged, signOut, User } from "firebase/auth";
@@ -27,13 +21,11 @@
 //   updateDoc,
 //   deleteDoc,
 //   doc,
+//   getDoc,
 //   Timestamp,
 //   QueryDocumentSnapshot,
-//   orderBy,
-//   query,
+//   DocumentData,
 // } from "firebase/firestore";
-
-// type CategoryType = "stickers" | "posters" | "combo";
 
 // interface Product {
 //   id: string;
@@ -41,143 +33,115 @@
 //   price: number;
 //   description: string;
 //   image_url: string;
-//   category: CategoryType;
+//   category: "stickers" | "posters" | "combo";
 //   subcategory: string;
 //   badge: string;
 //   is_active: boolean;
-//   is_featured: boolean;
-// }
-
-// interface Order {
-//   id: string;
-//   customerName: string;
-//   email: string;
-//   phone: string;
-//   items: { name: string; quantity: number; price: number }[];
-//   totalAmount: number;
-//   status: "pending" | "shipped" | "delivered";
-//   createdAt: Timestamp;
 // }
 
 // const Admin = () => {
 //   const navigate = useNavigate();
 //   const { toast } = useToast();
-
-//   const [view, setView] = useState<"products" | "orders">("products");
 //   const [products, setProducts] = useState<Product[]>([]);
-//   const [orders, setOrders] = useState<Order[]>([]);
 //   const [loading, setLoading] = useState(true);
 //   const [checkingAuth, setCheckingAuth] = useState(true);
 //   const [showForm, setShowForm] = useState(false);
 //   const [uploadingImage, setUploadingImage] = useState(false);
 //   const [editingId, setEditingId] = useState<string | null>(null);
 
-//   const initialFormState = {
+//   const [form, setForm] = useState({
 //     name: "",
 //     price: "",
 //     description: "",
 //     image_url: "",
-//     category: "posters" as CategoryType,
+//     category: "posters" as Product["category"],
 //     subcategory: "",
 //     badge: "",
 //     is_active: true,
-//     is_featured: false,
-//   };
-
-//   const [form, setForm] = useState(initialFormState);
-
-//   const sendWhatsApp = (order: Order, type: "confirm" | "shipping") => {
-//     const message =
-//       type === "confirm"
-//         ? `Hi ${order.customerName}, aapka Imprinto order #${order.id} confirm ho gaya hai. Total: ₹${order.totalAmount}. Thank you!`
-//         : `Hi ${order.customerName}, good news! Aapka order #${order.id} ship ho gaya hai. Jald hi aap tak pahuch jayega.`;
-
-//     const encodedMsg = encodeURIComponent(message);
-//     window.open(`https://wa.me/${order.phone}?text=${encodedMsg}`, "_blank");
-//   };
-
-//   const sendEmail = (order: Order, type: "confirm" | "shipping") => {
-//     const subject =
-//       type === "confirm"
-//         ? `Order Confirmed - #${order.id}`
-//         : `Your Order has Shipped! - #${order.id}`;
-//     const body =
-//       type === "confirm"
-//         ? `Hi ${order.customerName},\n\nThank you for shopping with Imprinto. Your order #${order.id} has been confirmed.\nTotal Amount: ₹${order.totalAmount}`
-//         : `Hi ${order.customerName},\n\nYour order #${order.id} is on its way!`;
-
-//     window.location.href = `mailto:${order.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-//   };
+//   });
 
 //   const fetchProducts = useCallback(async () => {
 //     setLoading(true);
 //     try {
 //       const snapshot = await getDocs(collection(db, "products"));
-//       const list = snapshot.docs.map((docSnap: QueryDocumentSnapshot) => ({
-//         id: docSnap.id,
-//         ...(docSnap.data() as Omit<Product, "id">),
-//       }));
+//       const list = snapshot.docs.map(
+//         (docSnap: QueryDocumentSnapshot<DocumentData>) => ({
+//           id: docSnap.id,
+//           ...docSnap.data(),
+//         }),
+//       ) as Product[];
 //       setProducts(list);
 //     } catch (error) {
-//       toast({ title: "Products error", variant: "destructive" });
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, [toast]);
-
-//   const fetchOrders = useCallback(async () => {
-//     setLoading(true);
-//     try {
-//       const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-//       const snapshot = await getDocs(q);
-//       const list = snapshot.docs.map((docSnap: QueryDocumentSnapshot) => ({
-//         id: docSnap.id,
-//         ...(docSnap.data() as Omit<Order, "id">),
-//       }));
-//       setOrders(list);
-//     } catch (error) {
-//       toast({ title: "Orders error", variant: "destructive" });
+//       toast({ title: "Fetch failed", variant: "destructive" });
 //     } finally {
 //       setLoading(false);
 //     }
 //   }, [toast]);
 
 //   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+//     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
 //       if (!user || user.email !== "support.imprinto@gmail.com") {
 //         navigate("/");
 //         return;
 //       }
-//       if (view === "products") {
-//         fetchProducts();
-//       } else {
-//         fetchOrders();
-//       }
+//       await fetchProducts();
 //       setCheckingAuth(false);
 //     });
 //     return () => unsubscribe();
-//   }, [navigate, fetchProducts, fetchOrders, view]);
+//   }, [navigate, fetchProducts]);
+
+//   // ✅ Cloudinary Upload Logic
+//   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+
+//     setUploadingImage(true);
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     formData.append("upload_preset", "imprinto_customs"); // Use your existing preset
+
+//     try {
+//       const res = await fetch(
+//         `https://api.cloudinary.com/v1_1/dyjj0t5gk/image/upload`,
+//         {
+//           method: "POST",
+//           body: formData,
+//         },
+//       );
+//       const data = await res.json();
+//       if (data.secure_url) {
+//         setForm((prev) => ({ ...prev, image_url: data.secure_url }));
+//         toast({ title: "Image Uploaded Successfully" });
+//       }
+//     } catch (err) {
+//       toast({ title: "Upload failed", variant: "destructive" });
+//     } finally {
+//       setUploadingImage(false);
+//     }
+//   };
 
 //   const handleSave = async () => {
 //     if (!form.name || !form.price || !form.image_url) {
-//       toast({ title: "Data missing", variant: "destructive" });
+//       toast({ title: "Please fill required fields", variant: "destructive" });
 //       return;
 //     }
+
 //     const payload = {
 //       ...form,
 //       price: Number(form.price),
 //       updatedAt: Timestamp.now(),
 //     };
+
 //     try {
 //       if (editingId) {
 //         await updateDoc(doc(db, "products", editingId), payload);
-//         toast({ title: "Updated" });
+//         toast({ title: "Artifact Updated" });
 //       } else {
 //         await addDoc(collection(db, "products"), {
 //           ...payload,
 //           createdAt: Timestamp.now(),
 //         });
-//         toast({ title: "Created" });
+//         toast({ title: "Artifact Created" });
 //       }
 //       resetForm();
 //       fetchProducts();
@@ -189,162 +153,117 @@
 //   const resetForm = () => {
 //     setShowForm(false);
 //     setEditingId(null);
-//     setForm(initialFormState);
+//     setForm({
+//       name: "",
+//       price: "",
+//       description: "",
+//       image_url: "",
+//       category: "posters",
+//       subcategory: "",
+//       badge: "",
+//       is_active: true,
+//     });
 //   };
 
-//   if (checkingAuth) return null;
+//   if (checkingAuth) {
+//     return (
+//       <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white font-bricolage">
+//         <Loader2 className="animate-spin text-primary mb-4" size={40} />
+//         <p className="uppercase tracking-[0.3em] text-[10px] font-black">
+//           Decrypting Vault...
+//         </p>
+//       </div>
+//     );
+//   }
 
 //   return (
-//     <div className="min-h-screen bg-[#050505] text-white">
-//       <nav className="border-b border-white/10 bg-[#080808] px-8 py-6 flex justify-between items-center sticky top-0 z-50">
-//         <div className="flex items-center gap-6">
+//     <div className="min-h-screen bg-[#050505] text-white font-bricolage">
+//       <header className="border-b border-white/5 p-8 flex justify-between items-center bg-[#080808] sticky top-0 z-40">
+//         <div className="flex items-center gap-8">
 //           <button
 //             onClick={() => navigate("/")}
-//             className="text-gray-500 hover:text-white"
+//             className="hover:text-primary transition-all"
 //           >
 //             <ArrowLeft size={20} />
 //           </button>
-//           <div className="flex gap-6 ml-4">
-//             <button
-//               onClick={() => setView("products")}
-//               className={`text-[10px] font-bold uppercase ${view === "products" ? "text-primary" : "text-gray-500"}`}
-//             >
-//               Products
-//             </button>
-//             <button
-//               onClick={() => setView("orders")}
-//               className={`text-[10px] font-bold uppercase ${view === "orders" ? "text-primary" : "text-gray-500"}`}
-//             >
-//               Orders
-//             </button>
+//           <div>
+//             <h1 className="text-2xl font-black uppercase tracking-tighter">
+//               Command Center
+//             </h1>
+//             <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">
+//               Admin Access Granted
+//             </p>
 //           </div>
 //         </div>
 //         <div className="flex gap-4">
-//           {view === "products" && (
-//             <Button
-//               onClick={() => setShowForm(true)}
-//               className="bg-primary text-black font-bold h-10 px-6 rounded-none text-[10px]"
-//             >
-//               Add Product
-//             </Button>
-//           )}
+//           <Button
+//             onClick={() => setShowForm(true)}
+//             className="bg-primary text-black font-black uppercase rounded-none px-8 h-12 text-[10px] tracking-widest hover:bg-white transition-all"
+//           >
+//             Add New Artifact
+//           </Button>
 //           <Button
 //             variant="outline"
-//             className="border-white/10 rounded-none h-10 w-10"
+//             className="border-white/10 rounded-none h-12 w-12 hover:bg-red-500/10 hover:border-red-500/50"
 //             onClick={() => signOut(auth)}
 //           >
-//             <LogOut size={14} />
+//             <LogOut size={18} />
 //           </Button>
 //         </div>
-//       </nav>
+//       </header>
 
 //       <main className="p-10">
 //         {loading ? (
 //           <div className="flex justify-center py-40">
-//             <Loader2 className="animate-spin text-primary" />
+//             <Loader2 className="animate-spin text-primary" size={40} />
 //           </div>
-//         ) : view === "products" ? (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+//         ) : (
+//           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
 //             {products.map((p) => (
 //               <div
 //                 key={p.id}
-//                 className="bg-[#080808] border border-white/5 group"
+//                 className="bg-[#0a0a0a] border border-white/5 group hover:border-primary transition-all flex flex-col"
 //               >
-//                 <div className="aspect-[3/4]">
+//                 <div className="aspect-[3/4] overflow-hidden bg-black border-b border-white/5 relative">
 //                   <img
 //                     src={p.image_url}
-//                     className="w-full h-full object-cover"
-//                     alt={p.name}
+//                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
 //                   />
+//                   {!p.is_active && (
+//                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-red-500">
+//                       Inactive
+//                     </div>
+//                   )}
 //                 </div>
-//                 <div className="p-4">
-//                   <h3 className="text-[11px] font-bold uppercase truncate">
+//                 <div className="p-5 flex flex-col flex-1">
+//                   <h3 className="font-black uppercase text-[11px] tracking-widest truncate mb-2">
 //                     {p.name}
 //                   </h3>
-//                   <div className="flex justify-between items-center mt-4">
-//                     <p className="text-primary font-bold">₹{p.price}</p>
-//                     <div className="flex gap-2">
-//                       <button
-//                         onClick={() => {
-//                           setEditingId(p.id);
-//                           setForm({ ...p, price: String(p.price) });
-//                           setShowForm(true);
-//                         }}
-//                         className="p-1.5 border border-white/10 hover:bg-white hover:text-black"
-//                       >
-//                         <Edit size={12} />
-//                       </button>
-//                       <button
-//                         onClick={() => {
-//                           if (confirm("Delete?")) {
-//                             deleteDoc(doc(db, "products", p.id)).then(
-//                               fetchProducts,
-//                             );
-//                           }
-//                         }}
-//                         className="p-1.5 border border-white/10 text-red-500 hover:bg-red-500 hover:text-white"
-//                       >
-//                         <Trash2 size={12} />
-//                       </button>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <div className="max-w-5xl mx-auto space-y-4">
-//             {orders.map((o) => (
-//               <div
-//                 key={o.id}
-//                 className="bg-[#080808] border border-white/10 p-6 flex flex-col md:flex-row justify-between gap-6"
-//               >
-//                 <div className="flex-1">
-//                   <div className="flex items-center gap-3 mb-2">
-//                     <span
-//                       className={`text-[9px] px-2 py-0.5 font-bold uppercase ${o.status === "pending" ? "bg-yellow-500/20 text-yellow-500" : "bg-green-500/20 text-green-500"}`}
+//                   <p className="text-primary font-black text-lg">₹{p.price}</p>
+//                   <div className="flex gap-2 mt-6">
+//                     <Button
+//                       variant="outline"
+//                       className="flex-1 rounded-none border-white/5 text-[9px] font-black uppercase h-10 hover:bg-white hover:text-black"
+//                       onClick={() => {
+//                         setEditingId(p.id);
+//                         setForm({ ...p, price: String(p.price) });
+//                         setShowForm(true);
+//                       }}
 //                     >
-//                       {o.status}
-//                     </span>
-//                     <p className="text-[10px] text-gray-500 font-bold uppercase">
-//                       ID: {o.id}
-//                     </p>
-//                   </div>
-//                   <h3 className="text-lg font-bold uppercase tracking-tight">
-//                     {o.customerName}
-//                   </h3>
-//                   <p className="text-xs text-gray-400">
-//                     {o.email} | {o.phone}
-//                   </p>
-//                   <div className="mt-4 pt-4 border-t border-white/5">
-//                     {o.items.map((item, i) => (
-//                       <p
-//                         key={i}
-//                         className="text-[10px] text-gray-500 uppercase"
-//                       >
-//                         {item.name} x {item.quantity}
-//                       </p>
-//                     ))}
-//                   </div>
-//                 </div>
-
-//                 <div className="flex flex-col md:items-end justify-between gap-4">
-//                   <p className="text-xl font-bold text-primary">
-//                     ₹{o.totalAmount}
-//                   </p>
-//                   <div className="flex gap-2">
-//                     <button
-//                       onClick={() => sendWhatsApp(o, "confirm")}
-//                       className="p-2 border border-green-600/20 text-green-500"
+//                       Edit
+//                     </Button>
+//                     <Button
+//                       variant="destructive"
+//                       className="rounded-none h-10 w-10"
+//                       onClick={() => {
+//                         if (confirm("Delete artifact?"))
+//                           deleteDoc(doc(db, "products", p.id)).then(
+//                             fetchProducts,
+//                           );
+//                       }}
 //                     >
-//                       <MessageCircle size={14} />
-//                     </button>
-//                     <button
-//                       onClick={() => sendEmail(o, "confirm")}
-//                       className="p-2 border border-blue-600/20 text-blue-500"
-//                     >
-//                       <Mail size={14} />
-//                     </button>
+//                       <Trash2 size={14} />
+//                     </Button>
 //                   </div>
 //                 </div>
 //               </div>
@@ -352,39 +271,131 @@
 //           </div>
 //         )}
 //       </main>
+
+//       {showForm && (
+//         <div className="fixed inset-0 bg-black/95 backdrop-blur-md flex justify-center items-center z-[100] p-6 overflow-y-auto">
+//           <div className="bg-[#080808] border border-white/10 p-10 w-full max-w-2xl space-y-8 relative">
+//             <h2 className="text-3xl font-black uppercase tracking-tighter border-b border-white/5 pb-6">
+//               {editingId ? "Modify Artifact" : "Create Artifact"}
+//             </h2>
+
+//             <div className="grid md:grid-cols-2 gap-8">
+//               <div className="space-y-4">
+//                 <div className="space-y-2">
+//                   <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
+//                     General Info
+//                   </label>
+//                   <Input
+//                     placeholder="PRODUCT NAME"
+//                     value={form.name}
+//                     onChange={(e) => setForm({ ...form, name: e.target.value })}
+//                     className="bg-black border-white/10 rounded-none h-14 text-[11px] font-black uppercase tracking-widest"
+//                   />
+//                   <Input
+//                     type="number"
+//                     placeholder="PRICE (₹)"
+//                     value={form.price}
+//                     onChange={(e) =>
+//                       setForm({ ...form, price: e.target.value })
+//                     }
+//                     className="bg-black border-white/10 rounded-none h-14 text-[11px] font-black uppercase tracking-widest"
+//                   />
+//                   <Input
+//                     placeholder="SUBCATEGORY (cars, f1, etc.)"
+//                     value={form.subcategory}
+//                     onChange={(e) =>
+//                       setForm({
+//                         ...form,
+//                         subcategory: e.target.value.toLowerCase(),
+//                       })
+//                     }
+//                     className="bg-black border-white/10 rounded-none h-14 text-[11px] font-black uppercase tracking-widest"
+//                   />
+//                 </div>
+//               </div>
+
+//               <div className="space-y-4">
+//                 <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
+//                   Visual Asset
+//                 </label>
+//                 <div className="aspect-square bg-black border border-white/10 relative group overflow-hidden">
+//                   {form.image_url ? (
+//                     <img
+//                       src={form.image_url}
+//                       className="w-full h-full object-cover"
+//                     />
+//                   ) : (
+//                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-700">
+//                       <ImageIcon size={32} strokeWidth={1} />
+//                       <p className="text-[8px] font-black mt-2">NO PREVIEW</p>
+//                     </div>
+//                   )}
+//                   <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+//                     <input
+//                       type="file"
+//                       onChange={handleImageUpload}
+//                       className="absolute inset-0 opacity-0 cursor-pointer"
+//                     />
+//                     {uploadingImage ? (
+//                       <Loader2 className="animate-spin text-primary" />
+//                     ) : (
+//                       <Upload size={24} className="text-primary" />
+//                     )}
+//                     <p className="text-[8px] font-black mt-2 text-primary uppercase">
+//                       Replace Image
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             <div className="flex gap-4 pt-10">
+//               <Button
+//                 onClick={handleSave}
+//                 disabled={uploadingImage}
+//                 className="flex-1 bg-primary text-black font-black uppercase rounded-none h-16 text-[11px] tracking-widest hover:bg-white transition-all"
+//               >
+//                 Authorize Changes
+//               </Button>
+//               <Button
+//                 onClick={resetForm}
+//                 variant="outline"
+//                 className="flex-1 border-white/10 rounded-none uppercase h-16 text-[11px] tracking-widest"
+//               >
+//                 Abort
+//               </Button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
 //     </div>
 //   );
 // };
 
 // export default Admin;
 
-
 // Experimental Code (Refactored with better structure, error handling, and UI improvements)
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Navbar from "@/components/Navbar";
 import {
+  Plus,
   Trash2,
+  ArrowLeft,
   LogOut,
   Loader2,
+  Upload,
+  Image as ImageIcon,
   X,
+  Star,
   Edit,
-  Mail,
-  MessageCircle,
-  Package,
-  ShoppingCart,
 } from "lucide-react";
 import { auth, db } from "@/lib/firebase";
-import {
-  onAuthStateChanged,
-  signOut,
-  User as FirebaseUser,
-} from "firebase/auth";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import {
   collection,
   getDocs,
@@ -393,8 +404,7 @@ import {
   deleteDoc,
   doc,
   Timestamp,
-  query,
-  orderBy,
+  QueryDocumentSnapshot,
 } from "firebase/firestore";
 
 type CategoryType = "stickers" | "posters" | "combo";
@@ -412,101 +422,105 @@ interface Product {
   is_featured: boolean;
 }
 
-interface Order {
-  id: string;
-  customerName: string;
-  email: string;
-  phone: string;
-  items: { name: string; quantity: number; price: number }[];
-  totalAmount: number;
-  status: "pending" | "shipped" | "delivered";
-  createdAt: Timestamp;
+interface FormState {
+  name: string;
+  price: string;
+  description: string;
+  image_url: string;
+  category: CategoryType;
+  subcategory: string;
+  badge: string;
+  is_active: boolean;
+  is_featured: boolean;
 }
 
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const [view, setView] = useState<"products" | "orders">("products");
   const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const initialFormState = {
+  const initialFormState: FormState = {
     name: "",
     price: "",
     description: "",
     image_url: "",
-    category: "posters" as CategoryType,
+    category: "posters",
     subcategory: "",
     badge: "",
     is_active: true,
     is_featured: false,
   };
 
-  const [form, setForm] = useState(initialFormState);
+  const [form, setForm] = useState<FormState>(initialFormState);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const q = query(collection(db, "products"), orderBy("name", "asc"));
-      const snapshot = await getDocs(q);
-      const list = snapshot.docs.map((docSnap) => ({
+      const snapshot = await getDocs(collection(db, "products"));
+      const list = snapshot.docs.map((docSnap: QueryDocumentSnapshot) => ({
         id: docSnap.id,
         ...(docSnap.data() as Omit<Product, "id">),
       }));
       setProducts(list);
-    } catch (err: unknown) {
-      toast({ title: "Product Fetch Error", variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-
-  const fetchOrders = useCallback(async () => {
-    setLoading(true);
-    try {
-      const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      const list = snapshot.docs.map((docSnap) => ({
-        id: docSnap.id,
-        ...(docSnap.data() as Omit<Order, "id">),
-      }));
-      setOrders(list);
-    } catch (err: unknown) {
-      toast({ title: "Order Fetch Error", variant: "destructive" });
+    } catch (error) {
+      toast({ title: "Products load nahi ho paye", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   }, [toast]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user: FirebaseUser | null) => {
-        if (!user || user.email !== "support.imprinto@gmail.com") {
-          navigate("/");
-          return;
-        }
-        setCheckingAuth(false);
-
-        // ✅ Fixed: Expression converted to a proper statement
-        if (view === "products") {
-          fetchProducts();
-        } else {
-          fetchOrders();
-        }
-      },
-    );
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+      if (!user || user.email !== "support.imprinto@gmail.com") {
+        navigate("/");
+        return;
+      }
+      fetchProducts();
+      setCheckingAuth(false);
+    });
     return () => unsubscribe();
-  }, [navigate, fetchProducts, fetchOrders, view]);
+  }, [navigate, fetchProducts]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "imprinto_customs");
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/dyjj0t5gk/image/upload`,
+        { method: "POST", body: formData },
+      );
+      const data = (await res.json()) as { secure_url: string };
+      if (data.secure_url) {
+        setForm((prev) => ({ ...prev, image_url: data.secure_url }));
+        toast({ title: "Photo upload ho gayi" });
+      }
+    } catch (err) {
+      toast({ title: "Upload fail ho gaya", variant: "destructive" });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleEdit = (p: Product) => {
+    setEditingId(p.id);
+    setForm({ ...p, price: String(p.price) });
+    setShowForm(true);
+  };
 
   const handleSave = async () => {
     if (!form.name || !form.price || !form.image_url) {
-      toast({ title: "Missing Required Fields", variant: "destructive" });
+      toast({ title: "Zaroori details bhariye", variant: "destructive" });
       return;
     }
 
@@ -517,24 +531,20 @@ const Admin = () => {
     };
 
     try {
-      setLoading(true);
       if (editingId) {
-        const productRef = doc(db, "products", editingId);
-        await updateDoc(productRef, payload);
-        toast({ title: "Product Updated" });
+        await updateDoc(doc(db, "products", editingId), payload);
+        toast({ title: "Product update ho gaya" });
       } else {
         await addDoc(collection(db, "products"), {
           ...payload,
           createdAt: Timestamp.now(),
         });
-        toast({ title: "Product Created" });
+        toast({ title: "Product add ho gaya" });
       }
       resetForm();
       fetchProducts();
-    } catch (err: unknown) {
-      toast({ title: "Save Failed", variant: "destructive" });
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      toast({ title: "Process fail ho gaya", variant: "destructive" });
     }
   };
 
@@ -547,158 +557,103 @@ const Admin = () => {
   if (checkingAuth) return null;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-bricolage selection:bg-primary selection:text-black">
-      <Navbar />
-
-      <div className="pt-28 pb-6 px-10 flex flex-col md:flex-row justify-between items-center gap-4 bg-[#080808]/50 border-b border-white/5">
-        <div className="flex bg-black p-1 border border-white/5">
+    <div className="min-h-screen bg-[#050505] text-white">
+      <nav className="border-b border-white/10 bg-[#080808] px-8 py-6 flex justify-between items-center sticky top-0 z-50">
+        <div className="flex items-center gap-6">
           <button
-            onClick={() => setView("products")}
-            className={`flex items-center gap-2 px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
-              view === "products"
-                ? "bg-primary text-black"
-                : "text-gray-500 hover:text-white"
-            }`}
+            onClick={() => navigate("/")}
+            className="text-gray-500 hover:text-white transition-colors"
           >
-            <Package size={14} /> Inventory
+            <ArrowLeft size={20} />
           </button>
-          <button
-            onClick={() => setView("orders")}
-            className={`flex items-center gap-2 px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
-              view === "orders"
-                ? "bg-primary text-black"
-                : "text-gray-500 hover:text-white"
-            }`}
-          >
-            <ShoppingCart size={14} /> Orders
-          </button>
+          <div className="h-8 w-[1px] bg-white/10" />
+          <h1 className="text-xl font-bold uppercase tracking-tight">
+            Admin Dashboard
+          </h1>
         </div>
 
         <div className="flex gap-4">
-          {view === "products" && (
-            <Button
-              onClick={() => {
-                resetForm();
-                setShowForm(true);
-              }}
-              className="bg-white text-black font-black uppercase tracking-widest text-[10px] rounded-none h-12 px-8 hover:bg-primary transition-all"
-            >
-              Add Artifact
-            </Button>
-          )}
           <Button
-            onClick={() => signOut(auth)}
-            variant="outline"
-            className="border-white/10 text-red-500 hover:bg-red-500 hover:text-white rounded-none h-12 transition-all px-4"
+            onClick={() => setShowForm(true)}
+            className="bg-primary text-black font-bold uppercase rounded-none px-6 text-[10px] h-10 hover:bg-white transition-all"
           >
-            <LogOut size={16} />
+            Add New Product
+          </Button>
+          <Button
+            variant="outline"
+            className="border-white/10 rounded-none h-10 w-10 hover:bg-red-500/10"
+            onClick={() => signOut(auth)}
+          >
+            <LogOut size={14} />
           </Button>
         </div>
-      </div>
+      </nav>
 
       <main className="p-10">
-        {loading && !showForm ? (
-          <div className="flex flex-col items-center justify-center py-40 gap-4">
-            <Loader2 className="animate-spin text-primary" size={40} />
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]">
-              Syncing Vault...
-            </p>
+        {loading ? (
+          <div className="flex justify-center py-40">
+            <Loader2 className="animate-spin text-primary" />
           </div>
-        ) : view === "products" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             {products.map((p) => (
               <div
                 key={p.id}
-                className="bg-[#080808] border border-white/5 group relative"
+                className="bg-[#080808] border border-white/5 flex flex-col group transition-all hover:border-primary/40"
               >
-                <div className="aspect-[3/4] overflow-hidden">
+                <div className="aspect-[3/4] overflow-hidden bg-black relative">
                   <img
                     src={p.image_url}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover transition-all duration-700"
                     alt={p.name}
                   />
+                  {!p.is_active && (
+                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-red-500 border border-red-500/30 px-2 py-1">
+                        Inactive
+                      </span>
+                    </div>
+                  )}
+                  {p.is_featured && (
+                    <div className="absolute top-4 left-4 bg-primary text-black p-1.5">
+                      <Star size={12} fill="currentColor" />
+                    </div>
+                  )}
                 </div>
-                <div className="p-5 space-y-3">
-                  <h3 className="text-[11px] font-black uppercase tracking-tight truncate">
-                    {p.name}
-                  </h3>
-                  <div className="flex justify-between items-center">
-                    <p className="text-primary font-black italic">₹{p.price}</p>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="mb-4">
+                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-1">
+                      {p.category} / {p.subcategory}
+                    </p>
+                    <h3 className="font-bold uppercase text-[12px] tracking-widest truncate">
+                      {p.name}
+                    </h3>
+                  </div>
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                    <p className="text-primary font-bold text-xl">₹{p.price}</p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => {
-                          setEditingId(p.id);
-                          setForm({ ...p, price: String(p.price) });
-                          setShowForm(true);
-                        }}
-                        className="p-2 border border-white/5 hover:bg-primary hover:text-black transition-all"
+                        onClick={() => handleEdit(p)}
+                        className="p-2 border border-white/10 hover:bg-white hover:text-black transition-all"
                       >
-                        <Edit size={12} />
+                        <Edit size={14} />
                       </button>
                       <button
-                        onClick={async () => {
-                          if (window.confirm("Purge this artifact?")) {
-                            await deleteDoc(doc(db, "products", p.id));
-                            fetchProducts();
-                          }
+                        onClick={() => {
+                          if (
+                            confirm(
+                              "Kya aap is product ko delete karna chahte hain?",
+                            )
+                          )
+                            deleteDoc(doc(db, "products", p.id)).then(
+                              fetchProducts,
+                            );
                         }}
-                        className="p-2 border border-white/5 text-red-500 hover:bg-red-500 hover:text-white transition-all"
+                        className="p-2 border border-white/10 hover:bg-red-500 transition-all"
                       >
-                        <Trash2 size={12} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="max-w-5xl mx-auto space-y-4">
-            {orders.map((o) => (
-              <div
-                key={o.id}
-                className="bg-[#080808] border border-white/5 p-8 flex flex-col md:flex-row justify-between gap-8 animate-in fade-in duration-500"
-              >
-                <div className="flex-1 space-y-4">
-                  <div className="flex items-center gap-4">
-                    <span className="bg-primary/10 text-primary text-[9px] px-3 py-1 font-black uppercase tracking-widest">
-                      {o.status}
-                    </span>
-                    <span className="text-[9px] text-gray-600 font-bold uppercase">
-                      ID: {o.id}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter italic">
-                    {o.customerName}
-                  </h3>
-                  <div className="flex gap-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-                    <span>{o.email}</span>
-                    <span>|</span>
-                    <span>{o.phone}</span>
-                  </div>
-                  <div className="pt-4 border-t border-white/5 space-y-2">
-                    {o.items.map((item, i) => (
-                      <p
-                        key={i}
-                        className="text-[10px] text-gray-400 font-black uppercase tracking-widest"
-                      >
-                        {item.name}{" "}
-                        <span className="text-primary">x{item.quantity}</span>
-                      </p>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex flex-col md:items-end justify-between gap-6">
-                  <p className="text-4xl font-black text-white italic">
-                    ₹{o.totalAmount}
-                  </p>
-                  <div className="flex gap-3">
-                    <button className="p-4 border border-white/5 hover:bg-green-500 hover:text-black transition-all text-green-500">
-                      <MessageCircle size={18} />
-                    </button>
-                    <button className="p-4 border border-white/5 hover:bg-blue-500 hover:text-black transition-all text-blue-500">
-                      <Mail size={18} />
-                    </button>
                   </div>
                 </div>
               </div>
@@ -707,78 +662,184 @@ const Admin = () => {
         )}
       </main>
 
-      {/* Product Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6 backdrop-blur-xl animate-in zoom-in duration-300">
-          <div className="bg-[#080808] border border-white/10 w-full max-w-2xl p-10 relative space-y-8 overflow-y-auto max-h-[90vh]">
+        <div className="fixed inset-0 bg-black/98 backdrop-blur-xl flex justify-center items-center z-[100] p-4 overflow-y-auto">
+          <div className="bg-[#080808] border border-white/10 p-10 w-full max-w-4xl relative">
             <button
               onClick={resetForm}
-              className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors"
+              className="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors"
             >
               <X size={24} />
             </button>
-            <h2 className="text-3xl font-black uppercase italic tracking-tighter">
-              {editingId ? "Modify Artifact" : "Inject New Artifact"}
+            <h2 className="text-3xl font-bold uppercase tracking-tight mb-10 border-b border-white/10 pb-6">
+              {editingId ? "Edit Product Details" : "Add New Product"}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500">
-                  Name
-                </label>
-                <Input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="bg-black border-white/10 rounded-none h-12 uppercase font-bold focus:border-primary transition-all"
-                />
+
+            <div className="grid md:grid-cols-2 gap-12">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase">
+                      Category
+                    </label>
+                    <select
+                      value={form.category}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          category: e.target.value as CategoryType,
+                        })
+                      }
+                      className="w-full bg-black border border-white/10 h-12 text-[11px] px-4 text-white outline-none focus:border-primary"
+                    >
+                      <option value="posters">Posters</option>
+                      <option value="stickers">Stickers</option>
+                      <option value="combo">Combo Pack</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase">
+                      Sub-Category
+                    </label>
+                    <Input
+                      placeholder="e.g. Anime, Cars"
+                      value={form.subcategory}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          subcategory: e.target.value.toLowerCase(),
+                        })
+                      }
+                      className="bg-black border-white/10 h-12 text-[11px] uppercase"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">
+                    Product Name
+                  </label>
+                  <Input
+                    placeholder="Enter name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="bg-black border-white/10 h-12 text-[11px] uppercase"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">
+                    Price (INR)
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Enter price"
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
+                    className="bg-black border-white/10 h-12 text-[11px]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase">
+                    Description
+                  </label>
+                  <Textarea
+                    placeholder="Product details here..."
+                    value={form.description}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                    className="bg-black border-white/10 min-h-[100px] text-[11px] p-4"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <label className="flex items-center gap-3 p-3 border border-white/5 bg-black/40 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.is_active}
+                      onChange={(e) =>
+                        setForm({ ...form, is_active: e.target.checked })
+                      }
+                      className="accent-primary h-4 w-4"
+                    />
+                    <span className="text-[10px] font-bold uppercase text-gray-500">
+                      Active
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-white/5 bg-black/40 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.is_featured}
+                      onChange={(e) =>
+                        setForm({ ...form, is_featured: e.target.checked })
+                      }
+                      className="accent-primary h-4 w-4"
+                    />
+                    <span className="text-[10px] font-bold uppercase text-gray-500">
+                      Featured
+                    </span>
+                  </label>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500">
-                  Price (INR)
+
+              <div className="space-y-4">
+                <label className="text-[10px] font-bold text-gray-500 uppercase text-center block">
+                  Product Image
                 </label>
-                <Input
-                  type="number"
-                  value={form.price}
-                  onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="bg-black border-white/10 rounded-none h-12 font-bold focus:border-primary transition-all"
-                />
-              </div>
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500">
-                  Image URL
-                </label>
-                <Input
-                  value={form.image_url}
-                  onChange={(e) =>
-                    setForm({ ...form, image_url: e.target.value })
-                  }
-                  className="bg-black border-white/10 rounded-none h-12 font-bold focus:border-primary transition-all"
-                />
-              </div>
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-gray-500">
-                  Description
-                </label>
-                <Textarea
-                  value={form.description}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                  className="bg-black border-white/10 rounded-none min-h-[100px] uppercase font-bold focus:border-primary transition-all"
-                />
+                <div className="aspect-[3/4] bg-black border border-white/5 relative group cursor-pointer overflow-hidden max-w-[300px] mx-auto">
+                  {form.image_url ? (
+                    <img
+                      src={form.image_url}
+                      className="w-full h-full object-contain"
+                      alt="Preview"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-700">
+                      <ImageIcon size={40} />
+                      <p className="text-[10px] mt-4 font-bold uppercase tracking-widest">
+                        No Image Selected
+                      </p>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-primary/90 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <input
+                      type="file"
+                      onChange={handleImageUpload}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    {uploadingImage ? (
+                      <Loader2 className="animate-spin text-black" />
+                    ) : (
+                      <Upload size={24} className="text-black" />
+                    )}
+                    <p className="text-[11px] font-bold mt-2 text-black uppercase">
+                      Upload Photo
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <Button
-              onClick={handleSave}
-              className="w-full bg-primary text-black font-black uppercase h-16 rounded-none tracking-widest text-lg hover:bg-white transition-all"
-            >
-              {loading ? (
-                <Loader2 className="animate-spin" />
-              ) : editingId ? (
-                "Update Identity"
-              ) : (
-                "Confirm Injection"
-              )}
-            </Button>
+
+            <div className="flex gap-4 mt-12 pt-8 border-t border-white/10">
+              <Button
+                onClick={handleSave}
+                disabled={uploadingImage}
+                className="flex-[3] bg-primary text-black font-bold uppercase rounded-none h-16 text-[12px] hover:bg-white transition-all shadow-xl"
+              >
+                {editingId ? "Update Product" : "Save Product"}
+              </Button>
+              <Button
+                onClick={resetForm}
+                variant="outline"
+                className="flex-1 border-white/10 rounded-none h-16 text-[11px] font-bold uppercase hover:bg-white hover:text-black transition-all"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
       )}
