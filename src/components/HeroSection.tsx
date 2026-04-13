@@ -179,7 +179,6 @@
 
 // export default HeroSection;
 
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -266,7 +265,7 @@ const HeroSection = () => {
           >
             <Sparkles size={14} className="text-primary" />
             <span className="text-[10px] font-black uppercase tracking-[0.3em] py-2">
-              New Drops Internalized
+              Explore the New Drop
             </span>
           </motion.div>
 
@@ -278,10 +277,10 @@ const HeroSection = () => {
             </h1>
           </div> */}
 
-            <div className="mb-6 md:mb-8 text-left max-w-4xl">
-              <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] md:leading-[0.8] tracking-tighter uppercase italic">
-                OWN YOUR <br />
-                <span className="text-primary not-italic">OBSESSION.</span>
+          <div className="mb-6 md:mb-8 text-left max-w-4xl">
+            <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] md:leading-[0.8] tracking-tighter uppercase italic">
+              OWN YOUR <br />
+              <span className="text-primary not-italic">OBSESSION.</span>
             </h1>
           </div>
 
