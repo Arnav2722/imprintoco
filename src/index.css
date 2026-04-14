@@ -1,126 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --background: 0 0% 5.5%;
-    --foreground: 0 0% 95%;
-
-    --card: 0 0% 7.5%;
-    --card-foreground: 0 0% 95%;
-
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
-
-    --primary: 189 100% 75%;
-    --primary-foreground: 189 100% 17%;
-
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 70%;
-
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 50%;
-
-    --accent: 189 100% 50%;
-    --accent-foreground: 0 0% 3%;
-
-    --destructive: 2 100% 71%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 15%;
-    --input: 0 0% 12%;
-    --ring: 189 100% 75%;
-
-    --radius: 0rem;
-
-    --surface: 0 0% 5.5%;
-    --surface-container-low: 0 0% 7.5%;
-    --surface-container: 0 0% 10%;
-    --surface-container-high: 0 0% 12.5%;
-    --surface-container-highest: 0 0% 15%;
-
-    --sidebar-background: 0 0% 7.5%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 189 100% 75%;
-    --sidebar-primary-foreground: 189 100% 17%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 189 100% 75%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-body antialiased;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-display tracking-tight;
-  }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee 20s linear infinite;
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--surface));
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--surface-container-high));
-}
-
-::selection {
-  background: hsl(var(--primary) / 0.3);
-  color: hsl(var(--foreground));
-}
-
-.input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 12px 14px;
-  font-size: 14px;
-  outline: none;
-  border-radius: 10px;
-  transition: 0.2s;
-}
-
-.input:focus {
-  border-color: #00e5ff;
-  background: rgba(255, 255, 255, 0.05);
-} */
-
-/* Index.css */
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
+/* @import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -162,7 +40,6 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    /* Satoshi Font Enforced */
     font-family: 'Satoshi', sans-serif;
   }
 
@@ -176,7 +53,6 @@
   }
 }
 
-/* Custom Utilities */
 .input {
   width: 100%;
   background: rgba(255, 255, 255, 0.03);
@@ -221,4 +97,101 @@
 ::selection {
   background: hsl(var(--primary) / 0.3);
   color: hsl(var(--foreground));
+}*/
+
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-grotesk@700,600,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm Cream Background */
+    --background: 45 30% 98%;
+    --foreground: 0 0% 5%;
+
+    /* Crisp White Cards */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+
+    /* Energetic Teal / Cyan */
+    --primary: 188 100% 50%;
+    --primary-foreground: 188 100% 10%;
+
+    /* Hot Coral / Magenta Accent */
+    --accent: 345 100% 59%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted Grays */
+    --muted: 45 10% 92%;
+    --muted-foreground: 0 0% 40%;
+
+    /* UI Elements */
+    --border: 0 0% 90%;
+    --input: 0 0% 96%;
+    --ring: 188 100% 50%;
+
+    --radius: 0rem;
+    /* Kept sharp for premium streetwear feel */
+
+    --surface: 45 30% 98%;
+    --surface-container-high: 0 0% 94%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Satoshi', sans-serif;
+    /* Subtle paper texture overlay */
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tighter font-black uppercase font-display;
+  }
+}
+
+/* Premium Input Styles */
+.input {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #eeeeee;
+  padding: 16px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 8px 8px 0px -2px hsl(var(--primary) / 0.1);
+}
+
+/* Scrollbar and Selection */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dddddd;
+  border-radius: 10px;
+}
+
+::selection {
+  background: hsl(var(--primary));
+  color: black;
 }
