@@ -571,7 +571,7 @@ const Admin = () => {
     if (!file) return;
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "imprinto_preset");
+    formData.append("upload_preset", "admin_uploads");
     formData.append("cloud_name", "dqr9vxc1z");
 
     try {
