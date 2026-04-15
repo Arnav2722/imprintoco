@@ -7,8 +7,7 @@
 //   ChevronDown,
 //   Search,
 //   ArrowRight,
-//   Sun,
-//   Moon,
+//   Sparkles,
 // } from "lucide-react";
 // import { useCart } from "@/contexts/CartContext";
 // import { useState, useEffect, useRef } from "react";
@@ -23,21 +22,9 @@
 //   const [scrolled, setScrolled] = useState(false);
 //   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 //   const [user, setUser] = useState<FirebaseUser | null>(null);
-//   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
 //   const navRef = useRef<HTMLDivElement>(null);
 //   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     if (theme === "dark") {
-//       document.documentElement.classList.add("dark");
-//     } else {
-//       document.documentElement.classList.remove("dark");
-//     }
-//     localStorage.setItem("theme", theme);
-//   }, [theme]);
-
-//   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
 //   useEffect(() => {
 //     const handleClickOutside = (event: MouseEvent) => {
@@ -161,38 +148,37 @@
 //         animate={{
 //           backgroundColor:
 //             scrolled || activeDropdown
-//               ? theme === "dark"
-//                 ? "rgba(0,0,0,0.95)"
-//                 : "rgba(255,255,255,0.95)"
-//               : "transparent",
+//               ? "rgba(255,255,255,0.9)"
+//               : "rgba(255,255,255,0)",
 //           backdropFilter:
 //             scrolled || activeDropdown ? "blur(20px)" : "blur(0px)",
 //           borderBottom:
 //             scrolled || activeDropdown
-//               ? `1px solid ${theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}`
-//               : "none",
+//               ? "1px solid rgba(0,0,0,0.08)"
+//               : "1px solid rgba(0,0,0,0)",
 //         }}
 //         className="absolute inset-0 pointer-events-none"
 //       />
 
-//       <div className="max-w-[1536px] mx-auto h-[75px] md:h-[95px] flex items-center justify-between px-6 md:px-10 relative z-10">
+//       <div className="max-w-[1536px] mx-auto h-[80px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
 //         <div className="flex-shrink-0">
 //           <Link to="/" onClick={() => setActiveDropdown(null)}>
 //             <img
 //               src="/logo.png"
 //               alt="Imprinto"
-//               className={`h-7 md:h-9 w-auto ${theme === "light" && "invert"}`}
+//               /* Force the logo to black */
+//               className="h-8 md:h-10 w-auto brightness-0"
 //             />
 //           </Link>
 //         </div>
 
-//         <div className="hidden lg:flex items-center gap-x-6 h-full">
+//         <div className="hidden lg:flex items-center gap-x-8 h-full">
 //           {navLinks.map((link) => {
 //             const isCurrentActive = activeDropdown === link.id;
 //             return (
 //               <div
 //                 key={link.label}
-//                 className="h-full flex items-center cursor-pointer"
+//                 className="h-full flex items-center cursor-pointer group"
 //                 onClick={() => {
 //                   if (["stickers", "bulk", "reviews"].includes(link.id || "")) {
 //                     navigate(link.path);
@@ -202,14 +188,12 @@
 //                   }
 //                 }}
 //               >
-//                 <div className="flex items-center gap-1 group">
+//                 <div className="flex items-center gap-1.5 transition-all">
 //                   <span
-//                     className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
+//                     className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
 //                       isCurrentActive
-//                         ? "text-primary drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]"
-//                         : theme === "dark"
-//                           ? "text-white/40 group-hover:text-white"
-//                           : "text-black/40 group-hover:text-black"
+//                         ? "text-primary"
+//                         : "text-foreground/40 group-hover:text-foreground"
 //                     }`}
 //                   >
 //                     {link.label}
@@ -218,8 +202,12 @@
 //                     link.id || "",
 //                   ) && (
 //                     <ChevronDown
-//                       size={10}
-//                       className={`transition-transform duration-300 ${isCurrentActive ? "rotate-180 text-primary" : "text-gray-600"}`}
+//                       size={12}
+//                       className={`transition-transform duration-300 ${
+//                         isCurrentActive
+//                           ? "rotate-180 text-primary"
+//                           : "text-foreground/20"
+//                       }`}
 //                     />
 //                   )}
 //                 </div>
@@ -228,63 +216,39 @@
 //           })}
 //         </div>
 
-//         <div className="flex items-center gap-x-5">
-//           <button
-//             onClick={toggleTheme}
-//             className={`relative flex items-center justify-center h-9 w-9 rounded-full transition-colors ${theme === "dark" ? "hover:bg-white/10" : "hover:bg-black/5"}`}
-//           >
-//             <AnimatePresence mode="wait">
-//               {theme === "dark" ? (
-//                 <motion.div
-//                   key="moon"
-//                   initial={{ opacity: 0, rotate: -90 }}
-//                   animate={{ opacity: 1, rotate: 0 }}
-//                   exit={{ opacity: 0, rotate: 90 }}
-//                   transition={{ duration: 0.2 }}
-//                 >
-//                   <Moon size={18} className="text-white/60" />
-//                 </motion.div>
-//               ) : (
-//                 <motion.div
-//                   key="sun"
-//                   initial={{ opacity: 0, rotate: -90 }}
-//                   animate={{ opacity: 1, rotate: 0 }}
-//                   exit={{ opacity: 0, rotate: 90 }}
-//                   transition={{ duration: 0.2 }}
-//                 >
-//                   <Sun size={18} className="text-black/60" />
-//                 </motion.div>
-//               )}
-//             </AnimatePresence>
-//           </button>
-
+//         <div className="flex items-center gap-x-6">
 //           <Search
-//             size={18}
-//             className={`${theme === "dark" ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black"} cursor-pointer hidden sm:block transition-colors`}
+//             size={20}
+//             className="text-foreground/40 hover:text-primary cursor-pointer hidden sm:block transition-colors"
 //           />
 //           <button onClick={handleAccountClick} className="hidden sm:block">
 //             <User
-//               size={18}
-//               className={`${theme === "dark" ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black"} transition-colors`}
+//               size={20}
+//               className="text-foreground/40 hover:text-primary transition-colors"
 //             />
 //           </button>
 
 //           <button
 //             onClick={() => setIsCartOpen(true)}
-//             className="relative group"
+//             className="relative group flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full transition-all hover:bg-primary hover:text-foreground"
 //           >
-//             <ShoppingBag
-//               size={20}
-//               className={`${theme === "dark" ? "text-white" : "text-black"} group-hover:text-primary transition-colors`}
-//             />
+//             <ShoppingBag size={18} />
+//             <span className="text-xs font-black uppercase tracking-widest hidden md:block">
+//               Cart
+//             </span>
 //             {totalItems > 0 && (
-//               <span className="absolute -top-2 -right-2 w-4 h-4 bg-primary text-black text-[9px] font-black flex items-center justify-center rounded-full">
+//               <motion.span
+//                 initial={{ scale: 0 }}
+//                 animate={{ scale: 1 }}
+//                 className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-[10px] font-black flex items-center justify-center rounded-full shadow-lg"
+//               >
 //                 {totalItems}
-//               </span>
+//               </motion.span>
 //             )}
 //           </button>
+
 //           <Menu
-//             className={`lg:hidden cursor-pointer ${theme === "dark" ? "text-white" : "text-black"}`}
+//             className="lg:hidden cursor-pointer text-foreground hover:text-primary"
 //             onClick={() => setMobileOpen(true)}
 //           />
 //         </div>
@@ -294,32 +258,43 @@
 //         {activeDropdown &&
 //           megaMenus[activeDropdown as keyof typeof megaMenus] && (
 //             <motion.div
-//               initial={{ opacity: 0, y: -10 }}
+//               initial={{ opacity: 0, y: -20 }}
 //               animate={{ opacity: 1, y: 0 }}
-//               exit={{ opacity: 0, y: -10 }}
-//               className={`absolute top-full left-0 w-full py-12 px-8 border-t ${theme === "dark" ? "bg-[#050505] text-white border-white/5" : "bg-white text-black border-black/5"}`}
+//               exit={{ opacity: 0, y: -20 }}
+//               className="absolute top-full left-0 w-full py-16 px-8 border-t border-black/5 bg-white shadow-2xl"
 //             >
 //               <div className="max-w-[1400px] mx-auto">
 //                 <div
-//                   className={`grid gap-10 ${activeDropdown === "multi" ? "grid-cols-3" : activeDropdown === "shop" ? "grid-cols-4" : "grid-cols-1"}`}
+//                   className={`grid gap-12 ${
+//                     activeDropdown === "multi"
+//                       ? "grid-cols-3"
+//                       : activeDropdown === "shop"
+//                         ? "grid-cols-4"
+//                         : "grid-cols-1"
+//                   }`}
 //                 >
 //                   {megaMenus[activeDropdown as keyof typeof megaMenus].map(
 //                     (section) => (
-//                       <div key={section.title} className="space-y-6">
-//                         <h4
-//                           className={`text-[10px] font-black uppercase tracking-widest pb-3 border-b ${theme === "dark" ? "text-white/20 border-white/5" : "text-black/20 border-black/5"}`}
-//                         >
-//                           {section.title}
-//                         </h4>
-//                         <ul className="space-y-3">
+//                       <div key={section.title} className="space-y-8">
+//                         <div className="flex items-center gap-3 pb-4 border-b border-black/5">
+//                           <Sparkles size={12} className="text-primary" />
+//                           <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground/30">
+//                             {section.title}
+//                           </h4>
+//                         </div>
+//                         <ul className="space-y-4">
 //                           {section.links.map((link) => (
 //                             <li key={link}>
 //                               <Link
 //                                 to="/shop"
-//                                 className={`text-[12px] font-bold transition-all hover:translate-x-1 block ${theme === "dark" ? "text-white/60 hover:text-primary" : "text-black/60 hover:text-primary"}`}
+//                                 className="text-[14px] font-bold text-foreground/60 hover:text-primary transition-all hover:translate-x-2 flex items-center gap-2 group"
 //                                 onClick={() => setActiveDropdown(null)}
 //                               >
 //                                 {link}
+//                                 <ArrowRight
+//                                   size={14}
+//                                   className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"
+//                                 />
 //                               </Link>
 //                             </li>
 //                           ))}
@@ -363,6 +338,9 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<FirebaseUser | null>(null);
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const navRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -385,6 +363,16 @@ const Navbar = () => {
       unsubscribe();
     };
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      setActiveDropdown(null);
+    }
+  };
 
   const handleAccountClick = async () => {
     if (user) {
@@ -475,7 +463,7 @@ const Navbar = () => {
     { label: "Custom Posters", id: "custom", path: "/custom-studio" },
     { label: "Stickers", id: "stickers", path: "/stickers" },
     { label: "Bulk Posters", id: "bulk", path: "/bulk-posters" },
-    { label: "Reviews", id: "reviews", path: "/about" },
+    { label: "Reviews", id: "reviews", path: "/reviews" },
     { label: "Help Center", id: "help", path: "/faqs" },
   ];
 
@@ -487,13 +475,15 @@ const Navbar = () => {
       <motion.div
         animate={{
           backgroundColor:
-            scrolled || activeDropdown
+            scrolled || activeDropdown || isSearchOpen
               ? "rgba(255,255,255,0.9)"
               : "rgba(255,255,255,0)",
           backdropFilter:
-            scrolled || activeDropdown ? "blur(20px)" : "blur(0px)",
+            scrolled || activeDropdown || isSearchOpen
+              ? "blur(20px)"
+              : "blur(0px)",
           borderBottom:
-            scrolled || activeDropdown
+            scrolled || activeDropdown || isSearchOpen
               ? "1px solid rgba(0,0,0,0.08)"
               : "1px solid rgba(0,0,0,0)",
         }}
@@ -506,7 +496,6 @@ const Navbar = () => {
             <img
               src="/logo.png"
               alt="Imprinto"
-              /* Force the logo to black */
               className="h-8 md:h-10 w-auto brightness-0"
             />
           </Link>
@@ -559,6 +548,7 @@ const Navbar = () => {
         <div className="flex items-center gap-x-6">
           <Search
             size={20}
+            onClick={() => setIsSearchOpen(true)}
             className="text-foreground/40 hover:text-primary cursor-pointer hidden sm:block transition-colors"
           />
           <button onClick={handleAccountClick} className="hidden sm:block">
@@ -595,6 +585,41 @@ const Navbar = () => {
       </div>
 
       <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
+          >
+            <button
+              onClick={() => setIsSearchOpen(false)}
+              className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
+            >
+              <X size={32} />
+            </button>
+
+            <form
+              onSubmit={handleSearch}
+              className="w-full max-w-3xl text-center"
+            >
+              <input
+                autoFocus
+                type="text"
+                placeholder="SEARCH THE VAULT..."
+                className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+                Press Enter to Locate Art
+              </p>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {activeDropdown &&
           megaMenus[activeDropdown as keyof typeof megaMenus] && (
             <motion.div
@@ -626,7 +651,7 @@ const Navbar = () => {
                           {section.links.map((link) => (
                             <li key={link}>
                               <Link
-                                to="/shop"
+                                to={`/shop?q=${encodeURIComponent(link)}`}
                                 className="text-[14px] font-bold text-foreground/60 hover:text-primary transition-all hover:translate-x-2 flex items-center gap-2 group"
                                 onClick={() => setActiveDropdown(null)}
                               >
@@ -646,6 +671,60 @@ const Navbar = () => {
               </div>
             </motion.div>
           )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
+          >
+            <div className="flex justify-between items-center mb-12">
+              <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+              <button onClick={() => setMobileOpen(false)} className="p-2">
+                <X size={28} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-y-6 overflow-y-auto">
+              <div className="relative mb-4">
+                <form onSubmit={handleSearch}>
+                  <input
+                    type="text"
+                    placeholder="SEARCH..."
+                    className="w-full border-b border-black/10 py-2 outline-none font-black uppercase tracking-widest"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </form>
+              </div>
+
+              {navLinks.map((link) => (
+                <div key={link.label} className="border-b border-black/5 pb-4">
+                  <Link
+                    to={link.path}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-2xl font-black uppercase tracking-tighter flex justify-between items-center"
+                  >
+                    {link.label}
+                    <ArrowRight size={20} />
+                  </Link>
+                </div>
+              ))}
+
+              <button
+                onClick={handleAccountClick}
+                className="mt-4 flex items-center gap-3 text-xl font-bold uppercase tracking-widest"
+              >
+                <User size={24} />
+                {user ? "My Account" : "Login / Register"}
+              </button>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </nav>
   );

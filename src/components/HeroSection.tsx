@@ -19,36 +19,16 @@
 //   const repeatedPosters = [...posterImages, ...posterImages, ...posterImages];
 
 //   return (
-//     <section className="relative min-h-[100svh] flex items-center justify-start overflow-hidden bg-[#050505] text-white pt-24 pb-12 font-bricolage selection:bg-primary selection:text-black">
-//       {/* BACKGROUND ELEMENTS - FIXED DULLNESS */}
+//     <section className="relative min-h-[100svh] flex items-center justify-start overflow-hidden bg-background text-foreground pt-24 pb-12 font-body selection:bg-primary selection:text-black">
+//       {/* LIGHT MODE BACKGROUND ELEMENTS */}
 //       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-//         {/* Vibrant Glows */}
-//         <div className="absolute top-[5%] right-[-10%] w-[300px] md:w-[700px] h-[300px] md:h-[700px] bg-primary/25 blur-[100px] md:blur-[150px] rounded-full" />
-//         <div className="absolute bottom-[10%] left-[-5%] w-[200px] md:w-[500px] h-[200px] md:h-[500px] bg-primary/10 blur-[80px] rounded-full" />
+//         {/* Vibrant Soft Gradients */}
+//         <div className="absolute top-[-10%] right-[-5%] w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-primary/20 blur-[100px] md:blur-[160px] rounded-full" />
+//         <div className="absolute bottom-[5%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-accent/15 blur-[80px] md:blur-[140px] rounded-full" />
 
-//         {/* MOBILE GRID BACKGROUND */}
-//         <div className="lg:hidden absolute inset-0 opacity-[0.12] flex justify-center items-center">
-//           <div className="flex gap-4 rotate-6 scale-125">
-//             <div className="flex flex-col gap-6">
-//               {posterImages.slice(0, 3).map((src, i) => (
-//                 <div
-//                   key={`m-bg-${i}`}
-//                   className="w-[45vw] aspect-[3/4] bg-gray-900 border border-white/5 rounded-none overflow-hidden"
-//                 >
-//                   <img
-//                     src={src}
-//                     className="w-full h-full object-cover grayscale"
-//                     alt=""
-//                   />
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* DESKTOP INFINITE LOOP */}
-//         <div className="absolute right-0 top-0 h-full hidden lg:grid grid-cols-3 gap-8 rotate-3 opacity-30 translate-x-12">
-//           {[40, 50, 45].map((duration, idx) => (
+//         {/* DESKTOP INFINITE LOOP - BRIGHT VERSION */}
+//         <div className="absolute right-0 top-0 h-full hidden lg:grid grid-cols-3 gap-8 rotate-3 opacity-40 translate-x-16">
+//           {[45, 55, 50].map((duration, idx) => (
 //             <div key={idx} className="relative h-full overflow-hidden">
 //               <motion.div
 //                 animate={{ y: idx === 1 ? ["-50%", "0%"] : ["0%", "-50%"] }}
@@ -58,7 +38,7 @@
 //                 {repeatedPosters.map((src, i) => (
 //                   <div
 //                     key={`d-bg-${idx}-${i}`}
-//                     className="w-44 h-64 bg-gray-900 border border-white/5 grayscale hover:grayscale-0 transition-all duration-700"
+//                     className="w-48 h-72 bg-white border-4 border-white shadow-xl grayscale-[0.5] hover:grayscale-0 hover:scale-105 transition-all duration-500"
 //                   >
 //                     <img
 //                       src={src}
@@ -76,67 +56,60 @@
 //       {/* MAIN CONTENT */}
 //       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12 py-2">
 //         <div className="max-w-4xl">
-//           {/* Badge - Fixed Overlap */}
+//           {/* Badge */}
 //           <motion.div
 //             initial={{ opacity: 0, x: -10 }}
 //             animate={{ opacity: 1, x: 0 }}
-//             className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 mb-10 backdrop-blur-md"
+//             className="inline-flex items-center gap-2 bg-white border-2 border-primary/20 px-4 py-2 mb-8 shadow-sm"
 //           >
-//             <Sparkles size={14} className="text-primary" />
-//             <span className="text-[10px] font-black uppercase tracking-[0.3em] py-2">
-//               Explore the New Drop
+//             <Sparkles size={16} className="text-primary animate-pulse" />
+//             <span className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground">
+//               THE 2026 DROP IS HERE
 //             </span>
 //           </motion.div>
 
-//           {/* Heading - Responsive Scaling */}
-//           {/* <div className="mb-8">
-//             <h1 className="text-[13vw] sm:text-[10vw] lg:text-[7.5vw] font-black leading-[1] sm:leading-[0.9] tracking-tighter uppercase text-white">
+//           {/* Massive Heading */}
+//           <div className="mb-6 md:mb-8 text-left">
+//             <h1 className="font-display text-6xl sm:text-5xl md:text-8xl lg:text-[10rem] font-black leading-[0.8] tracking-tighter uppercase">
 //               OWN YOUR <br />
-//               <span className="text-primary">OBSESSION</span>
-//             </h1>
-//           </div> */}
-
-//           <div className="mb-6 md:mb-8 text-left max-w-4xl">
-//             <h1 className="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] md:leading-[0.8] tracking-tighter uppercase italic">
-//               OWN YOUR <br />
-//               <span className="text-primary not-italic">OBSESSION.</span>
+//               <span className="text-primary italic">OBSESSION.</span>
 //             </h1>
 //           </div>
 
 //           {/* Description */}
-//           <p className="text-gray-400 text-sm sm:text-lg md:text-xl font-medium max-w-xl mb-12 uppercase tracking-tight leading-relaxed">
-//             Premium Matte Posters & Vinyl Stickers.{" "}
+//           <p className="text-muted-foreground text-base sm:text-xl md:text-2xl font-medium max-w-xl mb-12 uppercase tracking-tight leading-snug">
+//             Premium Matte Posters & Vinyl Stickers.
 //             <br className="hidden sm:block" />
-//             Built for the core fans.
+//             Vibrant art for the core fans.
 //           </p>
 
-//           {/* Price Block - Ultra Mobile Optimized */}
+//           {/* Price Block */}
 //           <div className="flex items-center gap-6 mb-12">
-//             <div className="bg-primary text-black px-6 py-4 sm:px-8 sm:py-5 border-l-8 border-white shadow-2xl">
-//               <p className="text-[9px] font-black uppercase tracking-widest opacity-70">
+//             <div className="bg-accent text-white px-8 py-5 shadow-[8px_8px_0px_0px_#00D4FF]">
+//               <p className="text-[10px] font-black uppercase tracking-widest opacity-80">
 //                 Starting At
 //               </p>
-//               <p className="text-3xl sm:text-4xl font-black leading-none uppercase tracking-tighter">
-//                 ₹149
+//               <p className="text-4xl sm:text-5xl font-black leading-none tracking-tighter">
+//                 ₹79
 //               </p>
 //             </div>
-//             <div className="h-12 w-[1px] bg-white/10" />
-//             <p className="text-gray-600 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] leading-tight">
-//               Premium <br /> Quality
+//             <div className="h-16 w-[2px] bg-foreground/10" />
+//             <p className="text-foreground/40 text-[11px] font-bold uppercase tracking-[0.2em] leading-tight">
+//               Museum <br /> Quality
 //             </p>
 //           </div>
 
-//           {/* Buttons - Mobile Responsive Flex */}
-//           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+//           {/* Buttons */}
+//           <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto">
 //             <Button
 //               size="lg"
-//               className="h-16 px-10 bg-white text-black hover:bg-primary font-black text-sm rounded-none transition-all flex justify-between sm:justify-center items-center gap-6 group"
+//               className="h-20 px-12 bg-foreground text-background hover:bg-primary hover:text-foreground font-black text-lg rounded-none transition-all flex justify-between sm:justify-center items-center gap-8 group shadow-lg"
 //               asChild
 //             >
 //               <Link to="/shop">
-//                 SHOP ALL{" "}
+//                 SHOP THE VAULT
 //                 <ArrowRight
-//                   size={20}
+//                   size={24}
 //                   className="group-hover:translate-x-2 transition-transform"
 //                 />
 //               </Link>
@@ -145,32 +118,29 @@
 //             <Button
 //               variant="outline"
 //               size="lg"
-//               className="h-16 px-10 border-white/20 bg-transparent hover:bg-white hover:text-black font-black text-sm rounded-none transition-all backdrop-blur-sm"
+//               className="h-20 px-12 border-4 border-foreground bg-transparent hover:bg-accent-lime hover:border-accent-lime hover:text-foreground font-black text-lg rounded-none transition-all"
 //               asChild
 //             >
 //               <Link to="/custom-prints">CUSTOMIZE</Link>
 //             </Button>
 //           </div>
 
-//           {/* Features - Mobile Grid */}
-//           <div className="mt-16 flex flex-wrap gap-x-10 gap-y-5 border-t border-white/5 pt-10">
-//             <FeatureItem text="Matte Finish" />
-//             <FeatureItem text="Waterproof" />
-//             <FeatureItem text="Fast Shipping" />
+//           {/* Features */}
+//           <div className="mt-20 flex flex-wrap gap-x-12 gap-y-6 border-t-2 border-foreground/5 pt-12">
+//             <FeatureItem text="Premium Matte" />
+//             <FeatureItem text="Waterproof Vinyl" />
+//             <FeatureItem text="Express Shipping" />
 //           </div>
 //         </div>
 //       </div>
-
-//       {/* Bottom Gradient Overlay */}
-//       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#050505] to-transparent z-20 pointer-events-none" />
 //     </section>
 //   );
 // };
 
 // const FeatureItem = ({ text }: { text: string }) => (
-//   <div className="flex items-center gap-3">
-//     <div className="w-1.5 h-1.5 bg-primary shadow-[0_0_8px_#FAFF00]" />
-//     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+//   <div className="flex items-center gap-4">
+//     <div className="w-2.5 h-2.5 bg-accent-lime rotate-45 shadow-[4px_4px_0px_0px_#00D4FF]" />
+//     <span className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/60">
 //       {text}
 //     </span>
 //   </div>
@@ -199,26 +169,28 @@ const HeroSection = () => {
   const repeatedPosters = [...posterImages, ...posterImages, ...posterImages];
 
   return (
-    <section className="relative min-h-[100svh] flex items-center justify-start overflow-hidden bg-background text-foreground pt-24 pb-12 font-body selection:bg-primary selection:text-black">
-      {/* LIGHT MODE BACKGROUND ELEMENTS */}
+    <section className="relative min-h-[100svh] flex items-center justify-start overflow-hidden bg-background text-foreground pt-20 pb-12 font-body selection:bg-primary selection:text-black">
+      {/* BACKGROUND ELEMENTS */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        {/* Vibrant Soft Gradients */}
-        <div className="absolute top-[-10%] right-[-5%] w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-primary/20 blur-[100px] md:blur-[160px] rounded-full" />
-        <div className="absolute bottom-[5%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-accent/15 blur-[80px] md:blur-[140px] rounded-full" />
+        <div className="absolute top-[-10%] right-[-5%] w-[300px] md:w-[800px] h-[300px] md:h-[800px] bg-primary/20 blur-[80px] md:blur-[160px] rounded-full" />
+        <div className="absolute bottom-[5%] left-[-10%] w-[200px] md:w-[600px] h-[200px] md:h-[600px] bg-accent/15 blur-[60px] md:blur-[140px] rounded-full" />
 
-        {/* DESKTOP INFINITE LOOP - BRIGHT VERSION */}
-        <div className="absolute right-0 top-0 h-full hidden lg:grid grid-cols-3 gap-8 rotate-3 opacity-40 translate-x-16">
+        {/* INFINITE LOOP - HIDDEN ON SMALL MOBILE, VISIBLE FROM LARGE MOBILE UP */}
+        <div className="absolute right-0 top-0 h-full hidden sm:grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 rotate-3 opacity-30 lg:opacity-40 translate-x-8 md:translate-x-16">
           {[45, 55, 50].map((duration, idx) => (
-            <div key={idx} className="relative h-full overflow-hidden">
+            <div
+              key={idx}
+              className={`relative h-full overflow-hidden ${idx === 2 ? "hidden lg:block" : ""}`}
+            >
               <motion.div
                 animate={{ y: idx === 1 ? ["-50%", "0%"] : ["0%", "-50%"] }}
                 transition={{ duration, ease: "linear", repeat: Infinity }}
-                className="flex flex-col gap-8"
+                className="flex flex-col gap-4 md:gap-8"
               >
                 {repeatedPosters.map((src, i) => (
                   <div
                     key={`d-bg-${idx}-${i}`}
-                    className="w-48 h-72 bg-white border-4 border-white shadow-xl grayscale-[0.5] hover:grayscale-0 hover:scale-105 transition-all duration-500"
+                    className="w-32 h-48 md:w-48 md:h-72 bg-white border-2 md:border-4 border-white shadow-xl grayscale-[0.5] hover:grayscale-0 transition-all duration-500"
                   >
                     <img
                       src={src}
@@ -234,62 +206,62 @@ const HeroSection = () => {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12 py-2">
-        <div className="max-w-4xl">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-5 sm:px-12 py-4">
+        <div className="max-w-full lg:max-w-4xl">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="inline-flex items-center gap-2 bg-white border-2 border-primary/20 px-4 py-2 mb-8 shadow-sm"
+            className="inline-flex items-center gap-2 bg-white border-2 border-primary/20 px-3 py-1.5 md:px-4 md:py-2 mb-6 md:mb-8 shadow-sm"
           >
-            <Sparkles size={16} className="text-primary animate-pulse" />
-            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground">
+            <Sparkles size={14} className="text-primary animate-pulse" />
+            <span className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.3em] text-foreground">
               THE 2026 DROP IS HERE
             </span>
           </motion.div>
 
           {/* Massive Heading */}
-          <div className="mb-6 md:mb-8 text-left">
-            <h1 className="font-display text-6xl sm:text-5xl md:text-8xl lg:text-[10rem] font-black leading-[0.8] tracking-tighter uppercase">
+          <div className="mb-4 md:mb-8">
+            <h1 className="font-display text-[13vw] sm:text-7xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] md:leading-[0.8] tracking-tighter uppercase break-words">
               OWN YOUR <br />
               <span className="text-primary italic">OBSESSION.</span>
             </h1>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground text-base sm:text-xl md:text-2xl font-medium max-w-xl mb-12 uppercase tracking-tight leading-snug">
+          <p className="text-muted-foreground text-sm sm:text-xl md:text-2xl font-medium max-w-lg mb-8 md:mb-12 uppercase tracking-tight leading-snug">
             Premium Matte Posters & Vinyl Stickers.
             <br className="hidden sm:block" />
             Vibrant art for the core fans.
           </p>
 
           {/* Price Block */}
-          <div className="flex items-center gap-6 mb-12">
-            <div className="bg-accent text-white px-8 py-5 shadow-[8px_8px_0px_0px_#00D4FF]">
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-80">
+          <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
+            <div className="bg-accent text-white px-5 py-3 md:px-8 md:py-5 shadow-[4px_4px_0px_0px_#00D4FF] md:shadow-[8px_8px_0px_0px_#00D4FF]">
+              <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest opacity-80">
                 Starting At
               </p>
-              <p className="text-4xl sm:text-5xl font-black leading-none tracking-tighter">
+              <p className="text-3xl md:text-5xl font-black leading-none tracking-tighter">
                 ₹79
               </p>
             </div>
-            <div className="h-16 w-[2px] bg-foreground/10" />
-            <p className="text-foreground/40 text-[11px] font-bold uppercase tracking-[0.2em] leading-tight">
+            <div className="h-10 md:h-16 w-[1px] md:w-[2px] bg-foreground/10" />
+            <p className="text-foreground/40 text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] leading-tight">
               Museum <br /> Quality
             </p>
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-5 w-full">
             <Button
               size="lg"
-              className="h-20 px-12 bg-foreground text-background hover:bg-primary hover:text-foreground font-black text-lg rounded-none transition-all flex justify-between sm:justify-center items-center gap-8 group shadow-lg"
+              className="h-16 md:h-20 px-8 md:px-12 bg-foreground text-background hover:bg-primary hover:text-foreground font-black text-base md:text-lg rounded-none transition-all flex justify-between sm:justify-center items-center gap-4 md:gap-8 group shadow-lg sm:w-auto"
               asChild
             >
               <Link to="/shop">
                 SHOP THE VAULT
                 <ArrowRight
-                  size={24}
+                  size={20}
                   className="group-hover:translate-x-2 transition-transform"
                 />
               </Link>
@@ -298,7 +270,7 @@ const HeroSection = () => {
             <Button
               variant="outline"
               size="lg"
-              className="h-20 px-12 border-4 border-foreground bg-transparent hover:bg-accent-lime hover:border-accent-lime hover:text-foreground font-black text-lg rounded-none transition-all"
+              className="h-16 md:h-20 px-8 md:px-12 border-[3px] md:border-4 border-foreground bg-transparent hover:bg-accent-lime hover:border-accent-lime hover:text-foreground font-black text-base md:text-lg rounded-none transition-all sm:w-auto"
               asChild
             >
               <Link to="/custom-prints">CUSTOMIZE</Link>
@@ -306,7 +278,7 @@ const HeroSection = () => {
           </div>
 
           {/* Features */}
-          <div className="mt-20 flex flex-wrap gap-x-12 gap-y-6 border-t-2 border-foreground/5 pt-12">
+          <div className="mt-12 md:mt-20 flex flex-col sm:flex-row flex-wrap gap-y-4 gap-x-8 md:gap-x-12 border-t border-foreground/5 pt-8 md:pt-12">
             <FeatureItem text="Premium Matte" />
             <FeatureItem text="Waterproof Vinyl" />
             <FeatureItem text="Express Shipping" />
@@ -318,9 +290,9 @@ const HeroSection = () => {
 };
 
 const FeatureItem = ({ text }: { text: string }) => (
-  <div className="flex items-center gap-4">
-    <div className="w-2.5 h-2.5 bg-accent-lime rotate-45 shadow-[4px_4px_0px_0px_#00D4FF]" />
-    <span className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/60">
+  <div className="flex items-center gap-3 md:gap-4">
+    <div className="w-2 h-2 md:w-2.5 md:h-2.5 bg-accent-lime rotate-45 shadow-[2px_2px_0px_0px_#00D4FF] md:shadow-[4px_4px_0px_0px_#00D4FF]" />
+    <span className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.2em] text-foreground/60">
       {text}
     </span>
   </div>
