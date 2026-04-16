@@ -156,76 +156,76 @@
 //     }
 //   };
 
-//   // Common input class to keep code clean
 //   const inputClass =
-//     "w-full bg-transparent border-b border-white/10 py-4 text-[13px] font-bold tracking-wider uppercase outline-none transition-all focus:border-primary text-white placeholder:text-[#2a2a2a] pl-10";
+//     "w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 pl-10";
 
 //   return (
-//     <div className="min-h-screen bg-[#020202] text-white font-bricolage selection:bg-primary/30">
+//     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-black">
 //       <Navbar />
 
 //       <div className="flex items-center justify-center min-h-screen px-6 pt-32 pb-24 relative z-10">
 //         <motion.div
-//           initial={{ opacity: 0, y: 20 }}
-//           animate={{ opacity: 1, y: 0 }}
-//           className="w-full max-w-[480px] bg-[#0A0A0A] border border-white/5 p-10 md:p-14 relative shadow-2xl"
+//           initial={{ opacity: 0, scale: 0.95 }}
+//           animate={{ opacity: 1, scale: 1 }}
+//           className="w-full max-w-[500px] bg-white border-4 border-foreground p-10 md:p-14 relative shadow-[20px_20px_0px_0px_rgba(0,212,255,1)]"
 //         >
-//           <div className="flex flex-col items-center mb-10">
+//           <div className="flex flex-col items-center mb-12">
 //             <img
 //               src="/logo.png"
 //               alt="Imprinto Co."
-//               className="h-12 w-auto mb-6"
+//               className="h-10 w-auto mb-6 brightness-0"
 //             />
-//             <h2 className="text-2xl font-black uppercase tracking-tight italic text-center">
-//               {isLogin ? "Welcome Back" : "Create Account"}
+//             <h2 className="font-display text-4xl font-black uppercase tracking-tighter italic text-center">
+//               {isLogin ? "JOIN THE CORE" : "CREATE IDENTITY"}
 //             </h2>
+//             <div className="w-12 h-1 bg-primary mt-4" />
 //           </div>
 
-//           <form onSubmit={handleSubmit} className="flex flex-col gap-y-8">
+//           <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
 //             <AnimatePresence mode="wait">
 //               {!isLogin && (
 //                 <motion.div
-//                   initial={{ opacity: 0, height: 0 }}
-//                   animate={{ opacity: 1, height: "auto" }}
-//                   exit={{ opacity: 0, height: 0 }}
-//                   className="flex flex-col gap-y-8 overflow-hidden"
+//                   initial={{ opacity: 0, y: -10 }}
+//                   animate={{ opacity: 1, y: 0 }}
+//                   exit={{ opacity: 0, y: -10 }}
+//                   className="flex flex-col gap-y-6 overflow-hidden"
 //                 >
-//                   <div className="flex gap-x-6">
+//                   <div className="flex gap-x-4">
 //                     <div className="relative flex-1 group">
 //                       <UserIcon
-//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                         size={18}
 //                       />
 //                       <input
 //                         name="firstName"
-//                         placeholder="FIRST NAME"
+//                         placeholder="First Name"
 //                         onChange={handleChange}
 //                         required
 //                         className={inputClass}
 //                       />
 //                     </div>
-//                     <div className="relative flex-1">
+//                     <div className="relative flex-1 group">
 //                       <input
 //                         name="lastName"
-//                         placeholder="LAST NAME"
+//                         placeholder="Last Name"
 //                         onChange={handleChange}
 //                         required
-//                         className="w-full bg-transparent border-b border-white/10 py-4 text-[13px] font-bold tracking-wider uppercase outline-none transition-all focus:border-primary text-white placeholder:text-[#2a2a2a] px-2"
+//                         className="w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 px-2"
 //                       />
 //                     </div>
 //                   </div>
 
-//                   <div className="flex gap-x-6 items-center">
-//                     <div className="relative w-28 group">
+//                   <div className="flex gap-x-4 items-center">
+//                     <div className="relative w-24 group">
 //                       <Globe
-//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                         size={18}
 //                       />
 //                       <select
 //                         name="countryCode"
 //                         value={form.countryCode}
 //                         onChange={handleChange}
-//                         className={`${inputClass} appearance-none cursor-pointer`}
+//                         className={`${inputClass} appearance-none cursor-pointer pr-0`}
 //                       >
 //                         <option value="+91">+91</option>
 //                         <option value="+1">+1</option>
@@ -235,13 +235,13 @@
 //                     </div>
 //                     <div className="relative flex-1 group">
 //                       <Phone
-//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                         size={18}
 //                       />
 //                       <input
 //                         name="phone"
 //                         type="tel"
-//                         placeholder="PHONE NUMBER"
+//                         placeholder="Mobile Number"
 //                         onChange={handleChange}
 //                         required
 //                         className={inputClass}
@@ -254,13 +254,13 @@
 
 //             <div className="relative group">
 //               <Mail
-//                 className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                 className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                 size={18}
 //               />
 //               <input
 //                 name="email"
 //                 type="email"
-//                 placeholder="EMAIL ADDRESS"
+//                 placeholder="Email ID"
 //                 onChange={handleChange}
 //                 required
 //                 className={inputClass}
@@ -269,13 +269,13 @@
 
 //             <div className="relative group">
 //               <Lock
-//                 className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                 className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                 size={18}
 //               />
 //               <input
 //                 name="password"
 //                 type="password"
-//                 placeholder="PASSWORD"
+//                 placeholder="Password"
 //                 onChange={handleChange}
 //                 required
 //                 className={inputClass}
@@ -286,84 +286,89 @@
 //               <motion.div
 //                 initial={{ opacity: 0 }}
 //                 animate={{ opacity: 1 }}
-//                 className="flex flex-col gap-y-8"
+//                 className="flex flex-col gap-y-6"
 //               >
 //                 <div className="relative group">
 //                   <Lock
-//                     className="absolute left-1 top-1/2 -translate-y-1/2 text-gray-700 group-focus-within:text-primary transition-colors"
+//                     className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
 //                     size={18}
 //                   />
 //                   <input
 //                     name="confirmPassword"
 //                     type="password"
-//                     placeholder="CONFIRM PASSWORD"
+//                     placeholder="Confirm Password"
 //                     onChange={handleChange}
 //                     required
 //                     className={inputClass}
 //                   />
 //                 </div>
 
-//                 <div className="p-6 bg-white/[0.02] border border-white/5 rounded-xl space-y-4">
+//                 <div className="p-6 bg-foreground/5 border-2 border-foreground/10 rounded-none space-y-4">
 //                   <div className="flex items-center justify-between">
-//                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+//                     <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest flex items-center gap-2">
 //                       <ShieldCheck size={14} className="text-primary" />
-//                       Code:{" "}
-//                       <span className="text-white italic tracking-normal">
+//                       Human Check:
+//                       <span className="text-foreground italic font-black bg-white px-2 py-0.5 border border-foreground/10">
 //                         {generatedCaptcha}
 //                       </span>
 //                     </span>
 //                     <button
 //                       type="button"
 //                       onClick={refreshCaptcha}
-//                       className="text-gray-500 hover:text-primary transition-colors"
+//                       className="text-foreground/40 hover:text-primary transition-colors"
 //                     >
-//                       <RefreshCw size={14} />
+//                       <RefreshCw size={16} />
 //                     </button>
 //                   </div>
 //                   <input
 //                     name="captcha"
-//                     placeholder="TYPE CODE ABOVE"
+//                     placeholder="ENTER CODE"
 //                     onChange={handleChange}
 //                     required
-//                     className="w-full bg-transparent border-b border-white/5 py-4 text-center text-[13px] font-bold tracking-[0.3em] uppercase outline-none focus:border-primary text-white placeholder:text-[#2a2a2a]"
+//                     className="w-full bg-white border-2 border-foreground py-3 text-center text-[12px] font-black tracking-[0.4em] uppercase outline-none focus:border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
 //                   />
 //                 </div>
 //               </motion.div>
 //             )}
 
 //             <Button
-//               className="w-full h-14 bg-primary text-black font-black uppercase tracking-widest rounded-none hover:bg-white transition-all flex items-center justify-center gap-2 mt-2"
+//               className="w-full h-16 bg-foreground text-background font-black uppercase tracking-widest rounded-none hover:bg-primary hover:text-foreground transition-all flex items-center justify-center gap-3 mt-4 text-sm group"
 //               type="submit"
 //               disabled={loading}
 //             >
-//               {loading ? "Processing..." : isLogin ? "Login Now" : "Sign Up"}
-//               <ArrowRight size={18} />
+//               {loading ? "PROCESSING..." : isLogin ? "LOG IN" : "SIGN UP"}
+//               <ArrowRight
+//                 size={20}
+//                 className="group-hover:translate-x-1 transition-transform"
+//               />
 //             </Button>
 //           </form>
 
-//           <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-y-6 text-center">
+//           <div className="mt-10 pt-10 border-t-2 border-foreground/5 flex flex-col gap-y-6 text-center">
 //             <div className="relative flex items-center gap-4">
-//               <div className="h-[1px] bg-white/5 flex-1" />
-//               <span className="text-[10px] font-bold text-gray-700 uppercase tracking-widest">
-//                 Or
+//               <div className="h-[1px] bg-foreground/10 flex-1" />
+//               <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.3em]">
+//                 Quick Access
 //               </span>
-//               <div className="h-[1px] bg-white/5 flex-1" />
+//               <div className="h-[1px] bg-foreground/10 flex-1" />
 //             </div>
 
 //             <Button
 //               variant="outline"
-//               className="w-full h-14 border-white/10 rounded-none bg-transparent hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest"
+//               className="w-full h-14 border-2 border-foreground rounded-none bg-white hover:bg-accent-lime hover:text-foreground transition-all flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none"
 //               onClick={handleGoogleLogin}
 //               disabled={loading}
 //             >
-//               <Chrome size={18} /> Google Account
+//               <Chrome size={18} /> Google Login
 //             </Button>
 
 //             <button
 //               onClick={() => setIsLogin(!isLogin)}
-//               className="text-[10px] font-bold tracking-widest uppercase text-gray-500 hover:text-primary transition-colors block mx-auto"
+//               className="text-[10px] font-black tracking-widest uppercase text-foreground/40 hover:text-primary transition-colors block mx-auto underline underline-offset-4"
 //             >
-//               {isLogin ? "No account? Register" : "Have an account? Login"}
+//               {isLogin
+//                 ? "New to Imprinto? Register"
+//                 : "Already in the circle? Login"}
 //             </button>
 //           </div>
 //         </motion.div>
@@ -375,8 +380,9 @@
 
 // export default Auth;
 
+
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -417,7 +423,12 @@ type FormData = {
 };
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Determine state based on URL path
+  const isLogin = location.pathname === "/login";
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<FormData>({
     firstName: "",
@@ -437,9 +448,6 @@ const Auth = () => {
     generateCaptchaString(),
   );
 
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -448,6 +456,13 @@ const Auth = () => {
     });
     return () => unsubscribe();
   }, [navigate]);
+
+  // Refresh captcha whenever we switch to the register page
+  useEffect(() => {
+    if (!isLogin) {
+      setGeneratedCaptcha(generateCaptchaString());
+    }
+  }, [isLogin]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -542,6 +557,7 @@ const Auth = () => {
 
       <div className="flex items-center justify-center min-h-screen px-6 pt-32 pb-24 relative z-10">
         <motion.div
+          key={isLogin ? "login" : "register"} // Key ensures animation re-runs on path change
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-[500px] bg-white border-4 border-foreground p-10 md:p-14 relative shadow-[20px_20px_0px_0px_rgba(0,212,255,1)]"
@@ -740,7 +756,7 @@ const Auth = () => {
             </Button>
 
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => navigate(isLogin ? "/register" : "/login")}
               className="text-[10px] font-black tracking-widest uppercase text-foreground/40 hover:text-primary transition-colors block mx-auto underline underline-offset-4"
             >
               {isLogin

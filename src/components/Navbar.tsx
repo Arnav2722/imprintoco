@@ -175,6 +175,15 @@
 //           { label: "FAQs", path: "/faqs" },
 //         ],
 //       },
+//       {
+//         title: "Legal & Logistics",
+//         links: [
+//           { label: "Shipping Policy", path: "/shipping-policy" },
+//           { label: "Return & Refund", path: "/return-policy" },
+//           { label: "Privacy Policy", path: "/privacy-policy" },
+//           { label: "Terms & Conditions", path: "/terms-conditions" },
+//         ],
+//       },
 //     ],
 //   };
 
@@ -186,7 +195,7 @@
 //     { label: "Stickers", id: "stickers", path: "/stickers" },
 //     { label: "Bulk Posters", id: "bulk", path: "/bulk-posters" },
 //     { label: "Reviews", id: "reviews", path: "/reviews" },
-//     { label: "Help Center", id: "help", path: "/faqs" },
+//     { label: "Help & Legal", id: "help", path: "/faqs" },
 //   ];
 
 //   return (
@@ -322,7 +331,9 @@
 //                       ? "grid-cols-3"
 //                       : activeDropdown === "shop"
 //                         ? "grid-cols-4"
-//                         : "grid-cols-1"
+//                         : activeDropdown === "help"
+//                           ? "grid-cols-2"
+//                           : "grid-cols-1"
 //                   }`}
 //                 >
 //                   {megaMenus[activeDropdown as keyof typeof megaMenus].map(
@@ -589,7 +600,10 @@ const Navbar = () => {
       } catch {
         navigate("/profile");
       }
-    } else navigate("/auth");
+    } else {
+      // Changed from /auth to /login
+      navigate("/login");
+    }
     setMobileOpen(false);
   };
 
@@ -804,7 +818,8 @@ const Navbar = () => {
           </button>
 
           <button
-            onClick={() => setIsCartOpen(true)}
+            // onClick={() => setIsCartOpen(true)}
+            onClick={() => navigate("/cart")}
             className="relative group flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-full transition-all hover:bg-primary hover:text-foreground"
           >
             <ShoppingBag size={18} />
