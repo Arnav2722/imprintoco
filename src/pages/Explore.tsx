@@ -1,230 +1,203 @@
 // import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 // import Navbar from "@/components/Navbar";
 // import Footer from "@/components/Footer";
-// import {
-//   Search,
-//   SlidersHorizontal,
-//   ArrowUpRight,
-//   Zap,
-//   Loader2,
-// } from "lucide-react";
+// import { motion } from "framer-motion";
+// import { ArrowRight, Search, Zap, Compass } from "lucide-react";
 
-// const CATEGORIES = ["All", "Anime", "Motorsport", "JDM", "Retro", "Minimalist"];
-
-// const ALL_PRODUCTS = [
+// const COLLECTIONS = [
 //   {
-//     id: 1,
-//     name: "Nismo R34 Z-Tune",
-//     price: 149,
-//     cat: "JDM",
-//     img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 2,
-//     name: "Red Bull RB20 Concept",
-//     price: 149,
-//     cat: "Motorsport",
-//     img: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 3,
-//     name: "Gundam Wing Zero",
-//     price: 149,
-//     cat: "Anime",
-//     img: "https://images.unsplash.com/photo-1542332213-31f87348057f?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 4,
-//     name: "Tokyo Night Drifter",
-//     price: 119,
-//     cat: "Retro",
-//     img: "https://images.unsplash.com/photo-1555624150-43503813e8b5?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 5,
-//     name: "Porsche 911 GT3 RS",
-//     price: 169,
-//     cat: "Motorsport",
-//     img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 6,
-//     name: "Akira Neo-Tokyo",
-//     price: 149,
-//     cat: "Anime",
-//     img: "https://images.unsplash.com/photo-1560972550-aba3456b5564?auto=format&fit=crop&q=80&w=800",
-//   },
-//   {
-//     id: 7,
-//     name: "Skyline GTR V-Spec",
-//     price: 149,
-//     cat: "JDM",
+//     title: "Cars",
+//     sub: "cars",
+//     count: "42+ Designs",
 //     img: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=800",
+//     color: "#00D4FF",
 //   },
 //   {
-//     id: 8,
-//     name: "Initial D AE86",
-//     price: 119,
-//     cat: "Anime",
-//     img: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&q=80&w=800",
+//     title: "Bikes",
+//     sub: "bikes",
+//     count: "28+ Designs",
+//     img: "https://images.unsplash.com/photo-1558981403-c5f91cbba527?auto=format&fit=crop&q=80&w=800",
+//     color: "#FF3E3E",
 //   },
 //   {
-//     id: 9,
-//     name: "Ferrari F40 Legacy",
-//     price: 189,
-//     cat: "Motorsport",
-//     img: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&q=80&w=800",
+//     title: "Formula 1",
+//     sub: "f1",
+//     count: "15+ Designs",
+//     img: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&q=80&w=800",
+//     color: "#FFFFFF",
 //   },
 //   {
-//     id: 10,
-//     name: "Cyberpunk Oni Mask",
-//     price: 99,
-//     cat: "Anime",
-//     img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&q=80&w=800",
+//     title: "MotoGP",
+//     sub: "motogp",
+//     count: "12+ Designs",
+//     img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=800",
+//     color: "#FFD700",
 //   },
 //   {
-//     id: 11,
-//     name: "Supra MK4 Turbo",
-//     price: 149,
-//     cat: "JDM",
-//     img: "https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?auto=format&fit=crop&q=80&w=800",
+//     title: "Football",
+//     sub: "football",
+//     count: "35+ Designs",
+//     img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800",
+//     color: "#4ADE80",
 //   },
 //   {
-//     id: 12,
-//     name: "Vaporwave Sunset",
-//     price: 119,
-//     cat: "Retro",
-//     img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=800",
+//     title: "Cricket",
+//     sub: "cricket",
+//     count: "20+ Designs",
+//     img: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=800",
+//     color: "#60A5FA",
+//   },
+//   {
+//     title: "Marvel",
+//     sub: "marvel",
+//     count: "50+ Designs",
+//     img: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&q=80&w=800",
+//     color: "#ED1D24",
+//   },
+//   {
+//     title: "DC",
+//     sub: "dc",
+//     count: "30+ Designs",
+//     img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=800",
+//     color: "#0476F2",
+//   },
+//   {
+//     title: "TV Series",
+//     sub: "tv-series",
+//     count: "40+ Designs",
+//     img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&q=80&w=800",
+//     color: "#A855F7",
+//   },
+//   {
+//     title: "Music",
+//     sub: "music",
+//     count: "25+ Designs",
+//     img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=800",
+//     color: "#F472B6",
+//   },
+//   {
+//     title: "Video Games",
+//     sub: "games",
+//     count: "45+ Designs",
+//     img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
+//     color: "#34D399",
 //   },
 // ];
 
 // const Explore = () => {
-//   const [activeCategory, setActiveCategory] = useState("All");
-//   const [visibleCount, setVisibleCount] = useState(8);
-//   const [isBtnLoading, setIsBtnLoading] = useState(false);
+//   const navigate = useNavigate();
+//   const [search, setSearch] = useState("");
 
-//   const filteredProducts = ALL_PRODUCTS.filter(
-//     (p) => activeCategory === "All" || p.cat === activeCategory,
+//   const filteredCollections = COLLECTIONS.filter((c) =>
+//     c.title.toLowerCase().includes(search.toLowerCase()),
 //   );
 
-//   const handleLoadMore = () => {
-//     setIsBtnLoading(true);
-//     setTimeout(() => {
-//       setVisibleCount((prev) => prev + 4);
-//       setIsBtnLoading(false);
-//     }, 600);
-//   };
-
 //   return (
-//     <div className="min-h-screen bg-[#020202] text-white font-bricolage selection:bg-primary/30">
+//     <div className="min-h-screen bg-white text-black font-body selection:bg-black selection:text-white">
 //       <Navbar />
 
-//       <main className="pt-32 pb-20 px-6 max-w-[1400px] mx-auto">
-//         <div className="flex flex-col gap-8 mb-16">
-//           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-//             <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter italic leading-none">
-//               Explore <br />
-//               <span className="text-primary not-italic">The Vault.</span>
-//             </h1>
+//       <main className="pt-32 pb-24 px-6 max-w-[1600px] mx-auto">
+//         {/* HEADER SECTION */}
+//         <div className="border-b-4 border-black pb-12 mb-16">
+//           <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+//             <div className="space-y-2">
+//               <div className="flex items-center gap-2 text-primary">
+//                 <Compass size={20} strokeWidth={3} />
+//                 <span className="text-[12px] font-black uppercase tracking-[0.4em]">
+//                   Directory
+//                 </span>
+//               </div>
+//               <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none">
+//                 ALL <span className="text-primary italic">COLLECTIONS</span>
+//               </h1>
+//             </div>
 
-//             <div className="bg-white/[0.02] border border-white/5 p-6 flex flex-col gap-2 max-w-sm">
-//               <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
-//                 <Zap size={12} fill="currentColor" /> Handpicked Drops
-//               </span>
-//               <p className="text-[11px] text-white/40 font-bold leading-relaxed uppercase">
-//                 Premium artifacts for the obsessed. Built to dominate your
-//                 walls.
-//               </p>
+//             <div className="relative w-full md:w-96">
+//               <input
+//                 type="text"
+//                 placeholder="Find a collection..."
+//                 value={search}
+//                 onChange={(e) => setSearch(e.target.value)}
+//                 className="w-full bg-gray-50 border-2 border-black p-4 pl-12 font-bold uppercase tracking-widest text-xs outline-none focus:bg-primary/10 transition-colors"
+//               />
+//               <Search
+//                 className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30"
+//                 size={18}
+//               />
 //             </div>
 //           </div>
-
-//           <div className="relative group">
-//             <Search
-//               className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors"
-//               size={20}
-//             />
-//             <input
-//               type="text"
-//               placeholder="SEARCH BY ANIME, CAR, OR THEME..."
-//               className="w-full bg-white/[0.02] border border-white/10 py-8 pl-16 pr-6 text-[11px] font-black tracking-[0.4em] uppercase focus:border-primary focus:bg-white/[0.04] outline-none transition-all placeholder:text-white/10"
-//             />
-//           </div>
 //         </div>
 
-//         <div className="flex flex-wrap gap-3 mb-12 border-b border-white/5 pb-8">
-//           {CATEGORIES.map((cat) => (
-//             <button
-//               key={cat}
-//               onClick={() => {
-//                 setActiveCategory(cat);
-//                 setVisibleCount(8);
-//               }}
-//               className={`px-8 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border ${
-//                 activeCategory === cat
-//                   ? "bg-primary text-black border-primary italic scale-105"
-//                   : "bg-transparent text-white/40 border-white/10 hover:border-white/30 hover:text-white"
-//               }`}
+//         {/* COLLECTIONS GRID */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//           {filteredCollections.map((col, i) => (
+//             <motion.div
+//               key={col.sub}
+//               initial={{ opacity: 0, y: 20 }}
+//               whileInView={{ opacity: 1, y: 0 }}
+//               viewport={{ once: true }}
+//               transition={{ delay: i * 0.05 }}
+//               onClick={() => navigate(`/shop?sub=${col.sub}`)}
+//               className="group relative h-[450px] overflow-hidden border-2 border-black cursor-pointer bg-black"
 //             >
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
+//               {/* Background Image - REMOVED GRAYSCALE */}
+//               <img
+//                 src={col.img}
+//                 alt={col.title}
+//                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+//               />
 
-//         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-//           {filteredProducts.slice(0, visibleCount).map((product) => (
-//             <div
-//               key={product.id}
-//               className="group relative flex flex-col gap-4 border border-white/5 p-3 bg-white/[0.01] hover:bg-white/[0.03] transition-all duration-500"
-//             >
-//               <div className="relative aspect-[3/4] overflow-hidden bg-white/5">
-//                 <img
-//                   src={product.img}
-//                   className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 brightness-90 group-hover:brightness-110"
-//                   alt={product.name}
-//                 />
-//                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-//                   <button className="bg-primary text-black p-4 rounded-none scale-90 group-hover:scale-100 transition-transform">
-//                     <ArrowUpRight size={20} />
-//                   </button>
-//                 </div>
-//               </div>
+//               {/* Gradient Overlay */}
+//               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 group-hover:opacity-70 transition-opacity duration-500" />
 
-//               <div className="flex justify-between items-start pt-2">
-//                 <div className="space-y-1">
-//                   <p className="text-[9px] font-black text-primary/60 uppercase tracking-widest leading-none">
-//                     {product.cat}
-//                   </p>
-//                   <h3 className="text-xs md:text-sm font-black uppercase tracking-tighter italic group-hover:text-primary transition-colors">
-//                     {product.name}
-//                   </h3>
-//                   <div className="flex gap-2">
-//                     <span className="text-[8px] font-bold text-white/20 border border-white/10 px-1.5 py-0.5 uppercase tracking-tighter">
-//                       Limited Edition
+//               {/* Content */}
+//               <div className="absolute inset-0 p-8 flex flex-col justify-end">
+//                 <div className="space-y-4">
+//                   <div className="flex items-center gap-3">
+//                     <span
+//                       className="h-1 w-12"
+//                       style={{ backgroundColor: col.color }}
+//                     />
+//                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80">
+//                       {col.count}
 //                     </span>
 //                   </div>
+
+//                   <div className="flex justify-between items-end">
+//                     <h2 className="text-4xl font-black text-white uppercase tracking-tighter leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+//                       {col.title}
+//                     </h2>
+//                     <div className="bg-white p-3 border-2 border-black group-hover:bg-primary group-hover:scale-110 transition-all">
+//                       <ArrowRight size={24} strokeWidth={3} />
+//                     </div>
+//                   </div>
 //                 </div>
-//                 <p className="text-sm font-black italic">₹{product.price}</p>
 //               </div>
-//             </div>
+
+//               {/* Hover Borders */}
+//               <div className="absolute inset-0 border-[0px] group-hover:border-[12px] border-primary/10 transition-all duration-300 pointer-events-none" />
+//             </motion.div>
 //           ))}
 //         </div>
 
-//         {visibleCount < filteredProducts.length && (
-//           <div className="mt-20 text-center">
-//             <button
-//               onClick={handleLoadMore}
-//               disabled={isBtnLoading}
-//               className="group flex flex-col items-center gap-4 mx-auto disabled:opacity-50"
-//             >
-//               <div
-//                 className={`h-12 w-px bg-white/10 group-hover:bg-primary transition-colors ${isBtnLoading ? "animate-bounce h-16 bg-primary" : ""}`}
-//               />
-//               <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/20 group-hover:text-white transition-colors">
-//                 {isBtnLoading ? "Unlocking..." : "Load More Drops"}
-//               </span>
-//             </button>
+//         {/* B2B FOOTER CTA */}
+//         <div className="mt-24 bg-black p-12 flex flex-col md:flex-row items-center justify-between border-4 border-primary shadow-[10px_10px_0_0_#000]">
+//           <div className="space-y-2 mb-8 md:mb-0">
+//             <h3 className="text-white text-3xl font-black uppercase tracking-tighter">
+//               Running a business?
+//             </h3>
+//             <p className="text-white/60 font-bold uppercase text-[10px] tracking-[0.2em]">
+//               Bulk orders and custom B2B protocols available.
+//             </p>
 //           </div>
-//         )}
+//           <button
+//             onClick={() => navigate("/bulk-posters")}
+//             className="bg-primary border-2 border-black px-10 py-4 font-black uppercase tracking-widest text-xs hover:bg-white transition-colors flex items-center gap-3 shadow-[5px_5px_0_0_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[5px] active:translate-y-[5px]"
+//           >
+//             Inquire Now <Zap size={16} fill="black" />
+//           </button>
+//         </div>
 //       </main>
 
 //       <Footer />
@@ -235,272 +208,205 @@
 // export default Explore;
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search,
-  ArrowUpRight,
-  Zap,
-  Loader2,
-  ChevronRight,
-  Filter,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Search, Zap, Compass } from "lucide-react";
 
-const CATEGORIES = ["All", "Anime", "Motorsport", "JDM", "Retro", "Minimalist"];
-
-const ALL_PRODUCTS = [
+const COLLECTIONS = [
   {
-    id: 1,
-    name: "Nismo R34 Z-Tune",
-    price: 149,
-    cat: "JDM",
-    img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 2,
-    name: "Red Bull RB20 Concept",
-    price: 149,
-    cat: "Motorsport",
-    img: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 3,
-    name: "Gundam Wing Zero",
-    price: 149,
-    cat: "Anime",
-    img: "https://images.unsplash.com/photo-1542332213-31f87348057f?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 4,
-    name: "Tokyo Night Drifter",
-    price: 119,
-    cat: "Retro",
-    img: "https://images.unsplash.com/photo-1555624150-43503813e8b5?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 5,
-    name: "Porsche 911 GT3 RS",
-    price: 169,
-    cat: "Motorsport",
-    img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 6,
-    name: "Akira Neo-Tokyo",
-    price: 149,
-    cat: "Anime",
-    img: "https://images.unsplash.com/photo-1560972550-aba3456b5564?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 7,
-    name: "Skyline GTR V-Spec",
-    price: 149,
-    cat: "JDM",
+    title: "Cars",
+    sub: "cars",
+    count: "42+ Designs",
     img: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&q=80&w=800",
+    color: "#00D4FF",
   },
   {
-    id: 8,
-    name: "Initial D AE86",
-    price: 119,
-    cat: "Anime",
-    img: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&q=80&w=800",
+    title: "Bikes",
+    sub: "bikes",
+    count: "28+ Designs",
+    img: "https://images.unsplash.com/photo-1558981403-c5f91cbba527?auto=format&fit=crop&q=80&w=800",
+    color: "#FF3E3E",
   },
   {
-    id: 9,
-    name: "Ferrari F40 Legacy",
-    price: 189,
-    cat: "Motorsport",
-    img: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&q=80&w=800",
+    title: "Formula 1",
+    sub: "f1",
+    count: "15+ Designs",
+    img: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&q=80&w=800",
+    color: "#FFFFFF",
   },
   {
-    id: 10,
-    name: "Cyberpunk Oni Mask",
-    price: 99,
-    cat: "Anime",
-    img: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&q=80&w=800",
+    title: "MotoGP",
+    sub: "motogp",
+    count: "12+ Designs",
+    img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=800",
+    color: "#FFD700",
   },
   {
-    id: 11,
-    name: "Supra MK4 Turbo",
-    price: 149,
-    cat: "JDM",
-    img: "https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?auto=format&fit=crop&q=80&w=800",
+    title: "Football",
+    sub: "football",
+    count: "35+ Designs",
+    img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=800",
+    color: "#4ADE80",
   },
   {
-    id: 12,
-    name: "Vaporwave Sunset",
-    price: 119,
-    cat: "Retro",
-    img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=800",
+    title: "Cricket",
+    sub: "cricket",
+    count: "20+ Designs",
+    img: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80&w=800",
+    color: "#60A5FA",
+  },
+  {
+    title: "Marvel",
+    sub: "marvel",
+    count: "50+ Designs",
+    img: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&q=80&w=800",
+    color: "#ED1D24",
+  },
+  {
+    title: "DC",
+    sub: "dc",
+    count: "30+ Designs",
+    img: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=800",
+    color: "#0476F2",
+  },
+  {
+    title: "TV Series",
+    sub: "tv-series",
+    count: "40+ Designs",
+    img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&q=80&w=800",
+    color: "#A855F7",
+  },
+  {
+    title: "Music",
+    sub: "music",
+    count: "25+ Designs",
+    img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=800",
+    color: "#F472B6",
+  },
+  {
+    title: "Video Games",
+    sub: "games",
+    count: "45+ Designs",
+    img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
+    color: "#34D399",
   },
 ];
 
 const Explore = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [visibleCount, setVisibleCount] = useState(8);
-  const [isBtnLoading, setIsBtnLoading] = useState(false);
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
 
-  const filteredProducts = ALL_PRODUCTS.filter(
-    (p) => activeCategory === "All" || p.cat === activeCategory,
+  const filteredCollections = COLLECTIONS.filter((c) =>
+    c.title.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const handleLoadMore = () => {
-    setIsBtnLoading(true);
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 4);
-      setIsBtnLoading(false);
-    }, 600);
-  };
-
   return (
-    <div className="min-h-screen bg-background text-foreground font-body selection:bg-primary selection:text-black">
+    <div className="min-h-screen bg-white text-black font-body selection:bg-black selection:text-white">
       <Navbar />
 
-      <main className="pt-40 pb-24 px-6 max-w-[1400px] mx-auto">
+      <main className="pt-24 md:pt-32 pb-16 md:pb-24 px-4 sm:px-6 lg:px-10 max-w-[1600px] mx-auto">
         {/* HEADER SECTION */}
-        <div className="flex flex-col gap-12 mb-20">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Zap size={18} className="text-accent fill-accent" />
-                <span className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground/40">
-                  Archive Selection
+        <div className="border-b-2 md:border-b-4 border-black pb-8 md:pb-12 mb-10 md:mb-16">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6 md:gap-10">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-primary">
+                <Compass size={18} className="md:w-5 md:h-5" strokeWidth={3} />
+                <span className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em]">
+                  Directory
                 </span>
               </div>
-              <h1 className="font-display text-7xl md:text-9xl font-black uppercase tracking-tighter italic leading-[0.8]">
-                EXPLORE <br />
-                <span className="text-primary not-italic">THE SHOP.</span>
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
+                ALL <span className="text-primary italic">COLLECTIONS</span>
               </h1>
             </div>
 
-            <div className="bg-white border-4 border-foreground p-8 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] max-w-sm rotate-1">
-              <p className="text-[12px] text-foreground/60 font-black leading-tight uppercase tracking-tight">
-                Premium artifacts engineered for the community. High-spec prints
-                designed to dominate your environment.
-              </p>
+            <div className="relative w-full lg:max-w-md">
+              <input
+                type="text"
+                placeholder="Find a collection..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-gray-50 border-2 border-black p-3 md:p-4 pl-10 md:pl-12 font-bold uppercase tracking-widest text-[10px] md:text-xs outline-none focus:bg-primary/5 transition-colors"
+              />
+              <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 opacity-30 w-4 h-4 md:w-5 md:h-5" />
             </div>
-          </div>
-
-          {/* SEARCH BAR - Massively enlarged industrial style */}
-          <div className="relative group">
-            <div className="absolute left-8 top-1/2 -translate-y-1/2 flex items-center gap-4 text-foreground/20 group-focus-within:text-primary transition-colors">
-              <Search size={28} strokeWidth={3} />
-            </div>
-            <input
-              type="text"
-              placeholder="SEARCH BY THEME, CAR, OR ANIME..."
-              className="w-full bg-white border-4 border-foreground py-10 pl-24 pr-10 text-xl font-black tracking-widest uppercase focus:bg-primary/5 outline-none transition-all placeholder:text-foreground/10 shadow-[12px_12px_0px_0px_rgba(0,212,255,1)] focus:shadow-none"
-            />
           </div>
         </div>
 
-        {/* CATEGORY FILTER BAR */}
-        <div className="sticky top-24 z-30 bg-background/80 backdrop-blur-md py-6 mb-16 border-b-4 border-foreground/5 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-4 min-w-max">
-            <div className="flex items-center gap-2 mr-6 border-r-2 border-foreground/10 pr-6">
-              <Filter size={16} />
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                Filter By
-              </span>
-            </div>
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => {
-                  setActiveCategory(cat);
-                  setVisibleCount(8);
-                }}
-                className={`px-10 py-3 text-[11px] font-black uppercase tracking-[0.2em] transition-all border-2 ${
-                  activeCategory === cat
-                    ? "bg-foreground text-background border-foreground shadow-[6px_6px_0px_0px_rgba(0,212,255,1)] italic"
-                    : "bg-white text-foreground/40 border-foreground/10 hover:border-foreground hover:text-foreground"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* COLLECTIONS GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          {filteredCollections.map((col, i) => (
+            <motion.div
+              key={col.sub}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.05 }}
+              onClick={() => navigate(`/shop?sub=${col.sub}`)}
+              className="group relative h-[350px] sm:h-[400px] lg:h-[450px] overflow-hidden border-2 border-black cursor-pointer bg-black"
+            >
+              {/* Image */}
+              <img
+                src={col.img}
+                alt={col.title}
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
+              />
 
-        {/* PRODUCT GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.slice(0, visibleCount).map((product, i) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                key={product.id}
-                className="group relative flex flex-col bg-white border-4 border-foreground shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)] hover:shadow-[16px_16px_0px_0px_rgba(0,212,255,1)] transition-all duration-500 overflow-hidden"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden border-b-4 border-foreground">
-                  <img
-                    src={product.img}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000"
-                    alt={product.name}
-                  />
-                  <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button className="bg-white border-4 border-foreground p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
-                      <ArrowUpRight size={24} strokeWidth={3} />
-                    </button>
-                  </div>
-                  <div className="absolute top-4 left-4 bg-accent-lime border-2 border-foreground px-3 py-1 text-[9px] font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                    {product.cat}
-                  </div>
-                </div>
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500" />
 
-                <div className="p-6 flex justify-between items-start">
-                  <div className="space-y-2">
-                    <h3 className="font-display text-lg md:text-xl font-black uppercase tracking-tighter leading-none group-hover:text-primary transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="flex gap-2">
-                      <span className="text-[9px] font-black text-foreground/30 border-2 border-foreground/5 px-2 py-0.5 uppercase">
-                        Heavyweight Matte
-                      </span>
+              {/* Content */}
+              <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end">
+                <div className="space-y-3 md:space-y-4">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <span
+                      className="h-1 w-8 md:w-12"
+                      style={{ backgroundColor: col.color }}
+                    />
+                    <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-white/80">
+                      {col.count}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-end">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase tracking-tighter leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                      {col.title}
+                    </h2>
+                    <div className="bg-white p-2 md:p-3 border-2 border-black group-hover:bg-primary group-hover:scale-110 transition-all">
+                      <ArrowRight
+                        className="w-5 h-5 md:w-6 md:h-6"
+                        strokeWidth={3}
+                      />
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-black italic text-foreground leading-none">
-                      ₹{product.price}
-                    </p>
-                    <p className="text-[8px] font-black text-accent uppercase mt-1 italic tracking-widest">
-                      In Stock
-                    </p>
-                  </div>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              </div>
+
+              {/* Interactive Borders (Hidden on mobile for performance) */}
+              <div className="hidden lg:block absolute inset-0 border-[0px] group-hover:border-[12px] border-primary/10 transition-all duration-300 pointer-events-none" />
+            </motion.div>
+          ))}
         </div>
 
-        {/* LOAD MORE BUTTON */}
-        {visibleCount < filteredProducts.length && (
-          <div className="mt-24 text-center">
-            <button
-              onClick={handleLoadMore}
-              disabled={isBtnLoading}
-              className="group relative inline-flex flex-col items-center gap-6 mx-auto"
-            >
-              <div className="w-20 h-20 border-4 border-foreground flex items-center justify-center rounded-none group-hover:bg-primary transition-all">
-                {isBtnLoading ? (
-                  <Loader2 className="animate-spin text-foreground" size={32} />
-                ) : (
-                  <ChevronRight
-                    size={32}
-                    strokeWidth={3}
-                    className="rotate-90 group-hover:translate-y-1 transition-transform"
-                  />
-                )}
-              </div>
-              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground/30 group-hover:text-foreground transition-colors">
-                {isBtnLoading ? "SYNCING..." : "LOAD MORE DROPS"}
-              </span>
-            </button>
+        {/* B2B FOOTER CTA */}
+        <div className="mt-16 md:mt-24 bg-black p-8 md:p-12 flex flex-col lg:flex-row items-start lg:items-center justify-between border-2 md:border-4 border-primary shadow-[6px_6px_0_0_#000] md:shadow-[10px_10px_0_0_#000]">
+          <div className="space-y-2 mb-8 lg:mb-0">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tighter">
+              Running a business?
+            </h3>
+            <p className="text-white/60 font-bold uppercase text-[8px] md:text-[10px] tracking-[0.2em]">
+              Bulk orders and custom B2B protocols available.
+            </p>
           </div>
-        )}
+          <button
+            onClick={() => navigate("/bulk-posters")}
+            className="w-full lg:w-auto bg-primary border-2 border-black px-8 md:px-10 py-3 md:py-4 font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-white transition-colors flex items-center justify-center gap-3 shadow-[4px_4px_0_0_rgba(255,255,255,0.2)]"
+          >
+            Inquire Now <Zap size={14} className="md:w-4 md:h-4" fill="black" />
+          </button>
+        </div>
       </main>
 
       <Footer />

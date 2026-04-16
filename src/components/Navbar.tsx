@@ -8,6 +8,7 @@
 //   Search,
 //   ArrowRight,
 //   Sparkles,
+//   ChevronLeft,
 // } from "lucide-react";
 // import { useCart } from "@/contexts/CartContext";
 // import { useState, useEffect, useRef } from "react";
@@ -19,10 +20,10 @@
 // const Navbar = () => {
 //   const { totalItems, setIsCartOpen } = useCart();
 //   const [mobileOpen, setMobileOpen] = useState(false);
+//   const [mobileSubMenu, setMobileSubMenu] = useState<string | null>(null);
 //   const [scrolled, setScrolled] = useState(false);
 //   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 //   const [user, setUser] = useState<FirebaseUser | null>(null);
-
 //   const [isSearchOpen, setIsSearchOpen] = useState(false);
 //   const [searchQuery, setSearchQuery] = useState("");
 
@@ -49,6 +50,10 @@
 //     };
 //   }, []);
 
+//   useEffect(() => {
+//     if (!mobileOpen) setMobileSubMenu(null);
+//   }, [mobileOpen]);
+
 //   const handleSearch = (e: React.FormEvent) => {
 //     e.preventDefault();
 //     if (searchQuery.trim()) {
@@ -56,6 +61,7 @@
 //       setIsSearchOpen(false);
 //       setSearchQuery("");
 //       setActiveDropdown(null);
+//       setMobileOpen(false);
 //     }
 //   };
 
@@ -77,39 +83,65 @@
 //     shop: [
 //       {
 //         title: "All Posters",
-//         links: ["New Arrivals", "Best Selling", "Devotional", "Motivational"],
+//         links: [
+//           { label: "New Arrivals", path: "/shop?q=New Arrivals" },
+//           { label: "Best Selling", path: "/shop?q=Best Selling" },
+//           { label: "Devotional", path: "/shop?q=Devotional" },
+//           { label: "Motivational", path: "/shop?q=Motivational" },
+//         ],
 //       },
 //       {
 //         title: "Cars & Bikes",
-//         links: ["Bikes", "Concept Cars", "Solid Cars", "Vector Cars"],
+//         links: [
+//           { label: "Bikes", path: "/shop?sub=bikes" },
+//           { label: "Cars", path: "/shop?sub=cars" },
+//         ],
 //       },
-//       { title: "Sports", links: ["Football", "Cricket", "UFC", "F1"] },
+//       {
+//         title: "Sports",
+//         links: [
+//           { label: "Football", path: "/shop?q=Football" },
+//           { label: "Cricket", path: "/shop?q=Cricket" },
+//           { label: "UFC", path: "/shop?q=UFC" },
+//           { label: "F1", path: "/shop?q=F1" },
+//         ],
+//       },
 //       {
 //         title: "Pop Culture",
-//         links: ["Marvel", "DC", "Movies", "TV Series", "Music", "Games"],
+//         links: [
+//           { label: "Marvel", path: "/shop?q=Marvel" },
+//           { label: "DC", path: "/shop?q=DC" },
+//           { label: "Movies", path: "/shop?q=Movies" },
+//           { label: "TV Series", path: "/shop?q=TV Series" },
+//           { label: "Music", path: "/shop?q=Music" },
+//           { label: "Games", path: "/shop?q=Games" },
+//         ],
 //       },
 //     ],
 //     multi: [
 //       {
 //         title: "Collage Kit",
-//         links: ["50-Piece Collage Kit", "30-Piece Combo Set"],
+//         links: [
+//           { label: "50-Piece Collage Kit", path: "/multi-collections" },
+//           { label: "30-Piece Combo Set", path: "/multi-collections" },
+//         ],
 //       },
 //       {
 //         title: "Split by Pieces",
 //         links: [
-//           "2-Piece Split Posters",
-//           "3-Piece Split Posters",
-//           "5-Panel Split Posters",
+//           { label: "2-Piece Split Posters", path: "/multi-collections" },
+//           { label: "3-Piece Split Posters", path: "/multi-collections" },
+//           { label: "5-Panel Split Posters", path: "/multi-collections" },
 //         ],
 //       },
 //       {
 //         title: "Explore ALL",
 //         links: [
-//           "Marvel",
-//           "DC",
-//           "Movies",
-//           "Car Split Posters",
-//           "Bike Split Posters",
+//           { label: "Marvel", path: "/shop?q=Marvel" },
+//           { label: "DC", path: "/shop?q=DC" },
+//           { label: "Movies", path: "/shop?q=Movies" },
+//           { label: "Car Split Posters", path: "/multi-collections" },
+//           { label: "Bike Split Posters", path: "/multi-collections" },
 //         ],
 //       },
 //     ],
@@ -117,9 +149,9 @@
 //       {
 //         title: "Retro Photo Prints",
 //         links: [
-//           "Aesthetic Retro Photo Prints",
-//           "Custom Retro Photo Prints",
-//           "Photobooth Strip",
+//           { label: "Aesthetic Retro Photo Prints", path: "/retro-studio" },
+//           { label: "Custom Retro Photo Prints", path: "/retro-studio" },
+//           { label: "Photobooth Strip", path: "/retro-studio" },
 //         ],
 //       },
 //     ],
@@ -127,16 +159,21 @@
 //       {
 //         title: "Custom Posters",
 //         links: [
-//           "Custom Posters",
-//           "Customize 3 Piece Split",
-//           "Customize Multi Poster",
+//           { label: "Custom Posters", path: "/custom-studio" },
+//           { label: "Customize 3 Piece Split", path: "/custom-studio" },
+//           { label: "Customize Multi Poster", path: "/custom-studio" },
 //         ],
 //       },
 //     ],
 //     help: [
 //       {
 //         title: "Help Center",
-//         links: ["About Us", "Contact Us", "Terms and Conditions", "FAQs"],
+//         links: [
+//           { label: "About Us", path: "/about" },
+//           { label: "Contact Us", path: "/contact" },
+//           { label: "Track Order", path: "/track-order" },
+//           { label: "FAQs", path: "/faqs" },
+//         ],
 //       },
 //     ],
 //   };
@@ -270,48 +307,13 @@
 //       </div>
 
 //       <AnimatePresence>
-//         {isSearchOpen && (
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             exit={{ opacity: 0 }}
-//             className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
-//           >
-//             <button
-//               onClick={() => setIsSearchOpen(false)}
-//               className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
-//             >
-//               <X size={32} />
-//             </button>
-
-//             <form
-//               onSubmit={handleSearch}
-//               className="w-full max-w-3xl text-center"
-//             >
-//               <input
-//                 autoFocus
-//                 type="text"
-//                 placeholder="SEARCH THE VAULT..."
-//                 className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
-//                 value={searchQuery}
-//                 onChange={(e) => setSearchQuery(e.target.value)}
-//               />
-//               <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
-//                 Press Enter to Locate Art
-//               </p>
-//             </form>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-
-//       <AnimatePresence>
 //         {activeDropdown &&
 //           megaMenus[activeDropdown as keyof typeof megaMenus] && (
 //             <motion.div
 //               initial={{ opacity: 0, y: -20 }}
 //               animate={{ opacity: 1, y: 0 }}
 //               exit={{ opacity: 0, y: -20 }}
-//               className="absolute top-full left-0 w-full py-16 px-8 border-t border-black/5 bg-white shadow-2xl"
+//               className="absolute top-full left-0 w-full py-16 px-8 border-t border-black/5 bg-white shadow-2xl hidden lg:block"
 //             >
 //               <div className="max-w-[1400px] mx-auto">
 //                 <div
@@ -333,14 +335,14 @@
 //                           </h4>
 //                         </div>
 //                         <ul className="space-y-4">
-//                           {section.links.map((link) => (
-//                             <li key={link}>
+//                           {section.links.map((linkObj) => (
+//                             <li key={linkObj.label}>
 //                               <Link
-//                                 to={`/shop?q=${encodeURIComponent(link)}`}
+//                                 to={linkObj.path}
 //                                 className="text-[14px] font-bold text-foreground/60 hover:text-primary transition-all hover:translate-x-2 flex items-center gap-2 group"
 //                                 onClick={() => setActiveDropdown(null)}
 //                               >
-//                                 {link}
+//                                 {linkObj.label}
 //                                 <ArrowRight
 //                                   size={14}
 //                                   className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"
@@ -359,6 +361,41 @@
 //       </AnimatePresence>
 
 //       <AnimatePresence>
+//         {isSearchOpen && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
+//           >
+//             <button
+//               onClick={() => setIsSearchOpen(false)}
+//               className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
+//             >
+//               <X size={32} />
+//             </button>
+
+//             <form
+//               onSubmit={handleSearch}
+//               className="w-full max-w-3xl text-center"
+//             >
+//               <input
+//                 autoFocus
+//                 type="text"
+//                 placeholder="SEARCH THE Collection..."
+//                 className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
+//                 value={searchQuery}
+//                 onChange={(e) => setSearchQuery(e.target.value)}
+//               />
+//               <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+//                 Press Enter to Locate Art
+//               </p>
+//             </form>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <AnimatePresence>
 //         {mobileOpen && (
 //           <motion.div
 //             initial={{ x: "100%" }}
@@ -367,46 +404,104 @@
 //             transition={{ type: "spring", damping: 25, stiffness: 200 }}
 //             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
 //           >
-//             <div className="flex justify-between items-center mb-12">
-//               <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+//             <div className="flex justify-between items-center mb-10">
+//               {mobileSubMenu ? (
+//                 <button
+//                   onClick={() => setMobileSubMenu(null)}
+//                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary"
+//                 >
+//                   <ChevronLeft size={16} /> Back
+//                 </button>
+//               ) : (
+//                 <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+//               )}
 //               <button onClick={() => setMobileOpen(false)} className="p-2">
 //                 <X size={28} />
 //               </button>
 //             </div>
 
-//             <div className="flex flex-col gap-y-6 overflow-y-auto">
-//               <div className="relative mb-4">
-//                 <form onSubmit={handleSearch}>
-//                   <input
-//                     type="text"
-//                     placeholder="SEARCH..."
-//                     className="w-full border-b border-black/10 py-2 outline-none font-black uppercase tracking-widest"
-//                     value={searchQuery}
-//                     onChange={(e) => setSearchQuery(e.target.value)}
-//                   />
-//                 </form>
-//               </div>
+//             <div className="flex flex-col h-full overflow-y-auto pb-10">
+//               {!mobileSubMenu ? (
+//                 <div className="flex flex-col gap-y-4">
+//                   <div className="relative mb-6">
+//                     <form onSubmit={handleSearch}>
+//                       <input
+//                         type="text"
+//                         placeholder="SEARCH..."
+//                         className="w-full border-b border-black/10 py-3 outline-none font-black uppercase tracking-widest"
+//                         value={searchQuery}
+//                         onChange={(e) => setSearchQuery(e.target.value)}
+//                       />
+//                     </form>
+//                   </div>
 
-//               {navLinks.map((link) => (
-//                 <div key={link.label} className="border-b border-black/5 pb-4">
-//                   <Link
-//                     to={link.path}
-//                     onClick={() => setMobileOpen(false)}
-//                     className="text-2xl font-black uppercase tracking-tighter flex justify-between items-center"
+//                   {navLinks.map((link) => (
+//                     <div
+//                       key={link.label}
+//                       className="border-b border-black/5 pb-4"
+//                     >
+//                       <button
+//                         onClick={() => {
+//                           if (megaMenus[link.id as keyof typeof megaMenus]) {
+//                             setMobileSubMenu(link.id);
+//                           } else {
+//                             navigate(link.path);
+//                             setMobileOpen(false);
+//                           }
+//                         }}
+//                         className="w-full text-2xl font-black uppercase tracking-tighter flex justify-between items-center text-left"
+//                       >
+//                         {link.label}
+//                         <ArrowRight size={20} className="text-foreground/20" />
+//                       </button>
+//                     </div>
+//                   ))}
+
+//                   <button
+//                     onClick={handleAccountClick}
+//                     className="mt-6 flex items-center gap-3 text-lg font-black uppercase tracking-widest"
 //                   >
-//                     {link.label}
-//                     <ArrowRight size={20} />
-//                   </Link>
+//                     <User size={24} />
+//                     {user ? "My Account" : "Login / Register"}
+//                   </button>
 //                 </div>
-//               ))}
+//               ) : (
+//                 <motion.div
+//                   initial={{ opacity: 0, x: 20 }}
+//                   animate={{ opacity: 1, x: 0 }}
+//                   className="flex flex-col gap-y-10"
+//                 >
+//                   <h2 className="text-4xl font-black uppercase tracking-tighter border-b-4 border-primary w-fit pb-1">
+//                     {navLinks.find((l) => l.id === mobileSubMenu)?.label}
+//                   </h2>
 
-//               <button
-//                 onClick={handleAccountClick}
-//                 className="mt-4 flex items-center gap-3 text-xl font-bold uppercase tracking-widest"
-//               >
-//                 <User size={24} />
-//                 {user ? "My Account" : "Login / Register"}
-//               </button>
+//                   {megaMenus[mobileSubMenu as keyof typeof megaMenus].map(
+//                     (section) => (
+//                       <div key={section.title} className="space-y-4">
+//                         <div className="flex items-center gap-2">
+//                           <Sparkles size={12} className="text-primary" />
+//                           <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+//                             {section.title}
+//                           </h4>
+//                         </div>
+//                         <div className="flex flex-col gap-y-4 pl-4">
+//                           {section.links.map((linkObj) => (
+//                             <Link
+//                               key={linkObj.label}
+//                               to={linkObj.path}
+//                               onClick={() => setMobileOpen(false)}
+//                               className="text-xl font-bold uppercase tracking-tight text-foreground/70 flex items-center justify-between"
+//                             >
+//                               {linkObj.label}
+//                               <ArrowRight size={16} className="text-primary" />
+//                             </Link>
+//                           ))}
+//                         </div>
+//                       </div>
+//                     ),
+//                   )}
+//                 </motion.div>
+//               )}
 //             </div>
 //           </motion.div>
 //         )}
@@ -439,7 +534,6 @@ import { doc, getDoc } from "firebase/firestore";
 const Navbar = () => {
   const { totalItems, setIsCartOpen } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
-  // NEW: State to track which mobile category is currently open
   const [mobileSubMenu, setMobileSubMenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -470,7 +564,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Reset mobile submenus when closing the drawer
   useEffect(() => {
     if (!mobileOpen) setMobileSubMenu(null);
   }, [mobileOpen]);
@@ -504,39 +597,65 @@ const Navbar = () => {
     shop: [
       {
         title: "All Posters",
-        links: ["New Arrivals", "Best Selling", "Devotional", "Motivational"],
+        links: [
+          { label: "New Arrivals", path: "/shop?q=New Arrivals" },
+          { label: "Best Selling", path: "/shop?q=Best Selling" },
+          { label: "Devotional", path: "/shop?q=Devotional" },
+          { label: "Motivational", path: "/shop?q=Motivational" },
+        ],
       },
       {
         title: "Cars & Bikes",
-        links: ["Bikes", "Concept Cars", "Solid Cars", "Vector Cars"],
+        links: [
+          { label: "Bikes", path: "/shop?sub=bikes" },
+          { label: "Cars", path: "/shop?sub=cars" },
+        ],
       },
-      { title: "Sports", links: ["Football", "Cricket", "UFC", "F1"] },
+      {
+        title: "Sports",
+        links: [
+          { label: "Football", path: "/shop?q=Football" },
+          { label: "Cricket", path: "/shop?q=Cricket" },
+          { label: "UFC", path: "/shop?q=UFC" },
+          { label: "F1", path: "/shop?q=F1" },
+        ],
+      },
       {
         title: "Pop Culture",
-        links: ["Marvel", "DC", "Movies", "TV Series", "Music", "Games"],
+        links: [
+          { label: "Marvel", path: "/shop?q=Marvel" },
+          { label: "DC", path: "/shop?q=DC" },
+          { label: "Movies", path: "/shop?q=Movies" },
+          { label: "TV Series", path: "/shop?q=TV Series" },
+          { label: "Music", path: "/shop?q=Music" },
+          { label: "Games", path: "/shop?q=Games" },
+        ],
       },
     ],
     multi: [
       {
         title: "Collage Kit",
-        links: ["50-Piece Collage Kit", "30-Piece Combo Set"],
+        links: [
+          { label: "50-Piece Collage Kit", path: "/multi-collections" },
+          { label: "30-Piece Combo Set", path: "/multi-collections" },
+        ],
       },
       {
         title: "Split by Pieces",
         links: [
-          "2-Piece Split Posters",
-          "3-Piece Split Posters",
-          "5-Panel Split Posters",
+          { label: "2-Piece Split Posters", path: "/multi-collections" },
+          { label: "3-Piece Split Posters", path: "/multi-collections" },
+          { label: "5-Panel Split Posters", path: "/multi-collections" },
         ],
       },
       {
         title: "Explore ALL",
         links: [
-          "Marvel",
-          "DC",
-          "Movies",
-          "Car Split Posters",
-          "Bike Split Posters",
+          { label: "Marvel", path: "/shop?q=Marvel" },
+          { label: "DC", path: "/shop?q=DC" },
+          { label: "Movies", path: "/shop?q=Movies" },
+          { label: "Car Split Posters", path: "/multi-collections" },
+          { label: "Bike Split Posters", path: "/multi-collections" },
         ],
       },
     ],
@@ -544,9 +663,9 @@ const Navbar = () => {
       {
         title: "Retro Photo Prints",
         links: [
-          "Aesthetic Retro Photo Prints",
-          "Custom Retro Photo Prints",
-          "Photobooth Strip",
+          { label: "Aesthetic Retro Photo Prints", path: "/retro-studio" },
+          { label: "Custom Retro Photo Prints", path: "/retro-studio" },
+          { label: "Photobooth Strip", path: "/retro-studio" },
         ],
       },
     ],
@@ -554,16 +673,30 @@ const Navbar = () => {
       {
         title: "Custom Posters",
         links: [
-          "Custom Posters",
-          "Customize 3 Piece Split",
-          "Customize Multi Poster",
+          { label: "Custom Posters", path: "/custom-studio" },
+          { label: "Customize 3 Piece Split", path: "/custom-studio" },
+          { label: "Customize Multi Poster", path: "/custom-studio" },
         ],
       },
     ],
     help: [
       {
         title: "Help Center",
-        links: ["About Us", "Contact Us", "Terms and Conditions", "FAQs"],
+        links: [
+          { label: "About Us", path: "/about" },
+          { label: "Contact Us", path: "/contact" },
+          { label: "Track Order", path: "/track-order" },
+          { label: "FAQs", path: "/faqs" },
+        ],
+      },
+      {
+        title: "Legal & Logistics",
+        links: [
+          { label: "Shipping Policy", path: "/shipping-policy" },
+          { label: "Return & Refund", path: "/return-policy" },
+          { label: "Privacy Policy", path: "/privacy-policy" },
+          { label: "Terms & Conditions", path: "/terms-conditions" },
+        ],
       },
     ],
   };
@@ -576,7 +709,7 @@ const Navbar = () => {
     { label: "Stickers", id: "stickers", path: "/stickers" },
     { label: "Bulk Posters", id: "bulk", path: "/bulk-posters" },
     { label: "Reviews", id: "reviews", path: "/reviews" },
-    { label: "Help Center", id: "help", path: "/faqs" },
+    { label: "Help & Legal", id: "help", path: "/faqs" },
   ];
 
   return (
@@ -613,7 +746,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-x-8 h-full">
           {navLinks.map((link) => {
             const isCurrentActive = activeDropdown === link.id;
@@ -658,7 +790,6 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* Right Icons */}
         <div className="flex items-center gap-x-6">
           <Search
             size={20}
@@ -698,7 +829,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Desktop Mega Menus */}
       <AnimatePresence>
         {activeDropdown &&
           megaMenus[activeDropdown as keyof typeof megaMenus] && (
@@ -715,7 +845,9 @@ const Navbar = () => {
                       ? "grid-cols-3"
                       : activeDropdown === "shop"
                         ? "grid-cols-4"
-                        : "grid-cols-1"
+                        : activeDropdown === "help"
+                          ? "grid-cols-2"
+                          : "grid-cols-1"
                   }`}
                 >
                   {megaMenus[activeDropdown as keyof typeof megaMenus].map(
@@ -728,14 +860,14 @@ const Navbar = () => {
                           </h4>
                         </div>
                         <ul className="space-y-4">
-                          {section.links.map((link) => (
-                            <li key={link}>
+                          {section.links.map((linkObj) => (
+                            <li key={linkObj.label}>
                               <Link
-                                to={`/shop?q=${encodeURIComponent(link)}`}
+                                to={linkObj.path}
                                 className="text-[14px] font-bold text-foreground/60 hover:text-primary transition-all hover:translate-x-2 flex items-center gap-2 group"
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                {link}
+                                {linkObj.label}
                                 <ArrowRight
                                   size={14}
                                   className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"
@@ -753,7 +885,6 @@ const Navbar = () => {
           )}
       </AnimatePresence>
 
-      {/* Full Screen Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
@@ -776,7 +907,7 @@ const Navbar = () => {
               <input
                 autoFocus
                 type="text"
-                placeholder="SEARCH THE VAULT..."
+                placeholder="SEARCH THE Collection..."
                 className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -789,7 +920,6 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* Multi-Level Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -800,7 +930,6 @@ const Navbar = () => {
             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
           >
             <div className="flex justify-between items-center mb-10">
-              {/* Back Button for nested menus */}
               {mobileSubMenu ? (
                 <button
                   onClick={() => setMobileSubMenu(null)}
@@ -818,7 +947,6 @@ const Navbar = () => {
 
             <div className="flex flex-col h-full overflow-y-auto pb-10">
               {!mobileSubMenu ? (
-                // Level 1: Main Links
                 <div className="flex flex-col gap-y-4">
                   <div className="relative mb-6">
                     <form onSubmit={handleSearch}>
@@ -863,7 +991,6 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                // Level 2: Nested Options
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -883,14 +1010,14 @@ const Navbar = () => {
                           </h4>
                         </div>
                         <div className="flex flex-col gap-y-4 pl-4">
-                          {section.links.map((link) => (
+                          {section.links.map((linkObj) => (
                             <Link
-                              key={link}
-                              to={`/shop?q=${encodeURIComponent(link)}`}
+                              key={linkObj.label}
+                              to={linkObj.path}
                               onClick={() => setMobileOpen(false)}
                               className="text-xl font-bold uppercase tracking-tight text-foreground/70 flex items-center justify-between"
                             >
-                              {link}
+                              {linkObj.label}
                               <ArrowRight size={16} className="text-primary" />
                             </Link>
                           ))}
