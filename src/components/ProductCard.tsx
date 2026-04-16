@@ -1,3 +1,100 @@
+// import { Link } from "react-router-dom";
+// import { DbProduct } from "@/hooks/use-products";
+// import { ChevronRight, ArrowUpRight } from "lucide-react";
+
+// interface ProductCardProps {
+//   product: DbProduct;
+// }
+
+// const ProductCard = ({ product }: ProductCardProps) => {
+//   return (
+//     <div className="group flex flex-col h-full bg-white border-2 border-foreground hover:shadow-[8px_8px_0px_0px_rgba(0,212,255,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,212,255,1)] transition-all duration-500 overflow-hidden">
+//       {/* IMAGE SECTION */}
+//       <Link
+//         to={`/product/${product.id}`}
+//         className="block relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-muted border-b-2 border-foreground"
+//       >
+//         {product.image_url ? (
+//           <img
+//             src={product.image_url}
+//             alt={product.name}
+//             className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+//             loading="lazy"
+//           />
+//         ) : (
+//           <div className="w-full h-full flex flex-col items-center justify-center bg-muted/30">
+//             <span className="font-display text-[8px] sm:text-[10px] tracking-[0.3em] text-foreground/20 uppercase font-black">
+//               Preview Missing
+//             </span>
+//           </div>
+//         )}
+
+//         {/* Hover Overlay - Hidden on touch devices */}
+//         <div className="absolute inset-0 bg-primary/5 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
+
+//         {/* SIZE TAGS OVERLAY */}
+//         <div className="absolute top-2 left-2 sm:top-4 sm:left-4 flex flex-col gap-1">
+//           {["A5", "A4", "A3"].map((size) => (
+//             <span
+//               key={size}
+//               className="bg-foreground text-background text-[7px] sm:text-[8px] font-black px-1.5 py-0.5 sm:px-2 rounded-none tracking-widest uppercase"
+//             >
+//               {size}
+//             </span>
+//           ))}
+//         </div>
+
+//         {/* Quick View Icon - Simplified for mobile */}
+//         <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 bg-white border-2 border-foreground flex items-center justify-center md:translate-y-[-60px] md:group-hover:translate-y-0 transition-transform duration-500 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+//           <ArrowUpRight size={16} className="text-foreground sm:w-[18px]" />
+//         </div>
+//       </Link>
+
+//       {/* CONTENT SECTION */}
+//       <div className="p-4 sm:p-6 flex flex-col flex-1 gap-3 sm:gap-4 bg-white">
+//         <div>
+//           <h3 className="font-display text-base sm:text-lg font-black tracking-tight uppercase text-foreground mb-1 truncate leading-tight group-hover:text-primary transition-colors">
+//             {product.name}
+//           </h3>
+//           <p className="font-body text-[9px] sm:text-[10px] text-foreground/40 font-black tracking-widest uppercase italic">
+//             {product.category} — {product.subcategory?.replace("_", " ")}
+//           </p>
+//         </div>
+
+//         {/* PRICE & ACTION SECTION */}
+//         <div className="mt-auto pt-4 sm:pt-6 border-t-2 border-foreground/5 flex flex-wrap items-end justify-between gap-4">
+//           <div className="flex flex-col min-w-fit">
+//             <span className="text-[9px] sm:text-[10px] font-black text-foreground/30 uppercase tracking-widest mb-1">
+//               Starting from
+//             </span>
+//             <div className="flex items-center gap-2">
+//               <span className="text-xl sm:text-2xl font-black text-foreground tabular-nums">
+//                 ₹79
+//               </span>
+//               <div className="px-1.5 py-0.5 bg-accent-lime text-[8px] sm:text-[9px] font-black uppercase">
+//                 Save 40%
+//               </div>
+//             </div>
+//           </div>
+
+//           <Link
+//             to={`/product/${product.id}`}
+//             className="flex-1 sm:flex-none h-10 sm:h-12 px-4 sm:px-6 bg-foreground text-background flex items-center justify-center gap-2 sm:gap-3 hover:bg-accent hover:text-white transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,212,255,0.2)] md:hover:shadow-none active:translate-x-0.5 active:translate-y-0.5"
+//           >
+//             <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">
+//               GET IT
+//             </span>
+//             <ChevronRight size={14} className="sm:w-[16px]" strokeWidth={3} />
+//           </Link>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProductCard;
+
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DbProduct } from "@/hooks/use-products";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
@@ -7,12 +104,23 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const [selectedSize, setSelectedSize] = useState("A5");
+
+  const sizes = [
+    { label: "A5", price: 69 },
+    { label: "A4", price: 109 },
+    { label: "A3", price: 139 },
+    { label: "13x19", price: 159 },
+  ];
+
+  const activeData = sizes.find((s) => s.label === selectedSize) || sizes[0];
+
   return (
-    <div className="group flex flex-col h-full bg-white border-2 border-foreground hover:shadow-[12px_12px_0px_0px_rgba(0,212,255,1)] transition-all duration-500 overflow-hidden">
+    <div className="group flex flex-col h-full bg-white border-2 border-foreground hover:shadow-[8px_8px_0px_0px_rgba(0,212,255,1)] md:hover:shadow-[12px_12px_0px_0px_rgba(0,212,255,1)] transition-all duration-500 overflow-hidden">
       {/* IMAGE SECTION */}
       <Link
         to={`/product/${product.id}`}
-        className="block relative aspect-[3/4] overflow-hidden bg-muted border-b-2 border-foreground"
+        className="block relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-muted border-b-2 border-foreground"
       >
         {product.image_url ? (
           <img
@@ -23,67 +131,74 @@ const ProductCard = ({ product }: ProductCardProps) => {
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-muted/30">
-            <span className="font-display text-[10px] tracking-[0.3em] text-foreground/20 uppercase font-black">
+            <span className="font-display text-[8px] sm:text-[10px] tracking-[0.3em] text-foreground/20 uppercase font-black">
               Preview Missing
             </span>
           </div>
         )}
 
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-        {/* SIZE TAGS OVERLAY - Industrial Label Style */}
-        <div className="absolute top-4 left-4 flex flex-col gap-1">
-          {["A5", "A4", "A3"].map((size) => (
-            <span
-              key={size}
-              className="bg-foreground text-background text-[8px] font-black px-2 py-0.5 rounded-none tracking-widest uppercase"
-            >
-              {size}
-            </span>
-          ))}
-        </div>
-
-        {/* Quick View Icon */}
-        <div className="absolute top-4 right-4 w-10 h-10 bg-white border-2 border-foreground flex items-center justify-center translate-y-[-60px] group-hover:translate-y-0 transition-transform duration-500 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-          <ArrowUpRight size={18} className="text-foreground" />
+        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 bg-white border-2 border-foreground flex items-center justify-center md:translate-y-[-60px] md:group-hover:translate-y-0 transition-transform duration-500 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <ArrowUpRight size={16} className="text-foreground" />
         </div>
       </Link>
 
-      <div className="p-6 flex flex-col flex-1 gap-4 bg-white">
+      {/* CONTENT SECTION */}
+      <div className="p-4 sm:p-6 flex flex-col flex-1 gap-4 bg-white">
         <div>
-          <h3 className="font-display text-lg font-black tracking-tight uppercase text-foreground mb-1 truncate leading-tight group-hover:text-primary transition-colors">
+          <h3 className="font-display text-base sm:text-lg font-black tracking-tight uppercase text-foreground mb-1 truncate group-hover:text-primary transition-colors">
             {product.name}
           </h3>
-          <p className="font-body text-[10px] text-foreground/40 font-black tracking-widest uppercase italic">
+          <p className="font-body text-[9px] sm:text-[10px] text-foreground/40 font-black tracking-widest uppercase italic">
             {product.category} — {product.subcategory?.replace("_", " ")}
           </p>
         </div>
 
-        {/* PRICE SECTION */}
-        <div className="mt-auto pt-6 border-t-2 border-foreground/5 flex items-end justify-between">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-black text-foreground/30 uppercase tracking-widest mb-1">
-              Starting from
+        {/* DESKTOP ONLY SIZE SELECTOR - 4 COLUMNS */}
+        <div className="hidden md:grid grid-cols-4 gap-1 py-2 border-y-2 border-foreground/5">
+          {sizes.map((size) => (
+            <button
+              key={size.label}
+              onClick={() => setSelectedSize(size.label)}
+              className={`flex flex-col items-center justify-center py-2 px-1 border-2 transition-all ${
+                selectedSize === size.label
+                  ? "bg-foreground text-background border-foreground"
+                  : "bg-transparent text-foreground border-transparent hover:border-foreground/20"
+              }`}
+            >
+              <span className="text-[9px] font-black leading-none mb-1">
+                {size.label}
+              </span>
+              <span className="text-[8px] opacity-70 font-bold">
+                ₹{size.price}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* PRICE & ACTION SECTION */}
+        <div className="mt-auto pt-2 flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-col min-w-fit">
+            <span className="text-[9px] sm:text-[10px] font-black text-foreground/30 uppercase tracking-widest mb-1">
+              {selectedSize} Print
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-black text-foreground tabular-nums">
-                ₹79
+              <span className="text-xl sm:text-2xl font-black text-foreground tabular-nums">
+                ₹{activeData.price}
               </span>
-              <div className="px-1.5 py-0.5 bg-accent-lime text-[9px] font-black uppercase">
-                Save 40%
+              <div className="px-1.5 py-0.5 bg-accent-lime text-[8px] sm:text-[9px] font-black uppercase">
+                Best Deal
               </div>
             </div>
           </div>
 
           <Link
             to={`/product/${product.id}`}
-            className="h-12 px-6 bg-foreground text-background flex items-center justify-center gap-3 hover:bg-accent hover:text-white transition-all duration-300 shadow-[6px_6px_0px_0px_rgba(0,212,255,0.2)] hover:shadow-none active:translate-x-1 active:translate-y-1"
+            className="flex-1 sm:flex-none h-10 sm:h-12 px-4 sm:px-6 bg-foreground text-background flex items-center justify-center gap-2 sm:gap-3 hover:bg-accent hover:text-white transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,212,255,0.2)] md:hover:shadow-none active:translate-x-0.5 active:translate-y-0.5"
           >
-            <span className="text-[10px] font-black uppercase tracking-widest">
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">
               GET IT
             </span>
-            <ChevronRight size={16} strokeWidth={3} />
+            <ChevronRight size={14} strokeWidth={3} />
           </Link>
         </div>
       </div>
@@ -92,4 +207,3 @@ const ProductCard = ({ product }: ProductCardProps) => {
 };
 
 export default ProductCard;
-
