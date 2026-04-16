@@ -23,6 +23,9 @@
 //   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 //   const [user, setUser] = useState<FirebaseUser | null>(null);
 
+//   const [isSearchOpen, setIsSearchOpen] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState("");
+
 //   const navRef = useRef<HTMLDivElement>(null);
 //   const navigate = useNavigate();
 
@@ -45,6 +48,16 @@
 //       unsubscribe();
 //     };
 //   }, []);
+
+//   const handleSearch = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     if (searchQuery.trim()) {
+//       navigate(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+//       setIsSearchOpen(false);
+//       setSearchQuery("");
+//       setActiveDropdown(null);
+//     }
+//   };
 
 //   const handleAccountClick = async () => {
 //     if (user) {
@@ -135,7 +148,7 @@
 //     { label: "Custom Posters", id: "custom", path: "/custom-studio" },
 //     { label: "Stickers", id: "stickers", path: "/stickers" },
 //     { label: "Bulk Posters", id: "bulk", path: "/bulk-posters" },
-//     { label: "Reviews", id: "reviews", path: "/about" },
+//     { label: "Reviews", id: "reviews", path: "/reviews" },
 //     { label: "Help Center", id: "help", path: "/faqs" },
 //   ];
 
@@ -147,13 +160,15 @@
 //       <motion.div
 //         animate={{
 //           backgroundColor:
-//             scrolled || activeDropdown
+//             scrolled || activeDropdown || isSearchOpen
 //               ? "rgba(255,255,255,0.9)"
 //               : "rgba(255,255,255,0)",
 //           backdropFilter:
-//             scrolled || activeDropdown ? "blur(20px)" : "blur(0px)",
+//             scrolled || activeDropdown || isSearchOpen
+//               ? "blur(20px)"
+//               : "blur(0px)",
 //           borderBottom:
-//             scrolled || activeDropdown
+//             scrolled || activeDropdown || isSearchOpen
 //               ? "1px solid rgba(0,0,0,0.08)"
 //               : "1px solid rgba(0,0,0,0)",
 //         }}
@@ -166,7 +181,6 @@
 //             <img
 //               src="/logo.png"
 //               alt="Imprinto"
-//               /* Force the logo to black */
 //               className="h-8 md:h-10 w-auto brightness-0"
 //             />
 //           </Link>
@@ -219,6 +233,7 @@
 //         <div className="flex items-center gap-x-6">
 //           <Search
 //             size={20}
+//             onClick={() => setIsSearchOpen(true)}
 //             className="text-foreground/40 hover:text-primary cursor-pointer hidden sm:block transition-colors"
 //           />
 //           <button onClick={handleAccountClick} className="hidden sm:block">
@@ -255,6 +270,41 @@
 //       </div>
 
 //       <AnimatePresence>
+//         {isSearchOpen && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
+//           >
+//             <button
+//               onClick={() => setIsSearchOpen(false)}
+//               className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
+//             >
+//               <X size={32} />
+//             </button>
+
+//             <form
+//               onSubmit={handleSearch}
+//               className="w-full max-w-3xl text-center"
+//             >
+//               <input
+//                 autoFocus
+//                 type="text"
+//                 placeholder="SEARCH THE VAULT..."
+//                 className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
+//                 value={searchQuery}
+//                 onChange={(e) => setSearchQuery(e.target.value)}
+//               />
+//               <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+//                 Press Enter to Locate Art
+//               </p>
+//             </form>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       <AnimatePresence>
 //         {activeDropdown &&
 //           megaMenus[activeDropdown as keyof typeof megaMenus] && (
 //             <motion.div
@@ -286,7 +336,7 @@
 //                           {section.links.map((link) => (
 //                             <li key={link}>
 //                               <Link
-//                                 to="/shop"
+//                                 to={`/shop?q=${encodeURIComponent(link)}`}
 //                                 className="text-[14px] font-bold text-foreground/60 hover:text-primary transition-all hover:translate-x-2 flex items-center gap-2 group"
 //                                 onClick={() => setActiveDropdown(null)}
 //                               >
@@ -307,6 +357,60 @@
 //             </motion.div>
 //           )}
 //       </AnimatePresence>
+
+//       <AnimatePresence>
+//         {mobileOpen && (
+//           <motion.div
+//             initial={{ x: "100%" }}
+//             animate={{ x: 0 }}
+//             exit={{ x: "100%" }}
+//             transition={{ type: "spring", damping: 25, stiffness: 200 }}
+//             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
+//           >
+//             <div className="flex justify-between items-center mb-12">
+//               <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+//               <button onClick={() => setMobileOpen(false)} className="p-2">
+//                 <X size={28} />
+//               </button>
+//             </div>
+
+//             <div className="flex flex-col gap-y-6 overflow-y-auto">
+//               <div className="relative mb-4">
+//                 <form onSubmit={handleSearch}>
+//                   <input
+//                     type="text"
+//                     placeholder="SEARCH..."
+//                     className="w-full border-b border-black/10 py-2 outline-none font-black uppercase tracking-widest"
+//                     value={searchQuery}
+//                     onChange={(e) => setSearchQuery(e.target.value)}
+//                   />
+//                 </form>
+//               </div>
+
+//               {navLinks.map((link) => (
+//                 <div key={link.label} className="border-b border-black/5 pb-4">
+//                   <Link
+//                     to={link.path}
+//                     onClick={() => setMobileOpen(false)}
+//                     className="text-2xl font-black uppercase tracking-tighter flex justify-between items-center"
+//                   >
+//                     {link.label}
+//                     <ArrowRight size={20} />
+//                   </Link>
+//                 </div>
+//               ))}
+
+//               <button
+//                 onClick={handleAccountClick}
+//                 className="mt-4 flex items-center gap-3 text-xl font-bold uppercase tracking-widest"
+//               >
+//                 <User size={24} />
+//                 {user ? "My Account" : "Login / Register"}
+//               </button>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
 //     </nav>
 //   );
 // };
@@ -323,6 +427,7 @@ import {
   Search,
   ArrowRight,
   Sparkles,
+  ChevronLeft,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState, useEffect, useRef } from "react";
@@ -334,10 +439,11 @@ import { doc, getDoc } from "firebase/firestore";
 const Navbar = () => {
   const { totalItems, setIsCartOpen } = useCart();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // NEW: State to track which mobile category is currently open
+  const [mobileSubMenu, setMobileSubMenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<FirebaseUser | null>(null);
-
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -364,6 +470,11 @@ const Navbar = () => {
     };
   }, []);
 
+  // Reset mobile submenus when closing the drawer
+  useEffect(() => {
+    if (!mobileOpen) setMobileSubMenu(null);
+  }, [mobileOpen]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -371,6 +482,7 @@ const Navbar = () => {
       setIsSearchOpen(false);
       setSearchQuery("");
       setActiveDropdown(null);
+      setMobileOpen(false);
     }
   };
 
@@ -501,6 +613,7 @@ const Navbar = () => {
           </Link>
         </div>
 
+        {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-x-8 h-full">
           {navLinks.map((link) => {
             const isCurrentActive = activeDropdown === link.id;
@@ -545,6 +658,7 @@ const Navbar = () => {
           })}
         </div>
 
+        {/* Right Icons */}
         <div className="flex items-center gap-x-6">
           <Search
             size={20}
@@ -584,41 +698,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
-          >
-            <button
-              onClick={() => setIsSearchOpen(false)}
-              className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
-            >
-              <X size={32} />
-            </button>
-
-            <form
-              onSubmit={handleSearch}
-              className="w-full max-w-3xl text-center"
-            >
-              <input
-                autoFocus
-                type="text"
-                placeholder="SEARCH THE VAULT..."
-                className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
-                Press Enter to Locate Art
-              </p>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      {/* Desktop Mega Menus */}
       <AnimatePresence>
         {activeDropdown &&
           megaMenus[activeDropdown as keyof typeof megaMenus] && (
@@ -626,7 +706,7 @@ const Navbar = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-0 w-full py-16 px-8 border-t border-black/5 bg-white shadow-2xl"
+              className="absolute top-full left-0 w-full py-16 px-8 border-t border-black/5 bg-white shadow-2xl hidden lg:block"
             >
               <div className="max-w-[1400px] mx-auto">
                 <div
@@ -673,6 +753,43 @@ const Navbar = () => {
           )}
       </AnimatePresence>
 
+      {/* Full Screen Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[2000] bg-white/95 backdrop-blur-xl flex items-center justify-center p-6"
+          >
+            <button
+              onClick={() => setIsSearchOpen(false)}
+              className="absolute top-10 right-10 p-2 hover:scale-110 transition-transform"
+            >
+              <X size={32} />
+            </button>
+
+            <form
+              onSubmit={handleSearch}
+              className="w-full max-w-3xl text-center"
+            >
+              <input
+                autoFocus
+                type="text"
+                placeholder="SEARCH THE VAULT..."
+                className="w-full bg-transparent border-b-4 border-foreground py-4 text-3xl md:text-6xl font-black uppercase tracking-tighter outline-none text-center"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+                Press Enter to Locate Art
+              </p>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Multi-Level Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -682,46 +799,107 @@ const Navbar = () => {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
           >
-            <div className="flex justify-between items-center mb-12">
-              <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+            <div className="flex justify-between items-center mb-10">
+              {/* Back Button for nested menus */}
+              {mobileSubMenu ? (
+                <button
+                  onClick={() => setMobileSubMenu(null)}
+                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary"
+                >
+                  <ChevronLeft size={16} /> Back
+                </button>
+              ) : (
+                <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+              )}
               <button onClick={() => setMobileOpen(false)} className="p-2">
                 <X size={28} />
               </button>
             </div>
 
-            <div className="flex flex-col gap-y-6 overflow-y-auto">
-              <div className="relative mb-4">
-                <form onSubmit={handleSearch}>
-                  <input
-                    type="text"
-                    placeholder="SEARCH..."
-                    className="w-full border-b border-black/10 py-2 outline-none font-black uppercase tracking-widest"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </form>
-              </div>
+            <div className="flex flex-col h-full overflow-y-auto pb-10">
+              {!mobileSubMenu ? (
+                // Level 1: Main Links
+                <div className="flex flex-col gap-y-4">
+                  <div className="relative mb-6">
+                    <form onSubmit={handleSearch}>
+                      <input
+                        type="text"
+                        placeholder="SEARCH..."
+                        className="w-full border-b border-black/10 py-3 outline-none font-black uppercase tracking-widest"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </form>
+                  </div>
 
-              {navLinks.map((link) => (
-                <div key={link.label} className="border-b border-black/5 pb-4">
-                  <Link
-                    to={link.path}
-                    onClick={() => setMobileOpen(false)}
-                    className="text-2xl font-black uppercase tracking-tighter flex justify-between items-center"
+                  {navLinks.map((link) => (
+                    <div
+                      key={link.label}
+                      className="border-b border-black/5 pb-4"
+                    >
+                      <button
+                        onClick={() => {
+                          if (megaMenus[link.id as keyof typeof megaMenus]) {
+                            setMobileSubMenu(link.id);
+                          } else {
+                            navigate(link.path);
+                            setMobileOpen(false);
+                          }
+                        }}
+                        className="w-full text-2xl font-black uppercase tracking-tighter flex justify-between items-center text-left"
+                      >
+                        {link.label}
+                        <ArrowRight size={20} className="text-foreground/20" />
+                      </button>
+                    </div>
+                  ))}
+
+                  <button
+                    onClick={handleAccountClick}
+                    className="mt-6 flex items-center gap-3 text-lg font-black uppercase tracking-widest"
                   >
-                    {link.label}
-                    <ArrowRight size={20} />
-                  </Link>
+                    <User size={24} />
+                    {user ? "My Account" : "Login / Register"}
+                  </button>
                 </div>
-              ))}
+              ) : (
+                // Level 2: Nested Options
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex flex-col gap-y-10"
+                >
+                  <h2 className="text-4xl font-black uppercase tracking-tighter border-b-4 border-primary w-fit pb-1">
+                    {navLinks.find((l) => l.id === mobileSubMenu)?.label}
+                  </h2>
 
-              <button
-                onClick={handleAccountClick}
-                className="mt-4 flex items-center gap-3 text-xl font-bold uppercase tracking-widest"
-              >
-                <User size={24} />
-                {user ? "My Account" : "Login / Register"}
-              </button>
+                  {megaMenus[mobileSubMenu as keyof typeof megaMenus].map(
+                    (section) => (
+                      <div key={section.title} className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <Sparkles size={12} className="text-primary" />
+                          <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/30">
+                            {section.title}
+                          </h4>
+                        </div>
+                        <div className="flex flex-col gap-y-4 pl-4">
+                          {section.links.map((link) => (
+                            <Link
+                              key={link}
+                              to={`/shop?q=${encodeURIComponent(link)}`}
+                              onClick={() => setMobileOpen(false)}
+                              className="text-xl font-bold uppercase tracking-tight text-foreground/70 flex items-center justify-between"
+                            >
+                              {link}
+                              <ArrowRight size={16} className="text-primary" />
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </motion.div>
+              )}
             </div>
           </motion.div>
         )}
