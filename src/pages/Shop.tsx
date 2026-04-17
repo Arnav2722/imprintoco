@@ -105,7 +105,7 @@
 //         </header>
 
 //         {/* MOBILE CONTROLS */}
-//         <div className="flex border-4 border-foreground mb-8 top-24 z-40 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hidden">
+//         <div className="flex border-4 border-foreground mb-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hidden">
 //           <button
 //             onClick={() => {
 //               setIsSortOpen(!isSortOpen);
@@ -127,20 +127,32 @@
 //         </div>
 
 //         <div className="grid lg:grid-cols-5 gap-16">
-//           {/* SIDEBAR NAVIGATION */}
+//           {/* SIDEBAR NAVIGATION / MOBILE FILTER OVERLAY */}
 //           <aside
-//             className={`lg:col-span-1 space-y-12 ${isFilterOpen ? "fixed inset-0 z-[100] bg-white p-10 pt-32 overflow-y-auto" : "hidden lg:block"}`}
+//             className={`lg:col-span-1 space-y-12 ${
+//               isFilterOpen
+//                 ? "fixed inset-0 z-[2000] bg-white p-6 sm:p-10 pt-32 overflow-y-auto"
+//                 : "hidden lg:block"
+//             }`}
 //           >
+//             {/* MOBILE CLOSE HEADER */}
 //             {isFilterOpen && (
-//               <button
-//                 onClick={() => setIsFilterOpen(false)}
-//                 className="absolute top-10 right-10 w-12 h-12 bg-foreground text-background flex items-center justify-center rounded-none shadow-[4px_4px_0px_0px_rgba(0,212,255,1)]"
-//               >
-//                 <X size={24} strokeWidth={3} />
-//               </button>
+//               <div className="fixed top-0 left-0 right-0 h-24 bg-white/95 backdrop-blur-md z-[2100] flex items-center justify-between px-6 lg:hidden border-b-4 border-foreground">
+//                 <span className="text-[12px] font-black uppercase tracking-[0.3em]">
+//                   Filter Archive
+//                 </span>
+//                 <button
+//                   onClick={() => setIsFilterOpen(false)}
+//                   className="w-12 h-12 bg-foreground text-background flex items-center justify-center shadow-[4px_4px_0px_0px_#00D4FF] active:translate-x-1 active:translate-y-1 transition-all"
+//                 >
+//                   <X size={24} strokeWidth={3} />
+//                 </button>
+//               </div>
 //             )}
 
-//             <div className="space-y-12 sticky top-40">
+//             <div
+//               className={`space-y-12 ${isFilterOpen ? "mt-4" : "sticky top-40"}`}
+//             >
 //               <div className="space-y-8">
 //                 <h3 className="text-[11px] font-black text-foreground/30 uppercase tracking-[0.3em] flex items-center gap-3">
 //                   <LayoutGrid size={14} /> CLASSIFICATION
@@ -221,7 +233,7 @@
 //                   initial={{ opacity: 0, y: 100 }}
 //                   animate={{ opacity: 1, y: 0 }}
 //                   exit={{ opacity: 0, y: 100 }}
-//                   className="fixed bottom-0 left-0 w-full bg-white z-[100] p-10 border-t-4 border-foreground shadow-[0_-20px_40px_rgba(0,0,0,0.1)] md:hidden rounded-t-[2rem]"
+//                   className="fixed bottom-0 left-0 w-full bg-white z-[2000] p-10 border-t-4 border-foreground shadow-[0_-20px_40px_rgba(0,0,0,0.1)] md:hidden rounded-t-[2rem]"
 //                 >
 //                   <div className="flex justify-between items-center mb-10 pb-6 border-b-2 border-foreground/5">
 //                     <span className="text-[12px] font-black uppercase tracking-[0.3em]">
@@ -229,7 +241,7 @@
 //                     </span>
 //                     <button
 //                       onClick={() => setIsSortOpen(false)}
-//                       className="w-10 h-10 bg-muted flex items-center justify-center"
+//                       className="w-10 h-10 bg-muted flex items-center justify-center shadow-[2px_2px_0px_0px_#000]"
 //                     >
 //                       <X size={20} strokeWidth={3} />
 //                     </button>
@@ -304,7 +316,7 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { useProducts } from "@/hooks/use-products";
+import { useProducts, DbProduct } from "@/hooks/use-products";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Filter,
@@ -317,10 +329,10 @@ import {
 
 type SortOption = "newest" | "price-low" | "price-high";
 
-const Shop = () => {
+const Shop = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
 
   const catParam = searchParams.get("cat") || "all";
   const subParam = searchParams.get("sub") || "all";
@@ -332,26 +344,36 @@ const Shop = () => {
 
   const { data: allProducts = [], isLoading } = useProducts();
 
-  const filteredProducts = useMemo(() => {
-    let result = [...allProducts];
+  const filteredProducts = useMemo((): DbProduct[] => {
+    let result = [...allProducts].filter((p) => p.is_active);
+
     if (activeCategory !== "all") {
       result = result.filter(
         (p) => p.category.toLowerCase() === activeCategory.toLowerCase(),
       );
     }
+
     if (activeSub !== "all") {
       result = result.filter(
         (p) => p.subcategory?.toLowerCase() === activeSub.toLowerCase(),
       );
     }
+
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
-    if (sortBy === "newest") result.reverse();
+    if (sortBy === "newest") {
+      // Sorting by createdAt Timestamp if available, otherwise fallback
+      result.sort((a, b) => {
+        const dateA = a.createdAt?.seconds || 0;
+        const dateB = b.createdAt?.seconds || 0;
+        return dateB - dateA;
+      });
+    }
     return result;
   }, [allProducts, activeCategory, activeSub, sortBy]);
 
-  const categories = ["all", "stickers", "posters", "combo"];
-  const subcategories = [
+  const categories: string[] = ["all", "stickers", "posters", "combo"];
+  const subcategories: string[] = [
     "all",
     "cars",
     "bikes",
@@ -383,7 +405,6 @@ const Shop = () => {
       <Navbar />
 
       <main className="pt-40 pb-20 px-6 max-w-[1400px] mx-auto">
-        {/* HEADER SECTION */}
         <header className="mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-10">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -405,7 +426,6 @@ const Shop = () => {
           </div>
         </header>
 
-        {/* MOBILE CONTROLS */}
         <div className="flex border-4 border-foreground mb-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:hidden">
           <button
             onClick={() => {
@@ -428,7 +448,6 @@ const Shop = () => {
         </div>
 
         <div className="grid lg:grid-cols-5 gap-16">
-          {/* SIDEBAR NAVIGATION / MOBILE FILTER OVERLAY */}
           <aside
             className={`lg:col-span-1 space-y-12 ${
               isFilterOpen
@@ -436,7 +455,6 @@ const Shop = () => {
                 : "hidden lg:block"
             }`}
           >
-            {/* MOBILE CLOSE HEADER */}
             {isFilterOpen && (
               <div className="fixed top-0 left-0 right-0 h-24 bg-white/95 backdrop-blur-md z-[2100] flex items-center justify-between px-6 lg:hidden border-b-4 border-foreground">
                 <span className="text-[12px] font-black uppercase tracking-[0.3em]">
@@ -508,7 +526,6 @@ const Shop = () => {
             </div>
           </aside>
 
-          {/* PRODUCT GRID AREA */}
           <div className="lg:col-span-4">
             <div className="hidden lg:flex justify-end mb-12">
               <div className="flex items-center gap-6 bg-white border-2 border-foreground px-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -527,7 +544,6 @@ const Shop = () => {
               </div>
             </div>
 
-            {/* MOBILE SORT OVERLAY */}
             <AnimatePresence>
               {isSortOpen && (
                 <motion.div
@@ -571,8 +587,8 @@ const Shop = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="space-y-6">
-                    <div className="bg-muted aspect-[3/4] border-4 border-foreground/5" />
-                    <div className="h-4 bg-muted w-3/4" />
+                    <div className="bg-muted aspect-[3/4] border-4 border-foreground/5 animate-pulse" />
+                    <div className="h-4 bg-muted w-3/4 animate-pulse" />
                   </div>
                 ))}
               </div>

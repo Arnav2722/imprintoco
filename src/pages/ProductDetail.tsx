@@ -17,6 +17,7 @@ import {
   Plus,
   Share2,
   Zap,
+  Maximize2,
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { z } from "zod";
@@ -47,15 +48,13 @@ type DeliveryData = {
 
 const pincodeSchema = z.string().length(6).regex(/^\d+$/);
 
-const ProductDetail = () => {
+const ProductDetail = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useCart();
   const { data: product, isLoading, error } = useProduct(id);
 
-  // Determine if product is a Collage Kit
-  const isKit = product?.category?.toLowerCase().includes("collage");
+  const isKit: boolean = !!product?.category?.toLowerCase().includes("collage");
 
-  // Configuration for Standard Posters
   const POSTER_CONFIG: ProductConfig = {
     sizes: ["A5", "A4", "A3", "13x19"],
     details: {
@@ -72,7 +71,6 @@ const ProductDetail = () => {
     },
   };
 
-  // Configuration for Collage Kits
   const KIT_CONFIG: ProductConfig = {
     sizes: ["A6", "A5", "A4"],
     details: {
@@ -87,23 +85,22 @@ const ProductDetail = () => {
     },
   };
 
-  const activeConfig = isKit ? KIT_CONFIG : POSTER_CONFIG;
+  const activeConfig: ProductConfig = isKit ? KIT_CONFIG : POSTER_CONFIG;
 
-  // --- STATES ---
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
   const [pincode, setPincode] = useState<string>("");
   const [delivery, setDelivery] = useState<DeliveryData>({ status: "idle" });
   const [openAccordion, setOpenAccordion] = useState<string>("description");
 
-  // Sync default size
   useEffect(() => {
     if (product) setSelectedSize(isKit ? "A6" : "A5");
   }, [product, isKit]);
 
-  // Tab Title Handler
   useEffect(() => {
-    const originalTitle = product ? `${product.name} | IMPRINTO.` : "IMPRINTO.";
+    const originalTitle: string = product
+      ? `${product.name} | IMPRINTO.`
+      : "IMPRINTO.";
     const handleVisibilityChange = () => {
       document.title = document.hidden ? "Still Thinking? 👀" : originalTitle;
     };
@@ -120,14 +117,17 @@ const ProductDetail = () => {
     return activeConfig.prices[selectedSize];
   }, [selectedSize, activeConfig]);
 
-  // --- LOGIC HANDLERS ---
-  const getEstimatedDate = (daysToAdd: number) => {
+  const optimizedImage: string = product?.image_url
+    ? product.image_url.replace("/upload/", "/upload/w_1200,f_auto,q_auto/")
+    : "";
+
+  const getEstimatedDate = (daysToAdd: number): string => {
     const date = new Date();
     date.setDate(date.getDate() + daysToAdd);
     return date.toLocaleDateString("en-IN", { day: "numeric", month: "long" });
   };
 
-  const handleCheckDelivery = () => {
+  const handleCheckDelivery = (): void => {
     const result = pincodeSchema.safeParse(pincode);
     if (!result.success) {
       toast({
@@ -153,7 +153,7 @@ const ProductDetail = () => {
     }, 800);
   };
 
-  const handleAction = () => {
+  const handleAction = (): void => {
     if (product && currentPrices.current > 0) {
       addToCart(
         { ...product, price: currentPrices.current },
@@ -161,51 +161,25 @@ const ProductDetail = () => {
         quantity,
       );
       toast({
-        title: "ADDED TO HAUL",
-        description: `${product.name} (${selectedSize}) is ready for procurement.`,
+        title: "ADDED TO CART",
+        description: `${product.name} (${selectedSize}) is ready.`,
       });
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2
-          className="animate-spin text-primary"
-          size={48}
-          strokeWidth={3}
-        />
-      </div>
-    );
-
-  if (!product || error)
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6">
-        <h1 className="font-display text-4xl font-black uppercase tracking-tighter">
-          PRODUCT NOT FOUND
-        </h1>
-        <Link
-          to="/shop"
-          className="bg-foreground text-background px-8 py-3 font-black uppercase tracking-widest text-xs"
-        >
-          Return to Shop
-        </Link>
-      </div>
-    );
-
   const accordionItem = (
-    accordionId: string,
+    id: string,
     icon: ReactNode,
     title: string,
     content: ReactNode,
   ) => {
-    const isOpen = openAccordion === accordionId;
+    const isOpen: boolean = openAccordion === id;
     return (
       <div
         className={`border-b-2 border-foreground/5 transition-all ${isOpen ? "bg-muted/30" : ""}`}
       >
         <button
-          onClick={() => setOpenAccordion(isOpen ? "" : accordionId)}
+          onClick={() => setOpenAccordion(isOpen ? "" : id)}
           className="w-full flex justify-between items-center p-6 text-foreground uppercase text-[11px] font-black tracking-widest hover:bg-muted transition-all"
         >
           <div className="flex items-center gap-4">
@@ -238,28 +212,47 @@ const ProductDetail = () => {
     );
   };
 
+  if (isLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={48} />
+      </div>
+    );
+  if (!product || error)
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6">
+        <h1 className="font-display text-4xl font-black uppercase">
+          ARTIFACT NOT FOUND
+        </h1>
+        <Link
+          to="/shop"
+          className="bg-foreground text-background px-8 py-3 font-black uppercase text-xs"
+        >
+          Return to Shop
+        </Link>
+      </div>
+    );
+
   return (
     <div className="min-h-screen bg-background text-foreground font-body selection:bg-primary selection:text-black">
       <Navbar />
       <main className="pt-24 md:pt-32 pb-32 px-4 md:px-6 max-w-[1400px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-24 items-start">
-          {/* LEFT: IMAGE VIEW */}
           <div className="lg:sticky lg:top-32">
-            <div className="bg-white border-4 border-foreground aspect-[3/4] overflow-hidden group relative shadow-[12px_12px_0px_0px_rgba(0,0,0,0.05)] md:shadow-[16px_16px_0px_0px_rgba(0,0,0,0.05)]">
+            <div className="bg-white border-4 border-foreground aspect-[3/4] overflow-hidden group relative shadow-[12px_12px_0px_0px_#00D4FF] md:shadow-[16px_16px_0px_0px_#00D4FF]">
               <img
-                src={product.image_url || ""}
+                src={optimizedImage}
                 alt={product.name}
                 className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
               />
-              <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-primary border-2 border-foreground px-3 md:px-4 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div className="absolute top-4 md:top-6 left-4 md:left-6 bg-primary border-2 border-foreground px-3 md:px-4 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10">
                 <span className="text-[9px] md:text-[10px] font-black uppercase italic tracking-tighter">
-                  {isKit ? "30 PCS BUNDLE" : "Premium Spec"}
+                  {isKit ? "30 PCS BUNDLE" : product.badge || "Premium Spec"}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: DETAILS */}
           <div className="flex flex-col">
             <div className="mb-10 md:mb-12 border-b-4 border-foreground pb-8 md:pb-10">
               <div className="flex items-center gap-2 mb-4">
@@ -292,7 +285,6 @@ const ProductDetail = () => {
             </div>
 
             <div className="space-y-10 md:space-y-12">
-              {/* SIZE SELECTION */}
               <div>
                 <h3 className="text-[10px] md:text-[11px] text-foreground/40 font-black uppercase mb-4 md:mb-6 tracking-widest flex items-center gap-2">
                   <ChevronRight size={14} className="text-primary" />{" "}
@@ -305,11 +297,7 @@ const ProductDetail = () => {
                     <button
                       key={s}
                       onClick={() => setSelectedSize(s)}
-                      className={`flex flex-col items-center justify-center py-4 md:py-5 border-2 md:border-4 transition-all ${
-                        selectedSize === s
-                          ? "bg-foreground text-background border-foreground shadow-[inset_2px_2px_0px_rgba(0,212,255,1)] md:shadow-[inset_4px_4px_0px_rgba(0,212,255,1)]"
-                          : "bg-white border-foreground/5 text-foreground/40 hover:border-foreground"
-                      }`}
+                      className={`flex flex-col items-center justify-center py-4 md:py-5 border-2 md:border-4 transition-all ${selectedSize === s ? "bg-foreground text-background border-foreground shadow-[inset_2px_2px_0px_#00D4FF] md:shadow-[inset_4px_4px_0px_#00D4FF]" : "bg-white border-foreground/5 text-foreground/40 hover:border-foreground"}`}
                     >
                       <span className="text-sm md:text-lg font-black italic">
                         {activeConfig.details[s].label}
@@ -322,13 +310,12 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* QUANTITY & LOGISTICS */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-8 md:gap-12">
                 <div>
                   <h3 className="text-[10px] md:text-[11px] text-foreground/40 font-black uppercase mb-4 md:mb-6 tracking-widest">
                     Set Quantity
                   </h3>
-                  <div className="flex items-center border-2 md:border-4 border-foreground w-fit bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="flex items-center border-2 md:border-4 border-foreground w-fit bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       className="p-4 md:p-5 border-r-2 md:border-r-4 border-foreground hover:bg-muted transition-colors"
@@ -359,11 +346,11 @@ const ProductDetail = () => {
                       value={pincode}
                       onChange={(e) => setPincode(e.target.value)}
                       placeholder="PINCODE"
-                      className="bg-muted border-2 border-foreground rounded-none h-10 md:h-12 text-[10px] md:text-xs font-black tracking-[0.2em] md:tracking-[0.3em] focus-visible:ring-0"
+                      className="bg-muted border-2 border-foreground rounded-none h-10 md:h-12 text-[10px] font-black focus-visible:ring-0"
                     />
                     <Button
                       onClick={handleCheckDelivery}
-                      className="rounded-none bg-foreground text-background h-10 md:h-12 px-4 md:px-6 text-[9px] md:text-[10px] font-black uppercase hover:bg-primary transition-all"
+                      className="rounded-none bg-foreground text-background h-10 md:h-12 px-4 md:px-6 text-[9px] font-black uppercase hover:bg-primary"
                     >
                       CHECK
                     </Button>
@@ -381,11 +368,10 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* ACTIONS - MOBILE OPTIMIZED */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   onClick={handleAction}
-                  className="h-16 sm:h-24 w-full sm:flex-[4] rounded-none bg-foreground text-background font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-xs sm:text-sm hover:bg-primary hover:text-foreground transition-all shadow-[8px_8px_0px_0px_rgba(255,46,99,1)] sm:shadow-[12px_12px_0px_0px_rgba(255,46,99,1)] hover:shadow-none active:translate-x-1 active:translate-y-1 group"
+                  className="h-16 sm:h-24 w-full sm:flex-[4] rounded-none bg-foreground text-background font-black uppercase tracking-[0.2em] sm:tracking-[0.4em] text-xs sm:text-sm hover:bg-primary hover:text-foreground transition-all shadow-[8px_8px_0px_0px_#00D4FF] sm:shadow-[12px_12px_0px_0px_#00D4FF] hover:shadow-none group"
                 >
                   Add to Cart{" "}
                   <ChevronRight
@@ -395,7 +381,7 @@ const ProductDetail = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-16 w-full sm:h-24 sm:w-24 rounded-none border-2 md:border-4 border-foreground bg-white hover:bg-muted transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,0.05)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)] flex items-center justify-center"
+                  className="h-16 w-full sm:h-24 sm:w-24 rounded-none border-2 md:border-4 border-foreground bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.05)] flex items-center justify-center"
                   onClick={() =>
                     navigator
                       .share({ title: product.name, url: window.location.href })
@@ -403,20 +389,16 @@ const ProductDetail = () => {
                   }
                 >
                   <Share2 size={22} strokeWidth={3} />
-                  <span className="ml-3 font-black text-[10px] uppercase sm:hidden">
-                    Share Product
-                  </span>
                 </Button>
               </div>
 
-              {/* INFO ACCORDIONS */}
               <div className="pt-8 md:pt-10 border-t-4 border-foreground/10">
                 {accordionItem(
                   "description",
                   <HelpCircle size={18} />,
                   "SPECIFICATIONS",
                   <div className="space-y-4">
-                    <p className="text-foreground text-[13px] md:text-[14px] font-black">
+                    <p className="text-foreground text-[13px] font-black">
                       PREMIUM PRINT ARCHIVE
                     </p>
                     <p>
@@ -429,8 +411,34 @@ const ProductDetail = () => {
                     </p>
                     <p className="text-primary italic mt-4">
                       CRITICAL NOTES: NOT SELF-ADHESIVE. FRAMES NOT INCLUDED.
-                      SCREEN-TO-PRINT VARIANCE MAY OCCUR.
                     </p>
+                  </div>,
+                )}
+                {accordionItem(
+                  "size_guide",
+                  <Maximize2 size={18} />,
+                  "SIZE GUIDE PROTOCOL",
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="border-2 border-foreground/10 p-3">
+                        <p className="font-black text-foreground">A5 FORMAT</p>
+                        <p>Small & Impactful (Handheld size)</p>
+                      </div>
+                      <div className="border-2 border-foreground/10 p-3">
+                        <p className="font-black text-foreground">A4 FORMAT</p>
+                        <p>Standard Display (Laptop screen size)</p>
+                      </div>
+                      <div className="border-2 border-foreground/10 p-3">
+                        <p className="font-black text-foreground">A3 FORMAT</p>
+                        <p>Large Format (Double A4 size)</p>
+                      </div>
+                      <div className="border-2 border-foreground/10 p-3">
+                        <p className="font-black text-foreground">
+                          13x19 FORMAT
+                        </p>
+                        <p>Premium Large (Gallery scale)</p>
+                      </div>
+                    </div>
                   </div>,
                 )}
                 {accordionItem(
@@ -461,7 +469,7 @@ const ProductDetail = () => {
                     <p>• PREPAID: EXPRESS DELIVERY (3-5 BUSINESS DAYS)</p>
                     <p>• COD: STANDARD LOGISTICS (7-9 BUSINESS DAYS)</p>
                     <p className="mt-4 italic opacity-50 text-[10px]">
-                      ALL PRODCUTS ARE PRINT-ON-DEMAND. 48HR PROCESSING WINDOW
+                      ALL PRODUCTS ARE PRINT-ON-DEMAND. 48HR PROCESSING WINDOW
                       APPLIES.
                     </p>
                   </div>,

@@ -4,11 +4,10 @@ import {
   X,
   Minus,
   Plus,
-  Trash2,
   ShoppingBag,
   Zap,
   ChevronRight,
-  Bookmark,
+  AlertCircle,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
@@ -17,10 +16,14 @@ import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, totalPrice, totalItems } =
-    useCart();
+  const { items, removeFromCart, updateQuantity, totalPrice } = useCart();
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
+
+  // --- LOGIC: MINIMUM ORDER VALUE ---
+  const MIN_ORDER_VALUE = 249;
+  const isBelowMinimum = totalPrice < MIN_ORDER_VALUE;
+  const amountNeededForMin = MIN_ORDER_VALUE - totalPrice;
 
   // Example dynamic offer logic
   const freeShippingThreshold = 500;
@@ -48,7 +51,6 @@ const Cart = () => {
               animate={{ width: `${progressPercent}%` }}
               className="absolute top-0 left-0 h-full bg-primary"
             />
-            {/* Milestones */}
             <div className="absolute top-[-8px] left-[30%] w-4 h-4 bg-white border-2 border-black rounded-full" />
             <div className="absolute top-[-8px] left-[70%] w-4 h-4 bg-white border-2 border-black rounded-full" />
           </div>
@@ -60,14 +62,14 @@ const Cart = () => {
         </div>
 
         <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-12 italic">
-          THE <span className="text-primary not-italic">HAUL.</span>
+          THE <span className="text-primary not-italic">Cart</span>
         </h1>
 
         {items.length === 0 ? (
           <div className="py-20 text-center border-4 border-dashed border-black/10">
             <ShoppingBag size={48} className="mx-auto mb-4 opacity-10" />
             <p className="font-black uppercase tracking-widest text-sm opacity-40 mb-8">
-              Your haul is empty
+              Your Cart is empty
             </p>
             <Button
               onClick={() => navigate("/shop")}
@@ -86,7 +88,10 @@ const Cart = () => {
                   className={`p-6 flex gap-6 ${idx !== items.length - 1 ? "border-b-2 border-black/5" : ""}`}
                 >
                   <img
-                    src={item.product.image_url}
+                    src={item.product.image_url.replace(
+                      "/upload/",
+                      "/upload/w_400,f_auto,q_auto/",
+                    )}
                     alt=""
                     className="w-24 h-32 object-cover border-2 border-black"
                   />
@@ -149,36 +154,19 @@ const Cart = () => {
               ))}
             </div>
 
-            {/* UPSELL SECTION */}
-            <div className="space-y-3">
-              {[
-                { label: "Add 20 aesthetic stickers — ₹179", price: 179 },
-                {
-                  label: "Don't Forget Glue Dots (200 pcs) — ₹149",
-                  price: 149,
-                },
-              ].map((upsell, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between bg-white border-2 border-black p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-100 border border-black/10 rounded flex items-center justify-center">
-                      <Zap size={16} className="text-primary" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-tight">
-                      {upsell.label}
-                    </span>
-                  </div>
-                  <button className="bg-black text-white px-4 py-2 text-[10px] font-black uppercase hover:bg-primary hover:text-black transition-all">
-                    Add
-                  </button>
-                </div>
-              ))}
-            </div>
-
             {/* CHECKOUT BOX */}
             <div className="mt-12 bg-white border-4 border-black p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+              {/* MINIMUM ORDER WARNING */}
+              {isBelowMinimum && (
+                <div className="mb-6 p-4 bg-red-50 border-2 border-red-500 flex items-center gap-3 text-red-600">
+                  <AlertCircle size={20} />
+                  <p className="text-[10px] font-black uppercase tracking-tight">
+                    MINIMUM ORDER VALUE IS ₹{MIN_ORDER_VALUE}. ADD ₹
+                    {amountNeededForMin} MORE TO PROCEED.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center gap-2 mb-6">
                 <input
                   type="checkbox"
@@ -205,7 +193,7 @@ const Cart = () => {
               <div className="flex justify-between items-end mb-8 border-t-2 border-black/5 pt-6">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">
-                    Total HAUL Price
+                    Total Cart Price
                   </span>
                   <span className="text-4xl font-black italic">
                     ₹{totalPrice}
@@ -219,12 +207,14 @@ const Cart = () => {
               </div>
 
               <button
-                disabled={!agreed || items.length === 0}
+                disabled={!agreed || items.length === 0 || isBelowMinimum}
                 onClick={() => navigate("/checkout")}
                 className="w-full h-20 bg-black text-white font-black text-lg uppercase tracking-[0.4em] hover:bg-primary hover:text-black transition-all disabled:opacity-20 disabled:cursor-not-allowed group flex items-center justify-center gap-4"
               >
-                PROCEED TO CHECKOUT
-                <ChevronRight className="group-hover:translate-x-2 transition-transform" />
+                {isBelowMinimum ? "BELOW MINIMUM" : "PROCEED TO CHECKOUT"}
+                {!isBelowMinimum && (
+                  <ChevronRight className="group-hover:translate-x-2 transition-transform" />
+                )}
               </button>
 
               <button
