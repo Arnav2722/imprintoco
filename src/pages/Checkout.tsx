@@ -416,5 +416,7 @@ const Checkout = (): JSX.Element => {
 
 export default Checkout;
 
-
 // Have to add Delhivery API to this
+// API will be connected via backend, and will be triggered when order is created in Firestore
+// It will return a tracking ID which will be saved in the order document in Firestore
+// This tracking ID can then be used to track the order status and update it in Firestore accordingly
