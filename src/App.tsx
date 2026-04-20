@@ -242,14 +242,14 @@ const GlobalTitleHandler = () => {
     // Tab Titles Logic
     if (path === "/") baseTitle = "IMPRINTO CO. | Culture & Prints";
     else if (path === "/shop") baseTitle = "The Collection | Shop";
-    else if (path === "/cart") baseTitle = "Your Haul | Cart";
+    else if (path === "/cart") baseTitle = "Your Cart";
     else if (path === "/explore") baseTitle = "Explore the Culture | IMPRINTO";
     else if (path === "/contact") baseTitle = "Get in Touch | Contact";
     else if (path === "/multi-collections")
       baseTitle = "Multi-Spec Sets | IMPRINTO";
     else if (path === "/retro-studio") baseTitle = "Retro Hub | Studio";
     else if (path === "/custom-studio") baseTitle = "Custom Config | Studio";
-    else if (path === "/stickers") baseTitle = "Vinyl Protocol | Stickers";
+    else if (path === "/stickers") baseTitle = "Vinyl Stickers";
     else if (path === "/faqs") baseTitle = "Help Center | FAQs";
     else if (path === "/reviews") baseTitle = "Community Feedback | Reviews";
     else if (path.includes("/product/"))
@@ -266,7 +266,7 @@ const GlobalTitleHandler = () => {
     // Tab Switch Messages
     let tabMessage = "IMPRINTO CO. 👀";
     if (path === "/checkout") tabMessage = "Your order is almost ready 🖼️";
-    else if (path === "/cart") tabMessage = "Don't leave your haul behind! 🛒";
+    else if (path === "/cart") tabMessage = "Don't leave your cart behind! 🛒";
     else if (path === "/shop")
       tabMessage = "Great prints waiting for you... 👀";
     else if (path.includes("/product/"))

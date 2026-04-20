@@ -1,10 +1,10 @@
 // import { Link } from "react-router-dom";
 // import { Truck, RotateCcw, ShieldCheck, ArrowRight } from "lucide-react";
 
-// const ShippingCTA = () => {
+// const ShippingCTA = (): JSX.Element => {
 //   return (
 //     <section className="py-12 md:py-24 bg-background border-y-2 md:border-y-4 border-foreground selection:bg-primary selection:text-black relative overflow-hidden">
-//       {/* Background Graphic Accent - Hidden on very small screens to avoid layout shift */}
+//       {/* Background Graphic Accent */}
 //       <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.02] md:opacity-[0.03] pointer-events-none select-none">
 //         <h2 className="text-[40vw] md:text-[20vw] font-black uppercase italic leading-none">
 //           IMPRINTO
@@ -13,7 +13,7 @@
 
 //       <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
 //         <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-10 md:gap-16">
-//           {/* LEFT: Heading & Mobile-Specific Alignment */}
+//           {/* LEFT: Heading */}
 //           <div className="text-center lg:text-left space-y-4 md:space-y-6 w-full lg:w-auto">
 //             <h2 className="font-display text-[12vw] sm:text-[10vw] lg:text-[5vw] font-black uppercase tracking-tighter leading-[0.9] md:leading-[0.8] text-foreground">
 //               DIFFERENT BY <br />
@@ -24,21 +24,20 @@
 //               <div className="flex items-center gap-2">
 //                 <div className="w-1.5 h-1.5 bg-accent rotate-45" />
 //                 <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-foreground/50">
-//                   FREE SHIPPING OVER ₹599
+//                   FREE SHIPPING OVER ₹499
 //                 </span>
 //               </div>
 //               <div className="flex items-center gap-2">
 //                 <div className="w-1.5 h-1.5 bg-accent-lime rotate-45" />
 //                 <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-foreground/50">
-//                   PAN INDIA SHIPPING
+//                   PAN-INDIA SHIPPING
 //                 </span>
 //               </div>
 //             </div>
 //           </div>
 
-//           {/* RIGHT: Layout fix for mobile icons and button */}
+//           {/* RIGHT: Trust Icons and CTA */}
 //           <div className="w-full lg:w-auto flex flex-col items-center gap-8 md:gap-16">
-//             {/* Trust Icons - Proper spacing on mobile */}
 //             <div className="grid grid-cols-3 gap-8 md:gap-12 w-full max-w-sm md:max-w-none">
 //               <TrustIcon
 //                 icon={<Truck className="w-6 h-6 md:w-8 md:h-8" />}
@@ -54,10 +53,9 @@
 //               />
 //             </div>
 
-//             {/* CTA Button - Full width on mobile, shadow fix */}
 //             <Link
 //               to="/shop"
-//               className="w-full sm:w-auto h-20 md:h-24 px-8 md:px-12 bg-foreground text-background font-display rounded-none transition-all duration-300 group flex items-center justify-between sm:justify-center gap-6 md:gap-10 hover:bg-primary hover:text-foreground shadow-[6px_6px_0px_0px_#FF2E63] md:shadow-[12px_12px_0px_0px_#FF2E63] hover:shadow-none active:translate-x-1 active:translate-y-1"
+//               className="w-full sm:w-auto h-20 md:h-24 px-8 md:px-12 bg-foreground text-background font-display rounded-none transition-all duration-300 group flex items-center justify-between sm:justify-center gap-6 md:gap-10 hover:bg-primary hover:text-foreground shadow-[6px_6px_0px_0px_#00D4FF] md:shadow-[12px_12px_0px_0px_#00D4FF] hover:shadow-none active:translate-x-1 active:translate-y-1"
 //             >
 //               <div className="flex flex-col items-start leading-none">
 //                 <span className="text-[8px] md:text-[11px] font-black uppercase tracking-[0.3em] opacity-40 group-hover:opacity-100">
@@ -79,13 +77,12 @@
 //   );
 // };
 
-// const TrustIcon = ({
-//   icon,
-//   label,
-// }: {
+// interface TrustIconProps {
 //   icon: React.ReactNode;
 //   label: string;
-// }) => (
+// }
+
+// const TrustIcon = ({ icon, label }: TrustIconProps): JSX.Element => (
 //   <div className="flex flex-col items-center gap-2 md:gap-4 group cursor-default">
 //     <div className="text-foreground/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300">
 //       {icon}
@@ -105,31 +102,31 @@ const ShippingCTA = (): JSX.Element => {
   return (
     <section className="py-12 md:py-24 bg-background border-y-2 md:border-y-4 border-foreground selection:bg-primary selection:text-black relative overflow-hidden">
       {/* Background Graphic Accent */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.02] md:opacity-[0.03] pointer-events-none select-none">
-        <h2 className="text-[40vw] md:text-[20vw] font-black uppercase italic leading-none">
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.02] pointer-events-none select-none">
+        <h2 className="text-[30vw] font-black uppercase leading-none">
           IMPRINTO
         </h2>
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-10 md:gap-16">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 md:gap-16">
           {/* LEFT: Heading */}
-          <div className="text-center lg:text-left space-y-4 md:space-y-6 w-full lg:w-auto">
-            <h2 className="font-display text-[12vw] sm:text-[10vw] lg:text-[5vw] font-black uppercase tracking-tighter leading-[0.9] md:leading-[0.8] text-foreground">
+          <div className="text-center lg:text-left space-y-6 w-full lg:w-auto">
+            <h2 className="font-display text-[9vw] sm:text-[6vw] lg:text-[4vw] font-black uppercase tracking-tighter leading-[1.2] text-foreground">
               DIFFERENT BY <br />
-              <span className="text-primary italic">DESIGN.</span>
+              <span className="text-primary">DESIGN</span>
             </h2>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-accent rotate-45" />
-                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-foreground/50">
+                <div className="w-2 h-2 bg-accent rotate-45" />
+                <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-foreground/50">
                   FREE SHIPPING OVER ₹499
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-accent-lime rotate-45" />
-                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-foreground/50">
+                <div className="w-2 h-2 bg-accent-lime rotate-45" />
+                <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-foreground/50">
                   PAN-INDIA SHIPPING
                 </span>
               </div>
@@ -137,8 +134,8 @@ const ShippingCTA = (): JSX.Element => {
           </div>
 
           {/* RIGHT: Trust Icons and CTA */}
-          <div className="w-full lg:w-auto flex flex-col items-center gap-8 md:gap-16">
-            <div className="grid grid-cols-3 gap-8 md:gap-12 w-full max-w-sm md:max-w-none">
+          <div className="w-full lg:w-auto flex flex-col items-center gap-10 md:gap-14">
+            <div className="grid grid-cols-3 gap-6 md:gap-12 w-full max-w-xs md:max-w-none">
               <TrustIcon
                 icon={<Truck className="w-6 h-6 md:w-8 md:h-8" />}
                 label="Fast"
@@ -155,18 +152,18 @@ const ShippingCTA = (): JSX.Element => {
 
             <Link
               to="/shop"
-              className="w-full sm:w-auto h-20 md:h-24 px-8 md:px-12 bg-foreground text-background font-display rounded-none transition-all duration-300 group flex items-center justify-between sm:justify-center gap-6 md:gap-10 hover:bg-primary hover:text-foreground shadow-[6px_6px_0px_0px_#00D4FF] md:shadow-[12px_12px_0px_0px_#00D4FF] hover:shadow-none active:translate-x-1 active:translate-y-1"
+              className="w-full sm:w-auto h-16 md:h-24 px-6 md:px-12 bg-foreground text-background rounded-none transition-all duration-300 group flex items-center justify-between sm:justify-center gap-6 md:gap-10 shadow-[4px_4px_0px_0px_#00D4FF] md:shadow-[10px_10px_0px_0px_#00D4FF]"
             >
               <div className="flex flex-col items-start leading-none">
-                <span className="text-[8px] md:text-[11px] font-black uppercase tracking-[0.3em] opacity-40 group-hover:opacity-100">
+                <span className="text-[6px] md:text-[9px] font-black uppercase tracking-widest opacity-40 group-hover:opacity-100 mb-1">
                   BROWSE
                 </span>
-                <span className="text-xl md:text-2xl font-black uppercase tracking-tighter">
-                  THE COLLECTION
+                <span className="text-sm md:text-xl font-black uppercase tracking-tight">
+                  COLLECTION
                 </span>
               </div>
               <ArrowRight
-                className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-2 transition-transform duration-300"
+                className="w-4 h-4 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform"
                 strokeWidth={3}
               />
             </Link>
@@ -183,11 +180,11 @@ interface TrustIconProps {
 }
 
 const TrustIcon = ({ icon, label }: TrustIconProps): JSX.Element => (
-  <div className="flex flex-col items-center gap-2 md:gap-4 group cursor-default">
-    <div className="text-foreground/20 group-hover:text-primary group-hover:scale-110 transition-all duration-300">
+  <div className="flex flex-col items-center gap-3 group cursor-default">
+    <div className="text-foreground/20 group-hover:text-primary transition-colors">
       {icon}
     </div>
-    <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-foreground transition-colors">
+    <span className="text-[6px] md:text-[8px] font-black uppercase tracking-widest text-foreground/30 group-hover:text-foreground">
       {label}
     </span>
   </div>

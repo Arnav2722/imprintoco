@@ -181,7 +181,7 @@ const Checkout = (): JSX.Element => {
       }
     } catch (err) {
       console.error("Payment Process Error:", err);
-      alert("Payment start nahi ho saki. Console check karein.");
+      alert("Payment Process Error");
     } finally {
       setProcessing(false);
     }
@@ -198,7 +198,7 @@ const Checkout = (): JSX.Element => {
           <PartyPopper size={64} className="mx-auto text-primary mb-6" />
           <h1 className="text-4xl font-black uppercase italic">SUCCESS.</h1>
           <p className="text-[10px] font-black uppercase text-foreground/40 mt-4 mb-8">
-            Haul confirmed. Transmission successful.
+            Order confirmed. Transmission successful.
           </p>
           <Button
             onClick={() => navigate("/profile")}

@@ -113,8 +113,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Clash Grotesk"', '"Bricolage Grotesque"', 'sans-serif'],
-        body: ['"Satoshi"', 'sans-serif'],
+        display: ['"Press Start 2P"', 'system-ui'],
+        body: ['"Press Start 2P"', 'system-ui'],
       },
       colors: {
         border: "hsl(var(--border))",
