@@ -303,3 +303,5 @@ const FeatureItem = ({ text }: { text: string }) => (
 );
 
 export default HeroSection;
+
+// HERO SECTION ENDS HERE
