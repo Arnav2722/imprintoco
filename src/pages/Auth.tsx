@@ -1,5 +1,5 @@
 // import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+// import { useNavigate, useLocation } from "react-router-dom";
 // import Navbar from "@/components/Navbar";
 // import Footer from "@/components/Footer";
 // import { Button } from "@/components/ui/button";
@@ -40,7 +40,12 @@
 // };
 
 // const Auth = () => {
-//   const [isLogin, setIsLogin] = useState(true);
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const { toast } = useToast();
+
+//   // Determine state based on URL path
+//   const isLogin = location.pathname === "/login";
 //   const [loading, setLoading] = useState(false);
 //   const [form, setForm] = useState<FormData>({
 //     firstName: "",
@@ -60,9 +65,6 @@
 //     generateCaptchaString(),
 //   );
 
-//   const navigate = useNavigate();
-//   const { toast } = useToast();
-
 //   useEffect(() => {
 //     const unsubscribe = onAuthStateChanged(auth, (user) => {
 //       if (user) {
@@ -71,6 +73,13 @@
 //     });
 //     return () => unsubscribe();
 //   }, [navigate]);
+
+//   // Refresh captcha whenever we switch to the register page
+//   useEffect(() => {
+//     if (!isLogin) {
+//       setGeneratedCaptcha(generateCaptchaString());
+//     }
+//   }, [isLogin]);
 
 //   const handleChange = (
 //     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -165,6 +174,7 @@
 
 //       <div className="flex items-center justify-center min-h-screen px-6 pt-32 pb-24 relative z-10">
 //         <motion.div
+//           key={isLogin ? "login" : "register"} // Key ensures animation re-runs on path change
 //           initial={{ opacity: 0, scale: 0.95 }}
 //           animate={{ opacity: 1, scale: 1 }}
 //           className="w-full max-w-[500px] bg-white border-4 border-foreground p-10 md:p-14 relative shadow-[20px_20px_0px_0px_rgba(0,212,255,1)]"
@@ -363,7 +373,7 @@
 //             </Button>
 
 //             <button
-//               onClick={() => setIsLogin(!isLogin)}
+//               onClick={() => navigate(isLogin ? "/register" : "/login")}
 //               className="text-[10px] font-black tracking-widest uppercase text-foreground/40 hover:text-primary transition-colors block mx-auto underline underline-offset-4"
 //             >
 //               {isLogin
@@ -379,7 +389,6 @@
 // };
 
 // export default Auth;
-
 
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -409,7 +418,8 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-import { auth, googleProvider } from "@/lib/firebase";
+import { auth, googleProvider, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 type FormData = {
   firstName: string;
@@ -427,7 +437,6 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Determine state based on URL path
   const isLogin = location.pathname === "/login";
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<FormData>({
@@ -450,14 +459,13 @@ const Auth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && !loading) {
         navigate("/");
       }
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, [navigate, loading]);
 
-  // Refresh captcha whenever we switch to the register page
   useEffect(() => {
     if (!isLogin) {
       setGeneratedCaptcha(generateCaptchaString());
@@ -481,13 +489,25 @@ const Auth = () => {
     try {
       setLoading(true);
       const res: UserCredential = await signInWithPopup(auth, googleProvider);
-      await saveUser(res.user);
-      toast({ title: "Successfully logged in!" });
+
+      // FIX: Pehle check karo user exist karta hai ya nahi
+      const userDoc = await getDoc(doc(db, "users", res.user.uid));
+
+      if (!userDoc.exists()) {
+        // Sirf naye user ke liye data create karo
+        await saveUser(res.user);
+      } else {
+        // Purane user ke liye sirf login time update karo, profile data nahi
+        // Isse aapka 'mobile' field safe rahega
+        console.log("Existing user detected, keeping mobile number safe.");
+      }
+
+      toast({ title: "SUCCESSFULLY LOGGED IN" });
       navigate("/");
     } catch (err: unknown) {
       if (err instanceof Error) {
         toast({
-          title: "Login Failed",
+          title: "LOGIN FAILED",
           description: err.message,
           variant: "destructive",
         });
@@ -512,14 +532,14 @@ const Auth = () => {
       if (!isLogin) {
         if (!validatePassword(form.password)) {
           throw new Error(
-            "Password must be 12+ characters with uppercase, lowercase and a symbol",
+            "PASSWORD MUST BE 12+ CHARACTERS WITH UPPERCASE, LOWERCASE AND A SYMBOL",
           );
         }
         if (form.password !== form.confirmPassword) {
-          throw new Error("Passwords do not match");
+          throw new Error("PASSWORDS DO NOT MATCH");
         }
         if (form.captcha !== generatedCaptcha) {
-          throw new Error("Wrong captcha code");
+          throw new Error("WRONG CAPTCHA CODE");
         }
 
         const res: UserCredential = await createUserWithEmailAndPassword(
@@ -529,27 +549,29 @@ const Auth = () => {
         );
 
         await saveUser(res.user, {
-          displayName: `${form.firstName} ${form.lastName}`,
-          phoneNumber: `${form.countryCode}${form.phone}`,
+          name: `${form.firstName} ${form.lastName}`,
+          mobile: `${form.countryCode}${form.phone}`,
         });
 
-        toast({ title: "Account created successfully!" });
+        toast({ title: "ACCOUNT CREATED" });
       } else {
         await signInWithEmailAndPassword(auth, form.email, form.password);
-        toast({ title: "Welcome back!" });
+        // Login ke waqt hum saveUser call hi nahi karenge
+        // Taaki Firestore document overwrite na ho
+        toast({ title: "WELCOME BACK" });
       }
       navigate("/");
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Something went wrong";
-      toast({ title: "Error", description: message, variant: "destructive" });
+        err instanceof Error ? err.message : "SOMETHING WENT WRONG";
+      toast({ title: "ERROR", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
   const inputClass =
-    "w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 pl-10";
+    "w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[10px] md:text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 pl-10";
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-black">
@@ -557,21 +579,20 @@ const Auth = () => {
 
       <div className="flex items-center justify-center min-h-screen px-6 pt-32 pb-24 relative z-10">
         <motion.div
-          key={isLogin ? "login" : "register"} // Key ensures animation re-runs on path change
+          key={isLogin ? "login" : "register"}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-[500px] bg-white border-4 border-foreground p-10 md:p-14 relative shadow-[20px_20px_0px_0px_rgba(0,212,255,1)]"
+          className="w-full max-w-[500px] bg-white border-2 md:border-4 border-foreground p-8 md:p-14 relative shadow-[10px_10px_0px_0px_rgba(0,212,255,1)]"
         >
-          <div className="flex flex-col items-center mb-12">
+          <div className="flex flex-col items-center mb-10">
             <img
-              src="/logo.png"
+              src="/MainLogo.png"
               alt="Imprinto Co."
-              className="h-10 w-auto mb-6 brightness-0"
+              className="h-10 md:h-12 w-auto mb-6"
             />
-            <h2 className="font-display text-4xl font-black uppercase tracking-tighter italic text-center">
+            <h2 className="font-display text-xl md:text-3xl font-black uppercase tracking-tighter text-center leading-tight">
               {isLogin ? "JOIN THE CORE" : "CREATE IDENTITY"}
             </h2>
-            <div className="w-12 h-1 bg-primary mt-4" />
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
@@ -583,15 +604,15 @@ const Auth = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex flex-col gap-y-6 overflow-hidden"
                 >
-                  <div className="flex gap-x-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <div className="relative flex-1 group">
                       <UserIcon
                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                        size={18}
+                        size={16}
                       />
                       <input
                         name="firstName"
-                        placeholder="First Name"
+                        placeholder="FIRST NAME"
                         onChange={handleChange}
                         required
                         className={inputClass}
@@ -600,10 +621,10 @@ const Auth = () => {
                     <div className="relative flex-1 group">
                       <input
                         name="lastName"
-                        placeholder="Last Name"
+                        placeholder="LAST NAME"
                         onChange={handleChange}
                         required
-                        className="w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 px-2"
+                        className="w-full bg-transparent border-b-2 border-foreground/10 py-4 text-[10px] md:text-[12px] font-black tracking-widest uppercase outline-none transition-all focus:border-primary text-foreground placeholder:text-foreground/20 px-2"
                       />
                     </div>
                   </div>
@@ -612,7 +633,7 @@ const Auth = () => {
                     <div className="relative w-24 group">
                       <Globe
                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                        size={18}
+                        size={16}
                       />
                       <select
                         name="countryCode"
@@ -629,12 +650,12 @@ const Auth = () => {
                     <div className="relative flex-1 group">
                       <Phone
                         className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                        size={18}
+                        size={16}
                       />
                       <input
                         name="phone"
                         type="tel"
-                        placeholder="Mobile Number"
+                        placeholder="MOBILE"
                         onChange={handleChange}
                         required
                         className={inputClass}
@@ -648,12 +669,12 @@ const Auth = () => {
             <div className="relative group">
               <Mail
                 className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                size={18}
+                size={16}
               />
               <input
                 name="email"
                 type="email"
-                placeholder="Email ID"
+                placeholder="EMAIL ID"
                 onChange={handleChange}
                 required
                 className={inputClass}
@@ -663,12 +684,12 @@ const Auth = () => {
             <div className="relative group">
               <Lock
                 className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                size={18}
+                size={16}
               />
               <input
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder="PASSWORD"
                 onChange={handleChange}
                 required
                 className={inputClass}
@@ -684,24 +705,24 @@ const Auth = () => {
                 <div className="relative group">
                   <Lock
                     className="absolute left-1 top-1/2 -translate-y-1/2 text-foreground/20 group-focus-within:text-primary transition-colors"
-                    size={18}
+                    size={16}
                   />
                   <input
                     name="confirmPassword"
                     type="password"
-                    placeholder="Confirm Password"
+                    placeholder="CONFIRM"
                     onChange={handleChange}
                     required
                     className={inputClass}
                   />
                 </div>
 
-                <div className="p-6 bg-foreground/5 border-2 border-foreground/10 rounded-none space-y-4">
+                <div className="p-4 md:p-6 bg-foreground/5 border-2 border-foreground/10 rounded-none space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black text-foreground/40 uppercase tracking-widest flex items-center gap-2">
+                    <span className="text-[7px] md:text-[9px] font-black text-foreground/40 uppercase tracking-widest flex items-center gap-2">
                       <ShieldCheck size={14} className="text-primary" />
-                      Human Check:
-                      <span className="text-foreground italic font-black bg-white px-2 py-0.5 border border-foreground/10">
+                      HUMAN CHECK:
+                      <span className="text-foreground font-black bg-white px-2 py-1 border border-foreground/10">
                         {generatedCaptcha}
                       </span>
                     </span>
@@ -710,7 +731,7 @@ const Auth = () => {
                       onClick={refreshCaptcha}
                       className="text-foreground/40 hover:text-primary transition-colors"
                     >
-                      <RefreshCw size={16} />
+                      <RefreshCw size={14} />
                     </button>
                   </div>
                   <input
@@ -718,50 +739,42 @@ const Auth = () => {
                     placeholder="ENTER CODE"
                     onChange={handleChange}
                     required
-                    className="w-full bg-white border-2 border-foreground py-3 text-center text-[12px] font-black tracking-[0.4em] uppercase outline-none focus:border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
+                    className="w-full bg-white border-2 border-foreground py-3 text-center text-[10px] md:text-[12px] font-black tracking-[0.3em] uppercase outline-none focus:border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   />
                 </div>
               </motion.div>
             )}
 
             <Button
-              className="w-full h-16 bg-foreground text-background font-black uppercase tracking-widest rounded-none hover:bg-primary hover:text-foreground transition-all flex items-center justify-center gap-3 mt-4 text-sm group"
+              className="w-full h-14 md:h-16 bg-foreground text-background font-black uppercase tracking-widest rounded-none hover:bg-primary hover:text-foreground transition-all flex items-center justify-center gap-3 mt-4 text-[10px] md:text-xs group shadow-[4px_4px_0px_0px_rgba(0,212,255,1)]"
               type="submit"
               disabled={loading}
             >
-              {loading ? "PROCESSING..." : isLogin ? "LOG IN" : "SIGN UP"}
+              {loading ? "PROCESSING" : isLogin ? "LOG IN" : "SIGN UP"}
               <ArrowRight
-                size={20}
+                size={16}
                 className="group-hover:translate-x-1 transition-transform"
               />
             </Button>
           </form>
 
-          <div className="mt-10 pt-10 border-t-2 border-foreground/5 flex flex-col gap-y-6 text-center">
-            <div className="relative flex items-center gap-4">
-              <div className="h-[1px] bg-foreground/10 flex-1" />
-              <span className="text-[9px] font-black text-foreground/30 uppercase tracking-[0.3em]">
-                Quick Access
-              </span>
-              <div className="h-[1px] bg-foreground/10 flex-1" />
-            </div>
-
+          <div className="mt-8 pt-8 border-t-2 border-foreground/5 flex flex-col gap-y-6 text-center">
             <Button
               variant="outline"
-              className="w-full h-14 border-2 border-foreground rounded-none bg-white hover:bg-accent-lime hover:text-foreground transition-all flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none"
+              className="w-full h-12 md:h-14 border-2 border-foreground rounded-none bg-white hover:bg-accent-lime hover:text-foreground transition-all flex items-center justify-center gap-3 text-[9px] md:text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none"
               onClick={handleGoogleLogin}
               disabled={loading}
             >
-              <Chrome size={18} /> Google Login
+              <Chrome size={16} /> GOOGLE LOGIN
             </Button>
 
             <button
               onClick={() => navigate(isLogin ? "/register" : "/login")}
-              className="text-[10px] font-black tracking-widest uppercase text-foreground/40 hover:text-primary transition-colors block mx-auto underline underline-offset-4"
+              className="text-[8px] md:text-[10px] font-black tracking-widest uppercase text-foreground/40 hover:text-primary transition-colors block mx-auto underline underline-offset-4"
             >
               {isLogin
-                ? "New to Imprinto? Register"
-                : "Already in the circle? Login"}
+                ? "NEW TO IMPRINTO? REGISTER"
+                : "ALREADY IN THE CIRCLE? LOGIN"}
             </button>
           </div>
         </motion.div>

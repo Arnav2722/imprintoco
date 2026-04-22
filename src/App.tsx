@@ -9,7 +9,7 @@
 // import CartDrawer from "@/components/CartDrawer";
 // import Navbar from "@/components/Navbar";
 
-// // Core Pages
+// // Pages Imports (As you have them)
 // import Index from "./pages/Index.tsx";
 // import Shop from "./pages/Shop.tsx";
 // import ProductDetail from "./pages/ProductDetail.tsx";
@@ -29,15 +29,22 @@
 // import FAQs from "./pages/FAQs.tsx";
 // import TrackOrder from "./pages/TrackOrder.tsx";
 // import ReviewPage from "./pages/ReviewPage.tsx";
-// import Cart from "./pages/Cart.tsx"; // Added Cart Import
-
-// // Legal & Policy Pages
+// import Cart from "./pages/Cart.tsx";
 // import ShippingPolicy from "./pages/ShippingPolicy.tsx";
 // import ReturnPolicy from "./pages/ReturnPolicy.tsx";
 // import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 // import TermsConditions from "./pages/TermsConditions.tsx";
 
 // const queryClient = new QueryClient();
+
+// // 1. FIX: Scroll to Top on Page Change
+// const ScrollToTop = () => {
+//   const { pathname } = useLocation();
+//   useEffect(() => {
+//     window.scrollTo(0, 0);
+//   }, [pathname]);
+//   return null;
+// };
 
 // const GlobalTitleHandler = () => {
 //   const location = useLocation();
@@ -46,31 +53,22 @@
 //     let baseTitle = "IMPRINTO CO. | Premium Prints";
 //     const path = location.pathname.toLowerCase();
 
-//     // ==================== BASE TITLES (Visible when tab is active) ====================
+//     // Tab Titles Logic
 //     if (path === "/") baseTitle = "IMPRINTO CO. | Culture & Prints";
 //     else if (path === "/shop") baseTitle = "The Collection | Shop";
-//     else if (path === "/cart")
-//       baseTitle = "Your Haul | Cart"; // Added Cart Title
+//     else if (path === "/cart") baseTitle = "Your Cart";
 //     else if (path === "/explore") baseTitle = "Explore the Culture | IMPRINTO";
 //     else if (path === "/contact") baseTitle = "Get in Touch | Contact";
-//     else if (path === "/multi-collections" || path === "/collage-kits")
+//     else if (path === "/multi-collections")
 //       baseTitle = "Multi-Spec Sets | IMPRINTO";
-//     else if (path === "/retro-studio" || path === "/retro")
-//       baseTitle = "Retro Hub | Studio";
-//     else if (path === "/custom-prints" || path === "/custom-studio")
-//       baseTitle = "Custom Config | Studio";
-//     else if (path === "/stickers") baseTitle = "Vinyl Protocol | Stickers";
-//     else if (path === "/bulk-posters") baseTitle = "B2B Protocol | Bulk";
+//     else if (path === "/retro-studio") baseTitle = "Retro Hub | Studio";
+//     else if (path === "/custom-studio") baseTitle = "Custom Config | Studio";
+//     else if (path === "/stickers") baseTitle = "Vinyl Stickers";
 //     else if (path === "/faqs") baseTitle = "Help Center | FAQs";
 //     else if (path === "/reviews") baseTitle = "Community Feedback | Reviews";
-//     else if (path === "/auth" || path === "/login" || path === "/register")
-//       baseTitle = "Identify Yourself | Auth";
-//     else if (path === "/about") baseTitle = "Our Mission | Ethos";
-//     else if (path === "/checkout") baseTitle = "Secure Checkout | IMPRINTO";
-//     else if (path === "/profile") baseTitle = "Member Profile | Core";
-//     else if (path === "/track-order") baseTitle = "Logistics Hub | Tracking";
+//     else if (path.includes("/product/"))
+//       baseTitle = "Product Detail | IMPRINTO";
 //     else if (path === "/admin") baseTitle = "Command Center | Admin";
-//     // Legal Pages
 //     else if (path === "/shipping-policy")
 //       baseTitle = "Shipping Policy | IMPRINTO";
 //     else if (path === "/return-policy") baseTitle = "Return Policy | IMPRINTO";
@@ -78,35 +76,15 @@
 //       baseTitle = "Privacy Policy | IMPRINTO";
 //     else if (path === "/terms-conditions")
 //       baseTitle = "Terms & Conditions | IMPRINTO";
-//     else if (path.includes("/product/"))
-//       baseTitle = "Product Detail | IMPRINTO";
 
-//     // ==================== TAB SWITCH MESSAGES (when user leaves the tab) ====================
+//     // Tab Switch Messages
 //     let tabMessage = "IMPRINTO CO. 👀";
-
-//     if (path === "/checkout") {
-//       tabMessage = "Your order is almost ready 🖼️";
-//     } else if (path === "/cart") {
-//       tabMessage = "Don't leave your haul behind! 🛒"; // Added Cart Exit Message
-//     } else if (path === "/shop") {
+//     if (path === "/checkout") tabMessage = "Your order is almost ready 🖼️";
+//     else if (path === "/cart") tabMessage = "Don't leave your cart behind! 🛒";
+//     else if (path === "/shop")
 //       tabMessage = "Great prints waiting for you... 👀";
-//     } else if (path.includes("/product/")) {
+//     else if (path.includes("/product/"))
 //       tabMessage = "This piece looks perfect on your wall ❤️";
-//     } else if (path === "/custom-prints" || path === "/custom-studio") {
-//       tabMessage = "Your custom idea is still waiting 🎨";
-//     } else if (path === "/multi-collections") {
-//       tabMessage = "Multi posters hit different together 🔥";
-//     } else if (path === "/retro-studio" || path === "/retro") {
-//       tabMessage = "Retro vibes calling you back 🕹️";
-//     } else if (path === "/stickers") {
-//       tabMessage = "Sticker addiction loading... 😎";
-//     } else if (path === "/reviews") {
-//       tabMessage = "Real stories from fellow collectors 📖";
-//     } else if (path === "/faqs" || path === "/about") {
-//       tabMessage = "Got questions? We've got answers 👀";
-//     } else if (path === "/contact") {
-//       tabMessage = "We're here whenever you're ready ✉️";
-//     }
 
 //     const handleVisibilityChange = () => {
 //       document.title = document.hidden ? tabMessage : baseTitle;
@@ -114,10 +92,8 @@
 
 //     document.title = baseTitle;
 //     document.addEventListener("visibilitychange", handleVisibilityChange);
-
-//     return () => {
+//     return () =>
 //       document.removeEventListener("visibilitychange", handleVisibilityChange);
-//     };
 //   }, [location]);
 
 //   return null;
@@ -125,17 +101,18 @@
 
 // const LayoutHandler = () => {
 //   const location = useLocation();
-//   const isAdminPage = location.pathname === "/admin";
+//   const isAdminPage = location.pathname.startsWith("/admin"); // Catch all admin sub-routes
 
 //   return (
 //     <>
+//       <ScrollToTop />
 //       <GlobalTitleHandler />
 //       {!isAdminPage && <Navbar />}
 //       <CartDrawer />
 //       <Routes>
 //         <Route path="/" element={<Index />} />
 //         <Route path="/shop" element={<Shop />} />
-//         <Route path="/cart" element={<Cart />} /> {/* Added Cart Route */}
+//         <Route path="/cart" element={<Cart />} />
 //         <Route path="/explore" element={<Explore />} />
 //         <Route path="/product/:id" element={<ProductDetail />} />
 //         <Route path="/custom-prints" element={<CustomPrints />} />
@@ -154,8 +131,9 @@
 //         <Route path="/bulk-posters" element={<BulkPosters />} />
 //         <Route path="/faqs" element={<FAQs />} />
 //         <Route path="/reviews" element={<ReviewPage />} />
-//         <Route path="/admin" element={<Admin />} />
-//         {/* Legal & Policy Routes */}
+//         <Route path="/admin/*" element={<Admin />} />{" "}
+//         {/* Admin sub-routing support */}
+//         {/* Policy Routes (Matched with Footer Links) */}
 //         <Route path="/shipping-policy" element={<ShippingPolicy />} />
 //         <Route path="/return-policy" element={<ReturnPolicy />} />
 //         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -195,7 +173,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import CartDrawer from "@/components/CartDrawer";
 import Navbar from "@/components/Navbar";
 
-// Pages Imports (As you have them)
+// Pages Imports
 import Index from "./pages/Index.tsx";
 import Shop from "./pages/Shop.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
@@ -223,7 +201,7 @@ import TermsConditions from "./pages/TermsConditions.tsx";
 
 const queryClient = new QueryClient();
 
-// 1. FIX: Scroll to Top on Page Change
+// 1. Scroll to Top on Page Change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -232,45 +210,39 @@ const ScrollToTop = () => {
   return null;
 };
 
+// 2. Tab Title & Visibility Handler
 const GlobalTitleHandler = () => {
   const location = useLocation();
 
   useEffect(() => {
-    let baseTitle = "IMPRINTO CO. | Premium Prints";
+    let baseTitle = "IMPRINTO CO. | PREMIUM PRINTS";
     const path = location.pathname.toLowerCase();
 
-    // Tab Titles Logic
-    if (path === "/") baseTitle = "IMPRINTO CO. | Culture & Prints";
-    else if (path === "/shop") baseTitle = "The Collection | Shop";
-    else if (path === "/cart") baseTitle = "Your Cart";
-    else if (path === "/explore") baseTitle = "Explore the Culture | IMPRINTO";
-    else if (path === "/contact") baseTitle = "Get in Touch | Contact";
-    else if (path === "/multi-collections")
-      baseTitle = "Multi-Spec Sets | IMPRINTO";
-    else if (path === "/retro-studio") baseTitle = "Retro Hub | Studio";
-    else if (path === "/custom-studio") baseTitle = "Custom Config | Studio";
-    else if (path === "/stickers") baseTitle = "Vinyl Stickers";
-    else if (path === "/faqs") baseTitle = "Help Center | FAQs";
-    else if (path === "/reviews") baseTitle = "Community Feedback | Reviews";
+    if (path === "/") baseTitle = "IMPRINTO CO. | CULTURE";
+    else if (path === "/shop") baseTitle = "SHOP | THE ARCHIVE";
+    else if (path === "/cart") baseTitle = "YOUR CART | IMPRINTO";
+    else if (path === "/explore") baseTitle = "EXPLORE THE CORE";
+    else if (path === "/contact") baseTitle = "GET IN TOUCH | CONTACT";
+    else if (path === "/multi-collections") baseTitle = "MULTI-SPEC SETS";
+    else if (path === "/retro-studio") baseTitle = "RETRO HUB | STUDIO";
+    else if (path === "/custom-studio") baseTitle = "CUSTOM CONFIG | STUDIO";
+    else if (path === "/stickers") baseTitle = "VINYL STICKERS";
+    else if (path === "/faqs") baseTitle = "HELP CENTER | FAQS";
+    else if (path === "/reviews") baseTitle = "COMMUNITY FEEDBACK";
     else if (path.includes("/product/"))
-      baseTitle = "Product Detail | IMPRINTO";
-    else if (path === "/admin") baseTitle = "Command Center | Admin";
-    else if (path === "/shipping-policy")
-      baseTitle = "Shipping Policy | IMPRINTO";
-    else if (path === "/return-policy") baseTitle = "Return Policy | IMPRINTO";
-    else if (path === "/privacy-policy")
-      baseTitle = "Privacy Policy | IMPRINTO";
-    else if (path === "/terms-conditions")
-      baseTitle = "Terms & Conditions | IMPRINTO";
+      baseTitle = "PRODUCT DETAIL | IMPRINTO";
+    else if (path === "/admin") baseTitle = "COMMAND CENTER | ADMIN";
+    else if (path === "/shipping-policy") baseTitle = "SHIPPING POLICY";
+    else if (path === "/return-policy") baseTitle = "RETURN POLICY";
+    else if (path === "/privacy-policy") baseTitle = "PRIVACY POLICY";
+    else if (path === "/terms-conditions") baseTitle = "TERMS & CONDITIONS";
 
-    // Tab Switch Messages
     let tabMessage = "IMPRINTO CO. 👀";
-    if (path === "/checkout") tabMessage = "Your order is almost ready 🖼️";
-    else if (path === "/cart") tabMessage = "Don't leave your cart behind! 🛒";
-    else if (path === "/shop")
-      tabMessage = "Great prints waiting for you... 👀";
+    if (path === "/checkout") tabMessage = "ORDER ALMOST READY 🖼️";
+    else if (path === "/cart") tabMessage = "DON'T LEAVE YOUR CART! 🛒";
+    else if (path === "/shop") tabMessage = "PRINTS ARE WAITING... 👀";
     else if (path.includes("/product/"))
-      tabMessage = "This piece looks perfect on your wall ❤️";
+      tabMessage = "PERFECT FOR YOUR WALL ❤️";
 
     const handleVisibilityChange = () => {
       document.title = document.hidden ? tabMessage : baseTitle;
@@ -287,7 +259,7 @@ const GlobalTitleHandler = () => {
 
 const LayoutHandler = () => {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin"); // Catch all admin sub-routes
+  const isAdminPage = location.pathname.startsWith("/admin");
 
   return (
     <>
@@ -317,9 +289,7 @@ const LayoutHandler = () => {
         <Route path="/bulk-posters" element={<BulkPosters />} />
         <Route path="/faqs" element={<FAQs />} />
         <Route path="/reviews" element={<ReviewPage />} />
-        <Route path="/admin/*" element={<Admin />} />{" "}
-        {/* Admin sub-routing support */}
-        {/* Policy Routes (Matched with Footer Links) */}
+        <Route path="/admin/*" element={<Admin />} />
         <Route path="/shipping-policy" element={<ShippingPolicy />} />
         <Route path="/return-policy" element={<ReturnPolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
