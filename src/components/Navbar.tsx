@@ -541,7 +541,7 @@ const Navbar = (): JSX.Element => {
         title: "Standard Archive",
         links: [
           { label: "New Arrivals", path: "/shop?sort=newest" },
-          { label: "Best Selling", path: "/shop?is_featured=true" },
+          { label: "Best Selling", path: "/shop?sort=best_selling" },
           { label: "Devotional", path: "/shop?sub=devotion" },
           { label: "Motivational", path: "/shop?sub=motivation" },
         ],
@@ -569,7 +569,6 @@ const Navbar = (): JSX.Element => {
         links: [
           { label: "Football", path: "/shop?sub=football" },
           { label: "Cricket", path: "/shop?sub=cricket" },
-          { label: "UFC / Combat", path: "/shop?sub=ufc" },
         ],
       },
     ],
@@ -577,16 +576,16 @@ const Navbar = (): JSX.Element => {
       {
         title: "Collage Protocols",
         links: [
-          { label: "50-Piece Vault", path: "/multi-collections" },
-          { label: "30-Piece Bundle", path: "/multi-collections" },
+          { label: "30-Piece Bundle", path: "/shop?cat=collage&sub=30_piece" },
+          { label: "50-Piece Bundle", path: "/shop?cat=collage&sub=50_piece" },
         ],
       },
       {
         title: "Modular Displays",
         links: [
-          { label: "2-Piece Splits", path: "/multi-collections" },
-          { label: "3-Piece Splits", path: "/multi-collections" },
-          { label: "5-Panel Layouts", path: "/multi-collections" },
+          { label: "2-Piece Splits", path: "/shop?cat=collage&sub=2_piece" },
+          { label: "3-Piece Splits", path: "/shop?cat=collage&sub=3_piece" },
+          { label: "5-Panel Layouts", path: "/shop?cat=collage&sub=5_panel" },
         ],
       },
     ],
@@ -616,6 +615,8 @@ const Navbar = (): JSX.Element => {
     { label: "Retro", id: "retro", path: "/retro-studio" },
     { label: "Custom", id: "custom", path: "/custom-studio" },
     { label: "Stickers", id: "stickers", path: "/shop?cat=stickers" },
+    { label: "About", id: "about", path: "/about" },
+    { label: "Bulk", id: "bulk", path: "/bulk-posters" },
     { label: "Reviews", id: "reviews", path: "/reviews" },
     { label: "Support", id: "help", path: "/faqs" },
   ];
@@ -644,24 +645,17 @@ const Navbar = (): JSX.Element => {
       />
 
       <div className="max-w-[1536px] mx-auto h-[80px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
-        {/* New Polished Logo Implementation */}
         <Link to="/" className="group flex items-center">
-          <div className="relative flex items-center justify-center">
-            <motion.div
-              animate={{
-                scale: scrolled ? 0.9 : 1,
-              }}
-              className="relative z-20 overflow-hidden"
-            >
-              <img
-                src="/MainLogo.png"
-                alt="Imprinto"
-                className="h-10 md:h-14 w-auto object-contain transition-transform duration-500"
-              />
-            </motion.div>
-            {/* Logo Glow/Backdrop Effect */}
-            <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
+          <motion.div
+            animate={{ scale: scrolled ? 0.9 : 1 }}
+            className="relative z-20"
+          >
+            <img
+              src="/MainLogo.png"
+              alt="Imprinto"
+              className="h-10 md:h-14 w-auto object-contain"
+            />
+          </motion.div>
         </Link>
 
         <div className="hidden lg:flex items-center gap-x-8 h-full">
@@ -679,7 +673,7 @@ const Navbar = (): JSX.Element => {
               >
                 <div className="flex items-center gap-1.5 transition-all">
                   <span
-                    className={`text-[10px] font-black uppercase tracking-[0.2em] ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
+                    className={`text-[10px] font-black uppercase tracking-widest ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
                   >
                     {link.label}
                   </span>
@@ -704,13 +698,12 @@ const Navbar = (): JSX.Element => {
           <button onClick={handleAccountClick} className="hidden sm:block">
             <User size={20} className="text-foreground/40 hover:text-primary" />
           </button>
-
           <button
             onClick={() => navigate("/cart")}
-            className="relative group flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-none shadow-[5px_5px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
+            className="relative group flex items-center gap-2 bg-foreground text-background px-6 py-3 shadow-[5px_5px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
           >
             <ShoppingBag size={18} strokeWidth={3} />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">
+            <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">
               Cart
             </span>
             {totalItems > 0 && (
@@ -719,7 +712,6 @@ const Navbar = (): JSX.Element => {
               </span>
             )}
           </button>
-
           <Menu
             className="lg:hidden cursor-pointer"
             onClick={() => setMobileOpen(true)}
@@ -746,12 +738,12 @@ const Navbar = (): JSX.Element => {
                       <li key={link.label}>
                         <Link
                           to={link.path}
-                          className="text-[12px] font-black text-foreground uppercase tracking-tight hover:text-primary flex items-center justify-between group"
+                          className="text-[10px] font-black text-foreground uppercase tracking-widest hover:text-primary flex items-center justify-between group"
                         >
                           {link.label}
                           <ArrowRight
                             size={14}
-                            className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-primary"
+                            className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"
                           />
                         </Link>
                       </li>
@@ -765,42 +757,12 @@ const Navbar = (): JSX.Element => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[2000] bg-white/98 backdrop-blur-xl flex items-center justify-center p-6"
-          >
-            <button
-              onClick={() => setIsSearchOpen(false)}
-              className="absolute top-10 right-10 w-14 h-14 bg-foreground text-background flex items-center justify-center shadow-[4px_4px_0px_0px_#00D4FF]"
-            >
-              <X size={32} strokeWidth={3} />
-            </button>
-            <form
-              onSubmit={handleSearch}
-              className="w-full max-w-5xl text-center"
-            >
-              <input
-                autoFocus
-                type="text"
-                placeholder="EXECUTE SEARCH..."
-                className="w-full bg-transparent border-b-8 border-foreground py-8 text-4xl md:text-9xl font-black uppercase tracking-tighter outline-none text-center italic"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            // initial={{ x: "100%" }}
-            // animate={{ x: 0 }}
-            // exit={{ x: "100%" }}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
           >
             <div className="flex justify-between items-center mb-16">
@@ -812,13 +774,10 @@ const Navbar = (): JSX.Element => {
                   <ChevronLeft size={16} strokeWidth={3} /> Back
                 </button>
               ) : (
-                <div className="flex items-center">
-                  <img src="/MainLogo.png" alt="Logo" className="h-10 w-auto" />
-                </div>
+                <img src="/MainLogo.png" alt="Logo" className="h-10 w-auto" />
               )}
               <X size={28} onClick={() => setMobileOpen(false)} />
             </div>
-
             <div className="flex flex-col h-full overflow-y-auto">
               {!mobileSubMenu ? (
                 <div className="flex flex-col gap-y-6">
@@ -829,23 +788,17 @@ const Navbar = (): JSX.Element => {
                         if (megaMenus[link.id]) setMobileSubMenu(link.id);
                         else navigate(link.path);
                       }}
-                      className="text-4xl font-black uppercase tracking-tighter text-left border-b-2 border-foreground/5 pb-4 italic"
+                      className="text-2xl font-black uppercase tracking-widest text-left border-b-2 border-foreground/5 pb-4"
                     >
                       {link.label}
                     </button>
                   ))}
-                  <button
-                    onClick={handleAccountClick}
-                    className="mt-10 py-6 bg-foreground text-background font-black uppercase text-xs shadow-[5px_5px_0px_0px_#00D4FF]"
-                  >
-                    {user ? "PROFILE" : "LOGIN"}
-                  </button>
                 </div>
               ) : (
                 <div className="flex flex-col gap-y-12">
                   {megaMenus[mobileSubMenu].map((section) => (
                     <div key={section.title} className="space-y-6">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
+                      <h4 className="text-[9px] font-black uppercase tracking-widest text-foreground/30">
                         {section.title}
                       </h4>
                       <div className="flex flex-col gap-y-4 pl-4">
@@ -853,10 +806,10 @@ const Navbar = (): JSX.Element => {
                           <Link
                             key={link.label}
                             to={link.path}
-                            className="text-2xl font-black uppercase tracking-tight italic flex justify-between"
+                            className="text-xl font-black uppercase tracking-widest flex justify-between"
                           >
                             {link.label}{" "}
-                            <ArrowRight size={20} className="text-primary" />
+                            <ArrowRight size={18} className="text-primary" />
                           </Link>
                         ))}
                       </div>
