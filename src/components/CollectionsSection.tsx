@@ -163,7 +163,6 @@
 // };
 
 // export default CollectionsSection;
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Plus, Loader2 } from "lucide-react";
@@ -179,25 +178,25 @@ const CollectionsSection = (): JSX.Element => {
         targetSub: "F1",
         title: "F1 TRACKS",
         fallbackImage: "/Posters/f1v2.jpg",
-        span: "sm:col-span-2 sm:row-span-2", // Desktop/Tab par bada
+        span: "sm:col-span-2 sm:row-span-2",
       },
       {
         targetSub: "Anime",
         title: "ANIME CORE",
         fallbackImage: "/Posters/Batman.jpg",
-        span: "sm:col-span-2 sm:row-span-1", // Wide block
+        span: "sm:col-span-2 sm:row-span-1",
       },
       {
         targetSub: "Formula 1",
         title: "CINEMATIC",
         fallbackImage: "/Posters/motivation1.jpg",
-        span: "sm:col-span-1 sm:row-span-1", // Square block
+        span: "sm:col-span-1 sm:row-span-1",
       },
       {
         targetSub: "Cars",
         title: "STREET MOTIVE",
         fallbackImage: "/Posters/porsche1.jpg",
-        span: "sm:col-span-1 sm:row-span-1", // Square block
+        span: "sm:col-span-1 sm:row-span-1",
       },
     ];
 
@@ -231,17 +230,17 @@ const CollectionsSection = (): JSX.Element => {
 
   return (
     <section className="py-12 md:py-24 bg-background relative overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 relative z-10">
         {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-1 bg-primary" />
               <span className="text-[10px] font-black uppercase tracking-widest text-black/40">
-                The Gallery
+                THE GALLERY
               </span>
             </div>
-            <h2 className="font-display text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
+            <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase leading-none">
               CURATED <span className="text-primary italic">DROPS.</span>
             </h2>
           </div>
@@ -253,7 +252,7 @@ const CollectionsSection = (): JSX.Element => {
           </Link>
         </div>
 
-        {/* REFINED GRID SYSTEM */}
+        {/* GRID SYSTEM - Specific padding for 1200px (lg) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 auto-rows-[250px] md:auto-rows-[300px]">
           {collections.map((item, i) => (
             <motion.div
@@ -270,25 +269,24 @@ const CollectionsSection = (): JSX.Element => {
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
-                {/* Gradient Overlay - Better visibility for text */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
 
-                {/* Info Container */}
-                <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-between z-10">
+                {/* Content Container - Fixed Padding for Large Portrait Tab */}
+                <div className="absolute inset-0 p-4 sm:p-6 lg:p-5 xl:p-8 flex flex-col justify-between z-10">
                   <div className="flex justify-between items-start">
-                    <span className="text-[8px] font-black bg-white text-black px-2 py-1 uppercase tracking-widest">
+                    <span className="text-[7px] md:text-[8px] font-black bg-white text-black px-2 py-1 uppercase tracking-widest">
                       LIMITED
                     </span>
-                    <div className="bg-primary p-2 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+                    <div className="bg-primary p-1.5 md:p-2 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
                       <Plus size={14} strokeWidth={3} />
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">
+                    <p className="text-[8px] md:text-[10px] font-black text-primary tracking-[0.2em] uppercase">
                       {item.count}
                     </p>
-                    <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-none">
+                    <h3 className="font-display text-xl md:text-2xl lg:text-xl xl:text-3xl font-black text-white uppercase tracking-tighter leading-none italic">
                       {item.title}
                     </h3>
                   </div>
