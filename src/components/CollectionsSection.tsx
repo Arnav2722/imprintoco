@@ -177,27 +177,27 @@ const CollectionsSection = (): JSX.Element => {
     const config = [
       {
         targetSub: "F1",
-        title: "F1TRACKS",
+        title: "F1 TRACKS",
         fallbackImage: "/Posters/f1v2.jpg",
-        span: "md:col-span-2 md:row-span-2",
+        span: "sm:col-span-2 sm:row-span-2", // Desktop/Tab par bada
       },
       {
         targetSub: "Anime",
         title: "ANIME CORE",
         fallbackImage: "/Posters/Batman.jpg",
-        span: "md:col-span-2 md:row-span-1",
+        span: "sm:col-span-2 sm:row-span-1", // Wide block
       },
       {
         targetSub: "Formula 1",
         title: "CINEMATIC",
         fallbackImage: "/Posters/motivation1.jpg",
-        span: "md:col-span-1 md:row-span-1",
+        span: "sm:col-span-1 sm:row-span-1", // Square block
       },
       {
         targetSub: "Cars",
         title: "STREET MOTIVE",
         fallbackImage: "/Posters/porsche1.jpg",
-        span: "md:col-span-1 md:row-span-1",
+        span: "sm:col-span-1 sm:row-span-1", // Square block
       },
     ];
 
@@ -215,10 +215,7 @@ const CollectionsSection = (): JSX.Element => {
         title: cat.title,
         span: cat.span,
         count: `${filtered.length.toString().padStart(2, "0")}+ DESIGNS`,
-        image: displayImage.replace(
-          "/upload/",
-          "/upload/w_1000,f_auto,q_auto/",
-        ),
+        image: displayImage.replace("/upload/", "/upload/w_800,f_auto,q_auto/"),
         path: `/shop?sub=${cat.targetSub.toLowerCase()}`,
       };
     });
@@ -233,112 +230,82 @@ const CollectionsSection = (): JSX.Element => {
   }
 
   return (
-    <section className="py-2 md:py-32 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]" />
-
+    <section className="py-12 md:py-24 bg-background relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
-        {/* Header Container */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-2 mb-6"
-            >
-              <div className="w-6 md:w-10 h-[2px] bg-accent" />
-              <span className="text-[7px] md:text-[10px] font-black uppercase tracking-[0.2em] text-accent">
-                The Collection
+        {/* HEADER SECTION */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-1 bg-primary" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-black/40">
+                The Gallery
               </span>
-            </motion.div>
-            <h2 className="font-display text-[8vw] sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[1.1] text-foreground">
-              CURATED <br />
-              <span className="text-primary">DROPS</span>
+            </div>
+            <h2 className="font-display text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
+              CURATED <span className="text-primary italic">DROPS.</span>
             </h2>
           </div>
-
-          {/* Desktop Only Button (Hidden on Mobile) */}
           <Link
             to="/shop"
-            className="hidden md:flex group w-auto items-center justify-center gap-4 bg-foreground text-background px-10 py-5 hover:bg-primary hover:text-foreground transition-all duration-300 shadow-[6px_6px_0px_0px_rgba(0,212,255,1)]"
+            className="hidden md:flex items-center gap-3 bg-black text-white px-8 py-4 font-black uppercase text-[10px] tracking-widest hover:bg-primary hover:text-black transition-all shadow-[6px_6px_0px_0px_#00D4FF]"
           >
-            <span className="font-black text-xs uppercase tracking-widest">
-              Explore All Collections
-            </span>
-            <ArrowUpRight
-              size={18}
-              className="group-hover:rotate-45 transition-transform duration-300"
-            />
+            Explore All <ArrowUpRight size={16} />
           </Link>
         </div>
 
-        {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[280px] md:auto-rows-[350px] gap-4 md:gap-8">
+        {/* REFINED GRID SYSTEM */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 auto-rows-[250px] md:auto-rows-[300px]">
           {collections.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
               viewport={{ once: true }}
-              className={`${item.span} group`}
+              className={`${item.span} group relative overflow-hidden border-2 border-black bg-white shadow-[4px_4px_0px_0px_#000] hover:shadow-[8px_8px_0px_0px_#00D4FF] transition-all duration-300`}
             >
-              <Link
-                to={item.path}
-                className="relative h-full w-full block overflow-hidden border-2 border-foreground/5 bg-white shadow-sm transition-all duration-500"
-              >
-                <div className="absolute inset-0 transition-all duration-700 group-hover:scale-105">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent opacity-95 group-hover:opacity-80 transition-opacity" />
-                </div>
+              <Link to={item.path} className="block w-full h-full">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
 
+                {/* Gradient Overlay - Better visibility for text */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+
+                {/* Info Container */}
                 <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-between z-10">
                   <div className="flex justify-between items-start">
-                    <span className="text-[6px] md:text-[8px] font-black bg-foreground text-background px-2 py-1 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                      Limited
+                    <span className="text-[8px] font-black bg-white text-black px-2 py-1 uppercase tracking-widest">
+                      LIMITED
                     </span>
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-white flex items-center justify-center border-2 border-foreground group-hover:bg-primary transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      <Plus size={16} className="text-foreground" />
+                    <div className="bg-primary p-2 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+                      <Plus size={14} strokeWidth={3} />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="text-[7px] md:text-[9px] font-black text-accent tracking-widest uppercase group-hover:text-primary transition-colors">
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black text-primary tracking-[0.2em] uppercase">
                       {item.count}
                     </p>
-                    <h3 className="font-display text-xl md:text-3xl font-black tracking-tighter text-foreground uppercase leading-[1.1]">
-                      {item.title.split(" ")[0]} <br />
-                      <span className="text-foreground/70">
-                        {item.title.split(" ").slice(1).join(" ")}
-                      </span>
+                    <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-none">
+                      {item.title}
                     </h3>
                   </div>
                 </div>
-
-                <div className="absolute inset-0 border-4 border-primary opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
               </Link>
             </motion.div>
           ))}
+        </div>
 
-          {/* Mobile Only Button (Moves to bottom of grid) */}
-          <div className="md:hidden pt-4">
-            <Link
-              to="/shop"
-              className="group w-full flex items-center justify-between bg-foreground text-background px-6 py-6 hover:bg-primary hover:text-foreground transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,212,255,1)]"
-            >
-              <span className="font-black text-[10px] uppercase tracking-widest">
-                Explore All Collections
-              </span>
-              <ArrowUpRight
-                size={20}
-                className="group-hover:rotate-45 transition-transform duration-300"
-              />
-            </Link>
-          </div>
+        {/* Mobile Call to Action */}
+        <div className="md:hidden mt-8">
+          <Link
+            to="/shop"
+            className="w-full flex items-center justify-between bg-black text-white px-6 py-5 font-black uppercase text-[10px] tracking-widest shadow-[6px_6px_0px_0px_#00D4FF]"
+          >
+            Explore All Collections <ArrowUpRight size={18} />
+          </Link>
         </div>
       </div>
     </section>
