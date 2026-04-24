@@ -360,7 +360,7 @@ const RetroStudio = (): JSX.Element => {
                 disabled={images.length === 0}
                 className="w-full h-16 md:h-20 bg-black text-white font-black uppercase tracking-widest text-xs md:text-sm rounded-none hover:bg-primary hover:text-black transition-all shadow-[6px_6px_0px_0px_#FF2E63] hover:shadow-none flex items-center justify-center gap-2 group disabled:opacity-20"
               >
-                INITIATE PRODUCTION{" "}
+                ADD TO CART{" "}
                 <ArrowRight
                   size={18}
                   className="ml-2 group-hover:translate-x-1 transition-transform"

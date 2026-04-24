@@ -177,7 +177,7 @@ const CollectionsSection = (): JSX.Element => {
     const config = [
       {
         targetSub: "F1",
-        title: "F1 TRACKS",
+        title: "F1TRACKS",
         fallbackImage: "/Posters/f1v2.jpg",
         span: "md:col-span-2 md:row-span-2",
       },
