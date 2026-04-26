@@ -381,4 +381,4 @@ const RetroStudio = (): JSX.Element => {
 export default RetroStudio;
 
 
-// comment
+// This code defines a React component for a "Retro Studio" page where users can upload images, select batch quantities, and see the procurement cost. It uses state to manage uploaded images and selected quantity, and includes animations for image previews. The UI is styled with Tailwind CSS and includes components like Navbar and Footer.
