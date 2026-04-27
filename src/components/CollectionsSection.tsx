@@ -311,3 +311,5 @@ const CollectionsSection = (): JSX.Element => {
 };
 
 export default CollectionsSection;
+
+// comment 2
