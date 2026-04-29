@@ -1,27 +1,112 @@
+// const express = require("express");
+// const Razorpay = require("razorpay");
+// const cors = require("cors");
+// const crypto = require("crypto");
+
+// const app = express();
+
+// app.use(cors());
+// app.use(express.json());
+
+// // 🔴 PUT YOUR REAL KEYS
+// require("dotenv").config();
+
+// const razorpay = new Razorpay({
+//     key_id: process.env.RAZORPAY_KEY_ID,
+//     key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
+
+
+// // ✅ CREATE ORDER
+// app.post("/create-order", async (req, res) => {
+//     try {
+//         console.log("BODY:", req.body); // DEBUG
+
+//         const amount = Number(req.body.amount);
+
+//         if (!amount || amount < 1) {
+//             return res.status(400).json({ error: "Invalid amount" });
+//         }
+
+//         const options = {
+//             amount: amount, // already in paise
+//             currency: "INR",
+//             receipt: "receipt_" + Date.now(),
+//         };
+
+//         const order = await razorpay.orders.create(options);
+
+//         res.json(order);
+//     } catch (err) {
+//         console.error("ORDER ERROR:", err);
+//         res.status(500).json({ error: "Order creation failed" });
+//     }
+// });
+
+// // ✅ VERIFY PAYMENT
+// app.post("/verify-payment", (req, res) => {
+//     try {
+//         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+//             req.body;
+
+//         const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+//         const expectedSignature = crypto
+//             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//             // .createHmac("sha256", "YOUR_KEY_SECRET")
+//             .update(body)
+//             .digest("hex");
+
+//         if (expectedSignature === razorpay_signature) {
+//             res.json({ status: "success" });
+//         } else {
+//             res.status(400).json({ status: "failure" });
+//         }
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: "Verification failed" });
+//     }
+// });
+
+// app.listen(5000, () => {
+//     console.log("Server running on http://localhost:5000");
+// });
+
+
+require("dotenv").config(); // Sabse upar zaroori hai
 const express = require("express");
 const Razorpay = require("razorpay");
 const cors = require("cors");
 const crypto = require("crypto");
 
+// 🔴 IMPORT SHIPPING ROUTER
+// Check karein ke path sahi hai (agar services.js file folder ke andar hai)
+const shippingRoutes = require("./routes/shipping");
+
 const app = express();
 
-app.use(cors());
+// CORS Configuration
+app.use(cors({
+    origin: "*",
+    exposedHeaders: ["x-rtb-fingerprint-id", "request-id"]
+}));
+
 app.use(express.json());
 
-// 🔴 PUT YOUR REAL KEYS
-require("dotenv").config();
-
+// Razorpay Instance
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// ✅ 1. REGISTER SHIPPING ROUTES
+// Isse aapka endpoint ban jayega: http://localhost:5000/api/create-shipment
+app.use("/api", shippingRoutes);
 
-// ✅ CREATE ORDER
+// ✅ 2. CREATE ORDER (Razorpay)
 app.post("/create-order", async (req, res) => {
     try {
-        console.log("BODY:", req.body); // DEBUG
-
+        console.log("RAZORPAY ORDER BODY:", req.body);
         const amount = Number(req.body.amount);
 
         if (!amount || amount < 1) {
@@ -29,13 +114,12 @@ app.post("/create-order", async (req, res) => {
         }
 
         const options = {
-            amount: amount, // already in paise
+            amount: amount,
             currency: "INR",
             receipt: "receipt_" + Date.now(),
         };
 
         const order = await razorpay.orders.create(options);
-
         res.json(order);
     } catch (err) {
         console.error("ORDER ERROR:", err);
@@ -43,30 +127,29 @@ app.post("/create-order", async (req, res) => {
     }
 });
 
-// ✅ VERIFY PAYMENT
+// ✅ 3. VERIFY PAYMENT (Razorpay)
 app.post("/verify-payment", (req, res) => {
     try {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-            req.body;
-
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
         const body = razorpay_order_id + "|" + razorpay_payment_id;
 
         const expectedSignature = crypto
-            .createHmac("sha256", "YOUR_KEY_SECRET")
-            .update(body)
+            .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+            .update(body.toString())
             .digest("hex");
 
         if (expectedSignature === razorpay_signature) {
             res.json({ status: "success" });
         } else {
-            res.status(400).json({ status: "failure" });
+            res.status(400).json({ status: "failure", message: "Signature mismatch" });
         }
     } catch (err) {
-        console.error(err);
+        console.error("VERIFY ERROR:", err);
         res.status(500).json({ error: "Verification failed" });
     }
 });
 
 app.listen(5000, () => {
     console.log("Server running on http://localhost:5000");
+    console.log("Shipping routes active at http://localhost:5000/api/create-shipment");
 });

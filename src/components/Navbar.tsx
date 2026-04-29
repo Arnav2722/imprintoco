@@ -446,12 +446,17 @@ import {
   Search,
   ArrowRight,
   ChevronLeft,
+  LogOut,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  User as FirebaseUser,
+  signOut,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 interface NavLinkObj {
@@ -484,9 +489,22 @@ const Navbar = (): JSX.Element => {
   const navRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Scroll Lock for Mobile Menu
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileOpen]);
+
   useEffect(() => {
     setActiveDropdown(null);
     setMobileOpen(false);
+    setMobileSubMenu(null);
   }, [location.pathname, location.search]);
 
   useEffect(() => {
@@ -516,6 +534,7 @@ const Navbar = (): JSX.Element => {
         `/shop?q=${encodeURIComponent(searchQuery.trim().toLowerCase())}`,
       );
       setIsSearchOpen(false);
+      setMobileOpen(false);
       setSearchQuery("");
     }
   };
@@ -533,6 +552,7 @@ const Navbar = (): JSX.Element => {
     } else {
       navigate("/login");
     }
+    setMobileOpen(false);
   };
 
   const megaMenus: Record<string, MegaMenuSection[]> = {
@@ -644,7 +664,7 @@ const Navbar = (): JSX.Element => {
         className="absolute inset-0 pointer-events-none"
       />
 
-      <div className="max-w-[1536px] mx-auto h-[80px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
+      <div className="max-w-[1536px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
         <Link to="/" className="group flex items-center">
           <motion.div
             animate={{ scale: scrolled ? 0.9 : 1 }}
@@ -658,6 +678,7 @@ const Navbar = (): JSX.Element => {
           </motion.div>
         </Link>
 
+        {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-x-8 h-full">
           {navLinks.map((link) => {
             const isCurrentActive = activeDropdown === link.id;
@@ -689,7 +710,7 @@ const Navbar = (): JSX.Element => {
           })}
         </div>
 
-        <div className="flex items-center gap-x-6">
+        <div className="flex items-center gap-x-4 md:gap-x-6">
           <Search
             size={20}
             onClick={() => setIsSearchOpen(true)}
@@ -698,9 +719,10 @@ const Navbar = (): JSX.Element => {
           <button onClick={handleAccountClick} className="hidden sm:block">
             <User size={20} className="text-foreground/40 hover:text-primary" />
           </button>
+
           <button
             onClick={() => navigate("/cart")}
-            className="relative group flex items-center gap-2 bg-foreground text-background px-6 py-3 shadow-[5px_5px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
+            className="relative group flex items-center gap-2 bg-foreground text-background px-4 md:px-6 py-2.5 md:py-3 shadow-[4px_4px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
           >
             <ShoppingBag size={18} strokeWidth={3} />
             <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">
@@ -712,60 +734,28 @@ const Navbar = (): JSX.Element => {
               </span>
             )}
           </button>
-          <Menu
-            className="lg:hidden cursor-pointer"
+
+          <div
+            className="lg:hidden cursor-pointer p-2 bg-foreground/5"
             onClick={() => setMobileOpen(true)}
-          />
+          >
+            <Menu size={24} />
+          </div>
         </div>
       </div>
 
-      <AnimatePresence>
-        {activeDropdown && megaMenus[activeDropdown] && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 w-full py-20 px-8 border-t-2 border-foreground bg-white shadow-2xl hidden lg:block"
-          >
-            <div className="max-w-[1400px] mx-auto grid grid-cols-4 gap-12">
-              {megaMenus[activeDropdown].map((section) => (
-                <div key={section.title} className="space-y-8">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 border-b border-foreground/5 pb-4">
-                    {section.title}
-                  </h4>
-                  <ul className="space-y-4">
-                    {section.links.map((link) => (
-                      <li key={link.label}>
-                        <Link
-                          to={link.path}
-                          className="text-[10px] font-black text-foreground uppercase tracking-widest hover:text-primary flex items-center justify-between group"
-                        >
-                          {link.label}
-                          <ArrowRight
-                            size={14}
-                            className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary"
-                          />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "tween", duration: 0.3 }}
-            className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
+            transition={{ type: "tween", duration: 0.3, ease: "circOut" }}
+            className="fixed inset-0 z-[3000] bg-white flex flex-col lg:hidden"
           >
-            <div className="flex justify-between items-center mb-16">
+            {/* Header */}
+            <div className="flex justify-between items-center px-6 h-[70px] border-b-2 border-foreground">
               {mobileSubMenu ? (
                 <button
                   onClick={() => setMobileSubMenu(null)}
@@ -774,42 +764,74 @@ const Navbar = (): JSX.Element => {
                   <ChevronLeft size={16} strokeWidth={3} /> Back
                 </button>
               ) : (
-                <img src="/MainLogo.png" alt="Logo" className="h-10 w-auto" />
+                <img src="/MainLogo.png" alt="Logo" className="h-8 w-auto" />
               )}
-              <X size={28} onClick={() => setMobileOpen(false)} />
+              <X
+                size={28}
+                className="cursor-pointer"
+                onClick={() => setMobileOpen(false)}
+              />
             </div>
-            <div className="flex flex-col h-full overflow-y-auto">
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-8">
               {!mobileSubMenu ? (
-                <div className="flex flex-col gap-y-6">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.label}
-                      onClick={() => {
-                        if (megaMenus[link.id]) setMobileSubMenu(link.id);
-                        else navigate(link.path);
-                      }}
-                      className="text-2xl font-black uppercase tracking-widest text-left border-b-2 border-foreground/5 pb-4"
-                    >
-                      {link.label}
-                    </button>
-                  ))}
-                </div>
+                <>
+                  {/* Mobile Search */}
+                  <form onSubmit={handleSearch} className="mb-10 relative">
+                    <input
+                      type="text"
+                      placeholder="SEARCH COLLECTIONS..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-foreground/5 border-2 border-foreground p-4 text-[10px] font-black uppercase outline-none"
+                    />
+                    <Search
+                      size={18}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/40"
+                    />
+                  </form>
+
+                  <div className="flex flex-col gap-y-4">
+                    {navLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => {
+                          if (megaMenus[link.id]) setMobileSubMenu(link.id);
+                          else navigate(link.path);
+                        }}
+                        className="flex justify-between items-center text-xl font-black uppercase tracking-widest text-left border-b-2 border-foreground/5 py-4 hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                        {megaMenus[link.id] && (
+                          <ChevronDown
+                            size={18}
+                            className="-rotate-90 text-foreground/20"
+                          />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
               ) : (
-                <div className="flex flex-col gap-y-12">
+                <div className="flex flex-col gap-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
                   {megaMenus[mobileSubMenu].map((section) => (
                     <div key={section.title} className="space-y-6">
-                      <h4 className="text-[9px] font-black uppercase tracking-widest text-foreground/30">
+                      <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 border-l-4 border-primary pl-3">
                         {section.title}
                       </h4>
-                      <div className="flex flex-col gap-y-4 pl-4">
+                      <div className="flex flex-col gap-y-4">
                         {section.links.map((link) => (
                           <Link
                             key={link.label}
                             to={link.path}
-                            className="text-xl font-black uppercase tracking-widest flex justify-between"
+                            className="text-lg font-black uppercase tracking-widest flex justify-between items-center group"
                           >
-                            {link.label}{" "}
-                            <ArrowRight size={18} className="text-primary" />
+                            {link.label}
+                            <ArrowRight
+                              size={18}
+                              className="text-primary opacity-0 group-active:opacity-100"
+                            />
                           </Link>
                         ))}
                       </div>
@@ -817,6 +839,57 @@ const Navbar = (): JSX.Element => {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Bottom Account Action (Fixed at bottom) */}
+            <div className="p-6 border-t-4 border-foreground bg-foreground text-background">
+              <button
+                onClick={handleAccountClick}
+                className="w-full flex items-center justify-center gap-3 py-4 text-[12px] font-black uppercase tracking-[0.2em]"
+              >
+                <User size={20} strokeWidth={3} />
+                {user ? "ACCESS TERMINAL (PROFILE)" : "LOGIN / CREATE ACCOUNT"}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[4000] bg-white flex items-center justify-center p-6"
+          >
+            <div className="max-w-[800px] w-full">
+              <div className="flex justify-between items-center mb-12">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+                  Global Search Protocol
+                </span>
+                <X
+                  size={32}
+                  className="cursor-pointer hover:rotate-90 transition-transform"
+                  onClick={() => setIsSearchOpen(false)}
+                />
+              </div>
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="WHAT ARE YOU LOOKING FOR?"
+                  className="w-full bg-transparent border-b-4 border-foreground py-8 text-2xl md:text-5xl font-black uppercase outline-none placeholder:text-foreground/10"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-4"
+                >
+                  <ArrowRight size={40} className="text-primary" />
+                </button>
+              </form>
             </div>
           </motion.div>
         )}
