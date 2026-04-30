@@ -506,6 +506,7 @@ import {
   Share2,
   Zap,
   Maximize2,
+  Info,
 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { z } from "zod";
@@ -526,14 +527,6 @@ interface ProductConfig {
   details: Record<string, SizeDetail>;
   prices: Record<string, SizePrice>;
 }
-
-type DeliveryData = {
-  status: "idle" | "checking" | "valid" | "invalid";
-  cityName?: string;
-  estimatedDate?: string;
-};
-
-const pincodeSchema = z.string().length(6).regex(/^\d+$/);
 
 const ProductDetail = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -576,8 +569,6 @@ const ProductDetail = (): JSX.Element => {
 
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const [pincode, setPincode] = useState<string>("");
-  const [delivery, setDelivery] = useState<DeliveryData>({ status: "idle" });
   const [openAccordion, setOpenAccordion] = useState<string>("description");
 
   useEffect(() => {
@@ -601,26 +592,6 @@ const ProductDetail = (): JSX.Element => {
     }
     return activeConfig.prices[selectedSize];
   }, [selectedSize, activeConfig]);
-
-  const handleCheckDelivery = (): void => {
-    const result = pincodeSchema.safeParse(pincode);
-    if (!result.success) {
-      toast({
-        variant: "destructive",
-        title: "Invalid PIN",
-        description: "6 digits required.",
-      });
-      return;
-    }
-    setDelivery({ status: "checking" });
-    setTimeout(() => {
-      setDelivery({
-        status: "valid",
-        cityName: pincode.startsWith("30") ? "Jaipur" : "Domestic Zone",
-        estimatedDate: "4-6 Days",
-      });
-    }, 800);
-  };
 
   const handleAction = (): void => {
     if (product && currentPrices.current > 0) {
@@ -665,7 +636,7 @@ const ProductDetail = (): JSX.Element => {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="pb-6 text-[10px] text-foreground/60 leading-relaxed font-bold uppercase">
+              <div className="pb-6 px-1 text-[10px] text-foreground/60 leading-relaxed font-bold uppercase">
                 {content}
               </div>
             </motion.div>
@@ -767,45 +738,25 @@ const ProductDetail = (): JSX.Element => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6">
-                <div className="shrink-0">
+                <div className="w-full">
                   <h3 className="text-[9px] text-black/40 font-black uppercase mb-3 tracking-widest">
                     Quantity
                   </h3>
-                  <div className="flex items-center border-2 border-black w-fit bg-white shadow-[3px_3px_0_0_#000]">
+                  <div className="flex items-center border-2 border-black w-full sm:w-fit bg-white shadow-[3px_3px_0_0_#000]">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="p-3 hover:bg-muted"
+                      className="flex-1 sm:flex-none p-4 hover:bg-muted"
                     >
                       <Minus size={12} strokeWidth={4} />
                     </button>
-                    <span className="w-10 text-center font-black text-sm">
+                    <span className="w-20 sm:w-16 text-center font-black text-sm">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="p-3 hover:bg-muted"
+                      className="flex-1 sm:flex-none p-4 hover:bg-muted"
                     >
                       <Plus size={12} strokeWidth={4} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex-1 bg-white border-2 border-black p-4 shadow-[3px_3px_0_0_#000]">
-                  <p className="text-[8px] font-black uppercase tracking-widest mb-3 opacity-40">
-                    Verification
-                  </p>
-                  <div className="flex gap-2">
-                    <input
-                      value={pincode}
-                      onChange={(e) => setPincode(e.target.value)}
-                      placeholder="PINCODE"
-                      className="bg-muted border-2 border-black rounded-none h-10 w-full px-4 text-[10px] font-black focus:outline-none"
-                    />
-                    <button
-                      onClick={handleCheckDelivery}
-                      className="bg-black text-white h-10 px-4 text-[9px] font-black uppercase hover:bg-primary"
-                    >
-                      CHECK
                     </button>
                   </div>
                 </div>
@@ -838,19 +789,140 @@ const ProductDetail = (): JSX.Element => {
                 {accordionItem(
                   "description",
                   <HelpCircle size={14} />,
-                  "Specifications",
-                  <div className="space-y-3">
-                    • 300 GSM ARCHIVAL MATTE • NON-SELF ADHESIVE • 0.5CM WHITE
-                    BORDER • FRAMES NOT INCLUDED.
+                  "Product Description",
+                  <div className="space-y-6">
+                    <p>
+                      Discover premium posters designed to redefine your walls.
+                      Each piece features artistic excellence with dynamic
+                      imagery, printed on high-grade 300 GSM archival matte
+                      media for a rich, glare-free finish.
+                    </p>
+
+                    <div className="border-2 border-black p-2 bg-white">
+                      <img
+                        src="../productDesc.png"
+                        alt="Size Guide"
+                        className="w-full h-auto"
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <p className="text-primary underline decoration-black underline-offset-4">
+                        Standard Size Reference:
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 border-t border-black/10 pt-2">
+                        <div>
+                          <p className="text-black">13x19 INCH</p>
+                          <p className="opacity-60 text-[8px]">
+                            33.02 x 48.26 CM
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-black">A3 SIZE</p>
+                          <p className="opacity-60 text-[8px]">
+                            29.7 x 42.0 CM
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-black">A4 SIZE</p>
+                          <p className="opacity-60 text-[8px]">
+                            21.0 x 29.7 CM
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-black">A5 SIZE</p>
+                          <p className="opacity-60 text-[8px]">
+                            14.8 x 21.0 CM
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-black">A6 SIZE</p>
+                          <p className="opacity-60 text-[8px]">
+                            10.5 x 14.8 CM
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-primary underline decoration-black underline-offset-4">
+                        Visual Integrity:
+                      </p>
+                      <p>
+                        Colors may slightly vary between your screen and the
+                        physical print due to display calibrations and lighting.
+                        We ensure every print maintains the original contrast
+                        and tone intended by the artist.
+                      </p>
+                    </div>
                   </div>,
                 )}
+
+                {accordionItem(
+                  "specs",
+                  <Maximize2 size={14} />,
+                  "Specifications",
+                  <div className="space-y-3">
+                    <p>• 300 GSM Archival Matte Paper</p>
+                    <p>• Chic 0.5cm White Border for an elegant finish</p>
+                    <p>• Not Self-Adhesive: Use double-sided tape or gum</p>
+                    <p>• Ready for Framing: Standard sizes for easy fit</p>
+                    <p>• Frames are not included with the print</p>
+                  </div>,
+                )}
+
+                {accordionItem(
+                  "packaging",
+                  <Package size={14} />,
+                  "Packaging Details",
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <p className="text-primary">Roll/Tube Packaging:</p>
+                      <p>• A4 Size: Up to 20 posters</p>
+                      <p>• A3 and 13x19: Up to 15 posters</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-primary">Flat Box Packaging:</p>
+                      <p>• A4 Size: Quantities above 20</p>
+                      <p>• A3 and 13x19: Quantities above 15</p>
+                      <p>• A5 and A6: All quantities (No Tube available)</p>
+                    </div>
+                  </div>,
+                )}
+
                 {accordionItem(
                   "shipping",
                   <Truck size={14} />,
-                  "Logistics",
-                  <div className="space-y-3">
-                    • PREPAID: 3-5 DAYS • COD: 7-9 DAYS • PRINTED ON DEMAND •
-                    48HR PROCESSING.
+                  "Shipping and Processing",
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="border-l-2 border-black pl-3 py-1">
+                        <p className="text-black">Prepaid</p>
+                        <p className="text-primary">₹ 45 Charge</p>
+                        <p className="opacity-50">3-5 Days</p>
+                      </div>
+                      <div className="border-l-2 border-black pl-3 py-1">
+                        <p className="text-black">COD</p>
+                        <p className="text-primary">₹ 89 Charge</p>
+                        <p className="opacity-50">7-9 Days</p>
+                      </div>
+                    </div>
+                    <div className="bg-muted p-3 border border-black/5">
+                      <p>• Processing: 1-2 business days (Printed on Demand)</p>
+                      <p>• Cancellation: Only within 24-48 hours of order</p>
+                      <p>• Excludes weekends and public holidays</p>
+                    </div>
+                  </div>,
+                )}
+
+                {accordionItem(
+                  "important",
+                  <Info size={14} />,
+                  "Important Note",
+                  <div className="italic">
+                    If custom images are required but not provided, we will
+                    dispatch our site-best posters equivalent to your order
+                    value to avoid shipping delays.
                   </div>,
                 )}
               </div>
