@@ -695,7 +695,7 @@ const ProductDetail = (): JSX.Element => {
                   {product.category} / {product.subcategory?.replace("_", " ")}
                 </span>
               </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter mb-4 leading-none">
+              <h1 className="text-3xl md:text-3xl lg:text-4xl font-black uppercase tracking-tighter mb-4 leading-none">
                 {product.name}
               </h1>
               <div className="flex items-end gap-3">

@@ -468,11 +468,11 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { Loader2, PartyPopper, ChevronRight, Info } from "lucide-react";
+import { Loader2, PartyPopper, ChevronRight, Info, Zap } from "lucide-react";
 
 /* ---------------- RAZORPAY TYPES ---------------- */
 interface RazorpayResponse {
@@ -562,12 +562,11 @@ const Checkout = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    setShippingFee(shippingMethod === "cod" ? 129 : 45);
+    setShippingFee(shippingMethod === "cod" ? 99 : 42);
   }, [shippingMethod]);
 
   const finalAmount = totalPrice + shippingFee;
 
-  // ✅ LOGIC: Firestore save logic
   const saveOrderToFirestore = async (
     paymentId: string = "COD_ORDER",
     trackingId: string = "12345678",
@@ -608,7 +607,6 @@ const Checkout = (): JSX.Element => {
     }
   };
 
-  // ✅ DELHIIVERY BOOKING HELPER
   const bookShipment = async (orderId: string, mode: string) => {
     try {
       const shipRes = await fetch(`${API_BASE}/api/create-shipment`, {
@@ -620,8 +618,8 @@ const Checkout = (): JSX.Element => {
           pincode,
           phone,
           orderId: orderId,
-          totalAmount: Number(finalAmount), // 🔴 Explicit Number for Delhivery
-          paymentMode: mode, // 🔴 Always "COD" or "Prepaid"
+          totalAmount: Number(finalAmount),
+          paymentMode: mode,
         }),
       });
       const shipData = await shipRes.json();
@@ -632,7 +630,6 @@ const Checkout = (): JSX.Element => {
     }
   };
 
-  // ✅ MAIN PAYMENT HANDLER
   const handlePayment = async () => {
     if (
       !email ||
@@ -650,13 +647,12 @@ const Checkout = (): JSX.Element => {
 
     if (shippingMethod === "cod") {
       const generatedId = `POST-${Date.now().toString().slice(-4)}`;
-      const tId = await bookShipment(generatedId, "COD"); // 🔴 Capital COD
+      const tId = await bookShipment(generatedId, "COD");
       await saveOrderToFirestore("COD_ORDER", tId, generatedId);
       setProcessing(false);
       return;
     }
 
-    // 🔵 PREPAID FLOW
     try {
       const amountInPaise = Math.round(finalAmount * 100);
 
@@ -694,7 +690,7 @@ const Checkout = (): JSX.Element => {
             const tId = await bookShipment(
               response.razorpay_order_id,
               "Prepaid",
-            ); // 🔴 Capital Prepaid
+            );
             await saveOrderToFirestore(
               response.razorpay_payment_id,
               tId,
@@ -860,7 +856,7 @@ const Checkout = (): JSX.Element => {
                     </div>
                   </div>
                   <span className="text-[10px] font-black uppercase text-green-600">
-                    ₹45.00
+                    ₹42.00
                   </span>
                 </label>
                 <label
@@ -885,10 +881,43 @@ const Checkout = (): JSX.Element => {
                     </div>
                   </div>
                   <span className="text-[10px] font-black uppercase text-black">
-                    ₹129.00
+                    ₹99.00
                   </span>
                 </label>
               </div>
+
+              {/* COD UPSELL ALERT */}
+              <AnimatePresence>
+                {shippingMethod === "cod" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="bg-black p-5 border-l-4 border-primary overflow-hidden shadow-[4px_4px_0px_0px_#00D4FF]"
+                  >
+                    <div className="flex items-start gap-4">
+                      <Zap size={18} className="text-primary mt-1 shrink-0" />
+                      <div className="space-y-3">
+                        <p className="text-white font-black text-[10px] uppercase leading-tight">
+                          SAVE <span className="text-primary">₹ 57</span> BY
+                          PAYING ONLINE
+                        </p>
+                        <p className="text-white/50 font-black text-[8px] uppercase leading-relaxed">
+                          COD orders have high shipping fees and slower
+                          processing. Switch to prepaid for priority dispatch
+                          and zero extra costs.
+                        </p>
+                        <button
+                          onClick={() => setShippingMethod("prepaid")}
+                          className="text-[9px] font-black text-black bg-primary px-3 py-1.5 uppercase hover:bg-white transition-colors"
+                        >
+                          Switch to Prepaid
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </section>
 
             <div className="pt-6">
