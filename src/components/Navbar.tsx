@@ -446,17 +446,12 @@ import {
   Search,
   ArrowRight,
   ChevronLeft,
-  LogOut,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "@/lib/firebase";
-import {
-  onAuthStateChanged,
-  User as FirebaseUser,
-  signOut,
-} from "firebase/auth";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 interface NavLinkObj {
@@ -489,7 +484,6 @@ const Navbar = (): JSX.Element => {
   const navRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Scroll Lock for Mobile Menu
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
@@ -744,6 +738,43 @@ const Navbar = (): JSX.Element => {
         </div>
       </div>
 
+      {/* DESKTOP MEGA MENU DROPDOWN - This was missing */}
+      <AnimatePresence>
+        {activeDropdown && megaMenus[activeDropdown] && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-[70px] md:top-[100px] left-0 w-full bg-white border-b-2 border-black p-10 z-50 shadow-2xl hidden lg:block"
+          >
+            <div className="max-w-[1536px] mx-auto grid grid-cols-4 gap-10">
+              {megaMenus[activeDropdown].map((section) => (
+                <div key={section.title} className="space-y-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary border-l-4 border-primary pl-3">
+                    {section.title}
+                  </h4>
+                  <div className="flex flex-col gap-y-3">
+                    {section.links.map((link) => (
+                      <Link
+                        key={link.label}
+                        to={link.path}
+                        className="text-sm font-bold uppercase tracking-wide hover:text-primary transition-colors flex items-center group"
+                      >
+                        <ArrowRight
+                          size={14}
+                          className="mr-2 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all text-primary"
+                        />
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
@@ -754,7 +785,6 @@ const Navbar = (): JSX.Element => {
             transition={{ type: "tween", duration: 0.3, ease: "circOut" }}
             className="fixed inset-0 z-[3000] bg-white flex flex-col lg:hidden"
           >
-            {/* Header */}
             <div className="flex justify-between items-center px-6 h-[70px] border-b-2 border-foreground">
               {mobileSubMenu ? (
                 <button
@@ -773,11 +803,9 @@ const Navbar = (): JSX.Element => {
               />
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto px-6 py-8">
               {!mobileSubMenu ? (
                 <>
-                  {/* Mobile Search */}
                   <form onSubmit={handleSearch} className="mb-10 relative">
                     <input
                       type="text"
@@ -841,7 +869,6 @@ const Navbar = (): JSX.Element => {
               )}
             </div>
 
-            {/* Bottom Account Action (Fixed at bottom) */}
             <div className="p-6 border-t-4 border-foreground bg-foreground text-background">
               <button
                 onClick={handleAccountClick}
@@ -855,6 +882,7 @@ const Navbar = (): JSX.Element => {
         )}
       </AnimatePresence>
 
+      {/* Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
