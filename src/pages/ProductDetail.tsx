@@ -936,3 +936,5 @@ const ProductDetail = (): JSX.Element => {
 };
 
 export default ProductDetail;
+
+// Comment
