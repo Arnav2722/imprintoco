@@ -1602,3 +1602,4 @@ const Admin = (): JSX.Element | null => {
 export default Admin;
 
 // comment = "Admin dashboard for managing products and orders, with authentication, CRUD operations, and image uploads to Cloudinary."
+// features = ["Authentication with Firebase", "Product management (CRUD)", "Order management (CRUD)", "Image upload to Cloudinary", "Responsive design", "Real-time data sync with Firestore"]
