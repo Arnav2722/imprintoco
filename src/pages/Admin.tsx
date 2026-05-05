@@ -1601,4 +1601,4 @@ const Admin = (): JSX.Element | null => {
 
 export default Admin;
 
-// comment  
+// comment = "Admin dashboard for managing products and orders, with authentication, CRUD operations, and image uploads to Cloudinary."
