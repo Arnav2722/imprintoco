@@ -425,12 +425,16 @@ const Cart = () => {
                   <span className="text-[7px] md:text-[10px] font-black uppercase text-black/40 tracking-widest mb-2">
                     Total Amount
                   </span>
-                  <span className="text-3xl md:text-5xl font-black">
+                  <span className="text-3xl md:text-4xl font-black">
                     ₹{totalPrice}
+                    <span className="text-[14px] md:text-[18px] font-black">
+                      {/* <span className="text-xl md:text-xl font-black"> */}
+                      (Incl. of Taxes)
+                    </span>
                   </span>
                 </div>
                 <p className="text-[7px] md:text-[9px] font-black text-accent uppercase">
-                  + Taxes & Shipping calculated at checkout
+                  + Shipping calculated at checkout
                 </p>
               </div>
 
