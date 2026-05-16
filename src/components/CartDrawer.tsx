@@ -178,7 +178,7 @@ const CartDrawer = () => {
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] font-black uppercase text-accent">
-                      Free Shipping
+                      + Shipping Charges
                     </p>
                   </div>
                 </div>
