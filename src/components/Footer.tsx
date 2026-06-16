@@ -170,7 +170,7 @@
 // export default Footer;
 
 import { Link } from "react-router-dom";
-import { Instagram, Twitter, Facebook, Mail } from "lucide-react";
+import { Instagram, Twitter, Facebook, Mail, Phone } from "lucide-react";
 
 const Footer = (): JSX.Element => {
   const currentYear: number = new Date().getFullYear();
@@ -246,8 +246,12 @@ const Footer = (): JSX.Element => {
                 <span className="text-[7px] md:text-[9px] font-black tracking-widest uppercase">
                   support.imprinto@gmail.com
                 </span>
+                {/* <Phone size={16} strokeWidth={3} />
+                <span className="text-[7px] md:text-[9px] font-black tracking-widest uppercase">
+                  +91 9852364170
+                </span> */}
               </div>
-              <div className="p-4 border-2 border-dashed border-foreground/10 bg-muted/30">
+              {/* <div className="p-4 border-2 border-dashed border-foreground/10 bg-muted/30">
                 <p className="text-[7px] font-black uppercase text-foreground/40 mb-2 tracking-widest">
                   Registry Status
                 </p>
@@ -257,7 +261,7 @@ const Footer = (): JSX.Element => {
                     Fulfillment Active
                   </span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

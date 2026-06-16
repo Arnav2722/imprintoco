@@ -273,7 +273,7 @@ const Cart = () => {
 
       <main className="pt-28 md:pt-40 pb-24 px-6 max-w-[1000px] mx-auto">
         {/* PROGRESS BOX */}
-        <div className="bg-white border-2 border-black p-5 md:p-8 mb-10 text-center relative overflow-hidden">
+        {/* <div className="bg-white border-2 border-black p-5 md:p-8 mb-10 text-center relative overflow-hidden">
           <p className="text-[7px] md:text-[10px] font-black uppercase tracking-widest mb-4 leading-relaxed">
             {remainingForOffer > 0
               ? `YOU ARE ₹${remainingForOffer} AWAY FROM A FREE GIFT`
@@ -291,7 +291,7 @@ const Cart = () => {
             <span>2x Poster</span>
             <span>Glue Dots</span>
           </div>
-        </div>
+        </div> */}
 
         <h1 className="text-[8vw] md:text-6xl font-black uppercase tracking-tighter mb-10 leading-none">
           THE <span className="text-primary">CART</span>

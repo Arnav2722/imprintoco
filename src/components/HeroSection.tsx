@@ -231,7 +231,7 @@ const HeroSection = () => {
             </h1>
           </div>
 
-          <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg lg:text-xl font-medium max-w-[90%] sm:max-w-2xl lg:max-w-3xl mb-12 md:mb-16 uppercase tracking-tight leading-relaxed">
+          <p className="text-muted-foreground text-[10px] sm:text-base md:text-lg lg:text-l font-medium max-w-[90%] sm:max-w-2xl lg:max-w-3xl mb-12 md:mb-16 uppercase tracking-tight leading-relaxed">
             Premium Matte Posters & Vinyl Stickers.
             <br className="hidden sm:block" />
             Vibrant art for the core fans.

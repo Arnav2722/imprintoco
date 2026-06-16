@@ -961,7 +961,7 @@ const Checkout = (): JSX.Element => {
                           alt={item.product.name}
                         />
                       </div>
-                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-foreground text-background text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white">
+                      <span className="absolute -top-0.5 -right-1 w-5 h-5 bg-foreground text-background text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white">
                         {item.quantity}
                       </span>
                     </div>

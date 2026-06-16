@@ -177,7 +177,7 @@ const BulkPosters = () => {
         >
           <Building2 size={14} className="text-foreground" />
           <span className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-foreground">
-            B2B PROTOCOL
+            B2B Services
           </span>
         </motion.div>
 
@@ -189,8 +189,8 @@ const BulkPosters = () => {
         <p className="text-foreground/60 text-[9px] md:text-base mb-16 md:mb-20 leading-relaxed uppercase font-black tracking-tight max-w-2xl mx-auto">
           Scale your space. Whether it is a cafe, studio, or retail shop, we
           provide{" "}
-          <span className="text-foreground"> high volume products </span>
-          with discounts.
+          <span className="text-foreground"> high volume products. </span>
+          {/* with discounts. */}
         </p>
 
         {/* FORM SECTION */}
@@ -211,22 +211,22 @@ const BulkPosters = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-2">
                 <label className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-foreground/40 ml-1">
-                  Identity
+                  NAME
                 </label>
                 <Input
                   required
-                  placeholder="NAME / BRAND"
+                  placeholder="NAME OF YOUR BRAND"
                   className="rounded-none bg-transparent border-x-0 border-t-0 border-b-2 border-foreground/10 h-12 md:h-14 text-[10px] md:text-xs font-black tracking-widest focus-visible:ring-0 focus-visible:border-primary transition-all px-0"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-foreground/40 ml-1">
-                  Communication
+                  EMAIL ID
                 </label>
                 <Input
                   required
                   type="email"
-                  placeholder="BUSINESS EMAIL"
+                  placeholder="EMAIL "
                   className="rounded-none bg-transparent border-x-0 border-t-0 border-b-2 border-foreground/10 h-12 md:h-14 text-[10px] md:text-xs font-black tracking-widest focus-visible:ring-0 focus-visible:border-primary transition-all px-0"
                 />
               </div>
@@ -245,7 +245,7 @@ const BulkPosters = () => {
 
             <div className="space-y-2">
               <label className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-foreground/40 ml-1">
-                Project Brief
+                Write your message
               </label>
               <textarea
                 required

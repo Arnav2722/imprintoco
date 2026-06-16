@@ -542,15 +542,16 @@ const Profile = (): JSX.Element => {
                   <div className="pt-6 border-t-2 border-black/5 space-y-4">
                     <div className="flex flex-col">
                       <span className="text-[8px] text-black/40 font-black uppercase tracking-widest mb-1">
-                        Secure Email
+                        Your Email
                       </span>
-                      <span className="text-[11px] md:text-sm font-black break-all uppercase">
+                      <span className="text-[11px] font-black break-all uppercase">
+                        {/* <span className="text-[11px] md:text-sm font-black break-all uppercase"> */}
                         {userData?.email}
                       </span>
                     </div>
                     <div className="flex flex-col">
                       <span className="text-[8px] text-black/40 font-black uppercase tracking-widest mb-1">
-                        Mobile Link
+                        Mobile Number
                       </span>
                       <span className="text-[11px] md:text-sm font-black">
                         {userData?.mobile || "NOT LINKED"}
@@ -596,7 +597,7 @@ const Profile = (): JSX.Element => {
                     </div>
                     <div className="space-y-1">
                       <label className="text-[8px] font-black text-black/40 uppercase tracking-widest ml-1">
-                        PHONE PROTOCOL
+                        PHONE
                       </label>
                       <Input
                         value={editForm.mobile}
@@ -613,14 +614,14 @@ const Profile = (): JSX.Element => {
                       onClick={handleUpdate}
                       className="flex-1 bg-black text-white rounded-none h-12 font-black uppercase text-[10px] hover:bg-primary transition-all"
                     >
-                      <Save size={14} className="mr-2" /> COMMIT
+                      <Save size={14} className="mr-2" /> SAVE
                     </Button>
                     <Button
                       onClick={() => setIsEditing(false)}
                       variant="outline"
                       className="flex-1 border-2 border-black rounded-none h-12 font-black uppercase text-[10px] hover:bg-accent hover:text-white transition-all"
                     >
-                      <X size={14} className="mr-2" /> ABORT
+                      <X size={14} className="mr-2" /> CANCEL
                     </Button>
                   </div>
                 </motion.div>
@@ -639,14 +640,14 @@ const Profile = (): JSX.Element => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
               <ProfileLink
-                icon={<Package size={20} strokeWidth={3} />}
-                label="ORDERS ARCHIVE"
-                onClick={() => navigate("/orders")}
-              />
-              <ProfileLink
                 icon={<Headset size={20} strokeWidth={3} />}
                 label="SUPPORT BASE"
                 onClick={() => navigate("/faqs")}
+              />
+              <ProfileLink
+                icon={<LogOut size={20} strokeWidth={3} />}
+                label="LOGOUT"
+                onClick={handleLogout}
               />
               {userData?.role === "admin" && (
                 <div className="sm:col-span-2">
@@ -660,17 +661,17 @@ const Profile = (): JSX.Element => {
               )}
             </div>
 
-            <div className="pt-8">
+            {/* <div className="pt-8">
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-between p-6 md:p-8 bg-white border-2 md:border-4 border-accent text-accent font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-accent hover:text-white transition-all shadow-[6px_6px_0px_0px_rgba(255,46,99,0.1)]"
               >
                 <div className="flex items-center gap-4">
-                  <LogOut size={20} strokeWidth={3} /> TERMINATE SESSION
+                  <LogOut size={20} strokeWidth={3} /> LOG OUT
                 </div>
                 <ChevronRight size={18} strokeWidth={3} />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>

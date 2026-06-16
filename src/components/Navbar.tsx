@@ -588,7 +588,7 @@ const Navbar = (): JSX.Element => {
     ],
     multi: [
       {
-        title: "Collage Protocols",
+        title: "Collage ",
         links: [
           { label: "30-Piece Bundle", path: "/shop?cat=collage&sub=30_piece" },
           { label: "50-Piece Bundle", path: "/shop?cat=collage&sub=50_piece" },
@@ -607,7 +607,7 @@ const Navbar = (): JSX.Element => {
       {
         title: "Logistics",
         links: [
-          { label: "Track Order", path: "/track-order" },
+          // { label: "Track Order", path: "/track-order" },
           { label: "Contact Us", path: "/contact" },
           { label: "FAQs", path: "/faqs" },
         ],
@@ -625,8 +625,8 @@ const Navbar = (): JSX.Element => {
 
   const navLinks: NavLink[] = [
     { label: "Posters", id: "shop", path: "/shop" },
-    { label: "Collage Kits", id: "multi", path: "/multi-collections" },
-    { label: "Retro", id: "retro", path: "/retro-studio" },
+    // { label: "Collage Kits", id: "multi", path: "/multi-collections" },
+    // { label: "Retro", id: "retro", path: "/retro-studio" },
     { label: "Custom", id: "custom", path: "/custom-studio" },
     { label: "Stickers", id: "stickers", path: "/shop?cat=stickers" },
     { label: "About", id: "about", path: "/about" },

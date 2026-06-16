@@ -376,7 +376,8 @@ const Shop = (): JSX.Element => {
     return result;
   }, [allProducts, activeCategory, activeSub, sortBy]);
 
-  const categories = ["all", "stickers", "posters", "collage", "combo"];
+  const categories = ["all", "stickers", "posters",  "combo"];
+  // const categories = ["all", "stickers", "posters", "collage", "combo"];
 
   const layoutSpecs = ["2_piece", "3_piece", "5_panel", "30_piece", "50_piece"];
 
@@ -501,7 +502,7 @@ const Shop = (): JSX.Element => {
                           : "text-foreground/40 hover:text-foreground"
                       }`}
                     >
-                      {cat === "all" ? "Master Archive" : cat}
+                      {cat === "all" ? "All" : cat}
                       <ChevronRight
                         size={12}
                         className={`transition-transform ${activeCategory === cat ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"}`}
@@ -512,7 +513,7 @@ const Shop = (): JSX.Element => {
               </div>
 
               {/* DYNAMIC LAYOUT SPECS (Only for Collage) */}
-              {(activeCategory === "collage" || activeCategory === "multi") && (
+              {/* {(activeCategory === "collage" || activeCategory === "multi") && (
                 <div className="space-y-6 pt-10 border-t-2 border-foreground/5 animate-in fade-in slide-in-from-left-4">
                   <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
                     <Box size={12} className="text-primary" /> Layout Specs
@@ -536,7 +537,7 @@ const Shop = (): JSX.Element => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Core Themes */}
               <div className="space-y-6 pt-10 border-t-2 border-foreground/5">

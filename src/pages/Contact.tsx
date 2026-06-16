@@ -261,13 +261,13 @@ const Contact = (): JSX.Element => {
       <main className="pt-28 md:pt-44 pb-20 px-6 max-w-[1400px] mx-auto">
         {/* HEADER */}
         <header className="mb-12 md:mb-24 border-b-4 border-black pb-10">
-          <div className="flex items-center gap-2 mb-4">
+          {/* <div className="flex items-center gap-2 mb-4">
             <Zap size={14} className="text-primary fill-primary" />
             <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em]">
               Communication Protocol v1.0
             </span>
-          </div>
-          <h1 className="font-display text-[10vw] sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter italic leading-[0.8]">
+          </div> */}
+          <h1 className="font-display text-[10vw] sm:text-5xl md:text-6xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.8]">
             GET IN <span className="text-primary not-italic">TOUCH.</span>
           </h1>
         </header>
@@ -288,10 +288,10 @@ const Contact = (): JSX.Element => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black uppercase opacity-40 mb-1">
-                        Email Protocol
+                        Email ID
                       </p>
-                      <p className="font-bold text-base md:text-lg tracking-tight">
-                        SUPPORT@IMPRINTO.CO
+                      <p className="font-bold text-base md:text-sm tracking-tight">
+                        support.imprinto@gmail.com
                       </p>
                     </div>
                   </div>
@@ -301,17 +301,17 @@ const Contact = (): JSX.Element => {
                     </div>
                     <div>
                       <p className="text-[8px] font-black uppercase opacity-40 mb-1">
-                        Voice Hotline
+                        Mobile Number
                       </p>
-                      <p className="font-bold text-base md:text-lg tracking-tight">
-                        +91 98765 43210
+                      <p className="font-bold text-base md:text-sm tracking-tight">
+                        +91 9652387415
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="border-2 border-black p-6 bg-white shadow-[4px_4px_0px_0px_#000]">
                   <Clock className="mb-3 text-primary" size={18} />
                   <h4 className="font-black uppercase text-[10px] mb-2 tracking-widest">
@@ -330,7 +330,7 @@ const Contact = (): JSX.Element => {
                     JAIPUR, RAJASTHAN <br /> INDIA — 302001
                   </p>
                 </div>
-              </div>
+              </div> */}
             </section>
 
             {/* B2B CALLOUT */}
@@ -344,7 +344,7 @@ const Contact = (): JSX.Element => {
                   our B2B catalog for custom rates.
                 </p>
                 <button className="w-full bg-black text-white font-black uppercase py-4 tracking-widest text-[10px] hover:bg-primary hover:text-black transition-all shadow-[6px_6px_0px_0px_#00D4FF]">
-                  Request Catalog
+                  Request B2B Catalog
                 </button>
               </div>
             </div>
@@ -359,7 +359,7 @@ const Contact = (): JSX.Element => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest opacity-40">
-                    Identity
+                    Name
                   </label>
                   <input
                     type="text"
@@ -377,7 +377,7 @@ const Contact = (): JSX.Element => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-[9px] font-black uppercase tracking-widest opacity-40">
-                    Transmission Email
+                    Email ID
                   </label>
                   <input
                     type="email"
@@ -397,7 +397,7 @@ const Contact = (): JSX.Element => {
 
               <div className="space-y-2">
                 <label className="text-[9px] font-black uppercase tracking-widest opacity-40">
-                  Subject Sector
+                  Subject
                 </label>
                 <div className="relative">
                   <select
@@ -421,10 +421,10 @@ const Contact = (): JSX.Element => {
 
               <div className="space-y-2">
                 <label className="text-[9px] font-black uppercase tracking-widest opacity-40">
-                  Log Your Message
+                  Write Your Message
                 </label>
                 <textarea
-                  placeholder="TRANSMIT YOUR MESSAGE HERE..."
+                  placeholder="WRITE YOUR MESSAGE HERE..."
                   rows={6}
                   required
                   className={`${inputStyles} resize-none`}
@@ -443,7 +443,7 @@ const Contact = (): JSX.Element => {
                 className="group relative w-full h-16 md:h-20 bg-black text-white font-black uppercase tracking-[0.3em] overflow-hidden transition-all text-xs md:text-sm"
               >
                 <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-black transition-colors duration-300">
-                  Send Transmission <Send size={18} />
+                  Send your message <Send size={18} />
                 </span>
                 <motion.div
                   className="absolute inset-0 bg-primary"

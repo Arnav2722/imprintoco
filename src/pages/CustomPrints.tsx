@@ -408,7 +408,7 @@ const CustomPrints = (): JSX.Element => {
           <div className="flex items-center gap-2 mb-2">
             <Zap size={14} className="text-primary fill-primary" />
             <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/40">
-              Custom Lab Protocol
+              Custom Prints Studio
             </span>
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
@@ -468,9 +468,9 @@ const CustomPrints = (): JSX.Element => {
           <div className="bg-white border-2 border-black p-6 md:p-10 shadow-[6px_6px_0px_0px_#00D4FF]">
             <div className="mb-8 pb-8 border-b-2 border-black/5">
               <div className="flex flex-col mb-8">
-                <span className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-2">
-                  Base Rate
-                </span>
+                {/* <span className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-2">
+                  Base Price
+                </span> */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-black italic text-black tracking-tighter">
                     ₹{stats.unitPrice}
@@ -504,17 +504,20 @@ const CustomPrints = (): JSX.Element => {
             </div>
 
             <div className="space-y-6">
+              <p className="text-[15px] font-black uppercase text-primary">
+                Final: ₹{stats.totalPrice}
+              </p>
               <div className="p-4 border-2 border-black bg-primary/5">
                 <p className="text-[10px] font-black uppercase flex items-center gap-2">
-                  <Zap size={12} fill="black" /> Buy 3 Get 1 Free logic active
+                  <Zap size={12} fill="black" /> Buy 3 Get 1 Free
                 </p>
                 <div className="flex justify-between mt-2">
                   <p className="text-[8px] font-bold uppercase opacity-60">
                     Items: {stats.count}
                   </p>
-                  <p className="text-[8px] font-black uppercase text-primary">
+                  {/* <p className="text-[8px] font-black uppercase text-primary">
                     Final: ₹{stats.totalPrice}
-                  </p>
+                  </p> */}
                 </div>
               </div>
 
@@ -536,8 +539,7 @@ const CustomPrints = (): JSX.Element => {
                 disabled={files.length === 0}
                 className="w-full h-16 bg-black text-white font-black uppercase tracking-widest text-[10px] rounded-none hover:bg-primary hover:text-black shadow-[4px_4px_0px_0px_#FF2E63] transition-all disabled:opacity-20"
               >
-                SECURE {stats.count} PRINTS{" "}
-                <ChevronRight size={14} className="ml-2" />
+                Add to Cart <ChevronRight size={14} className="ml-2" />
               </Button>
             </div>
           </div>
