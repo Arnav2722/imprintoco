@@ -7,7 +7,6 @@
 //   ChevronDown,
 //   Search,
 //   ArrowRight,
-//   Sparkles,
 //   ChevronLeft,
 // } from "lucide-react";
 // import { useCart } from "@/contexts/CartContext";
@@ -47,10 +46,21 @@
 //   const navRef = useRef<HTMLDivElement>(null);
 //   const navigate = useNavigate();
 
-//   // Reset dropdown when URL changes (Fixes the filter-not-changing issue)
+//   useEffect(() => {
+//     if (mobileOpen) {
+//       document.body.style.overflow = "hidden";
+//     } else {
+//       document.body.style.overflow = "unset";
+//     }
+//     return () => {
+//       document.body.style.overflow = "unset";
+//     };
+//   }, [mobileOpen]);
+
 //   useEffect(() => {
 //     setActiveDropdown(null);
 //     setMobileOpen(false);
+//     setMobileSubMenu(null);
 //   }, [location.pathname, location.search]);
 
 //   useEffect(() => {
@@ -80,6 +90,7 @@
 //         `/shop?q=${encodeURIComponent(searchQuery.trim().toLowerCase())}`,
 //       );
 //       setIsSearchOpen(false);
+//       setMobileOpen(false);
 //       setSearchQuery("");
 //     }
 //   };
@@ -97,6 +108,7 @@
 //     } else {
 //       navigate("/login");
 //     }
+//     setMobileOpen(false);
 //   };
 
 //   const megaMenus: Record<string, MegaMenuSection[]> = {
@@ -105,7 +117,7 @@
 //         title: "Standard Archive",
 //         links: [
 //           { label: "New Arrivals", path: "/shop?sort=newest" },
-//           { label: "Best Selling", path: "/shop?is_featured=true" },
+//           { label: "Best Selling", path: "/shop?sort=best_selling" },
 //           { label: "Devotional", path: "/shop?sub=devotion" },
 //           { label: "Motivational", path: "/shop?sub=motivation" },
 //         ],
@@ -133,24 +145,23 @@
 //         links: [
 //           { label: "Football", path: "/shop?sub=football" },
 //           { label: "Cricket", path: "/shop?sub=cricket" },
-//           { label: "UFC / Combat", path: "/shop?sub=ufc" },
 //         ],
 //       },
 //     ],
 //     multi: [
 //       {
-//         title: "Collage Protocols",
+//         title: "Collage ",
 //         links: [
-//           { label: "50-Piece Vault", path: "/multi-collections" }, // Corrected path
-//           { label: "30-Piece Bundle", path: "/multi-collections" }, // Corrected path
+//           { label: "30-Piece Bundle", path: "/shop?cat=collage&sub=30_piece" },
+//           { label: "50-Piece Bundle", path: "/shop?cat=collage&sub=50_piece" },
 //         ],
 //       },
 //       {
 //         title: "Modular Displays",
 //         links: [
-//           { label: "2-Piece Splits", path: "/multi-collections" },
-//           { label: "3-Piece Splits", path: "/multi-collections" },
-//           { label: "5-Panel Layouts", path: "/multi-collections" },
+//           { label: "2-Piece Splits", path: "/shop?cat=collage&sub=2_piece" },
+//           { label: "3-Piece Splits", path: "/shop?cat=collage&sub=3_piece" },
+//           { label: "5-Panel Layouts", path: "/shop?cat=collage&sub=5_panel" },
 //         ],
 //       },
 //     ],
@@ -158,7 +169,7 @@
 //       {
 //         title: "Logistics",
 //         links: [
-//           { label: "Track Order", path: "/track-order" },
+//           // { label: "Track Order", path: "/track-order" },
 //           { label: "Contact Us", path: "/contact" },
 //           { label: "FAQs", path: "/faqs" },
 //         ],
@@ -176,10 +187,12 @@
 
 //   const navLinks: NavLink[] = [
 //     { label: "Posters", id: "shop", path: "/shop" },
-//     { label: "Collage Kits", id: "multi", path: "/multi-collections" },
-//     { label: "Retro", id: "retro", path: "/retro-studio" },
+//     // { label: "Collage Kits", id: "multi", path: "/multi-collections" },
+//     // { label: "Retro", id: "retro", path: "/retro-studio" },
 //     { label: "Custom", id: "custom", path: "/custom-studio" },
 //     { label: "Stickers", id: "stickers", path: "/shop?cat=stickers" },
+//     { label: "About", id: "about", path: "/about" },
+//     { label: "Bulk", id: "bulk", path: "/bulk-posters" },
 //     { label: "Reviews", id: "reviews", path: "/reviews" },
 //     { label: "Support", id: "help", path: "/faqs" },
 //   ];
@@ -207,27 +220,21 @@
 //         className="absolute inset-0 pointer-events-none"
 //       />
 
-//       <div className="max-w-[1536px] mx-auto h-[80px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
-//         {/* If not the trial one the we gonna use this */}
-//         {/* <Link to="/">
-//           <img
-//             src="/MainLogo.png"
-//             // src="/logo.png"
-//             alt="Imprinto"
-//             className="h-8 md:h-10 w-auto "
-//             // className="h-8 md:h-10 w-auto brightness-0"
-//           />
-//         </Link> */}
-
-//         {/* This is the trial one, if it looks good then we go with this */}
-//         <Link to="/">
-//           <img
-//             src="/MainLogo.png"
-//             alt="Imprinto"
-//             className="h-12 md:h-16 w-auto transition-transform duration-300 rotate-[-3deg] ml-10"
-//           />
+//       <div className="max-w-[1536px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
+//         <Link to="/" className="group flex items-center">
+//           <motion.div
+//             animate={{ scale: scrolled ? 0.9 : 1 }}
+//             className="relative z-20"
+//           >
+//             <img
+//               src="/MainLogo.png"
+//               alt="Imprinto"
+//               className="h-10 md:h-14 w-auto object-contain"
+//             />
+//           </motion.div>
 //         </Link>
 
+//         {/* Desktop Links */}
 //         <div className="hidden lg:flex items-center gap-x-8 h-full">
 //           {navLinks.map((link) => {
 //             const isCurrentActive = activeDropdown === link.id;
@@ -243,7 +250,7 @@
 //               >
 //                 <div className="flex items-center gap-1.5 transition-all">
 //                   <span
-//                     className={`text-[10px] font-black uppercase tracking-[0.2em] ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
+//                     className={`text-[10px] font-black uppercase tracking-widest ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
 //                   >
 //                     {link.label}
 //                   </span>
@@ -259,7 +266,7 @@
 //           })}
 //         </div>
 
-//         <div className="flex items-center gap-x-6">
+//         <div className="flex items-center gap-x-4 md:gap-x-6">
 //           <Search
 //             size={20}
 //             onClick={() => setIsSearchOpen(true)}
@@ -271,10 +278,10 @@
 
 //           <button
 //             onClick={() => navigate("/cart")}
-//             className="relative group flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-none shadow-[5px_5px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
+//             className="relative group flex items-center gap-2 bg-foreground text-background px-4 md:px-6 py-2.5 md:py-3 shadow-[4px_4px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
 //           >
 //             <ShoppingBag size={18} strokeWidth={3} />
-//             <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">
+//             <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">
 //               Cart
 //             </span>
 //             {totalItems > 0 && (
@@ -284,43 +291,45 @@
 //             )}
 //           </button>
 
-//           <Menu
-//             className="lg:hidden cursor-pointer"
+//           <div
+//             className="lg:hidden cursor-pointer p-2 bg-foreground/5"
 //             onClick={() => setMobileOpen(true)}
-//           />
+//           >
+//             <Menu size={24} />
+//           </div>
 //         </div>
 //       </div>
 
+//       {/* DESKTOP MEGA MENU DROPDOWN - This was missing */}
 //       <AnimatePresence>
 //         {activeDropdown && megaMenus[activeDropdown] && (
 //           <motion.div
 //             initial={{ opacity: 0, y: -10 }}
 //             animate={{ opacity: 1, y: 0 }}
 //             exit={{ opacity: 0, y: -10 }}
-//             className="absolute top-full left-0 w-full py-20 px-8 border-t-2 border-foreground bg-white shadow-2xl hidden lg:block"
+//             className="absolute top-[70px] md:top-[100px] left-0 w-full bg-white border-b-2 border-black p-10 z-50 shadow-2xl hidden lg:block"
 //           >
-//             <div className="max-w-[1400px] mx-auto grid grid-cols-4 gap-12">
+//             <div className="max-w-[1536px] mx-auto grid grid-cols-4 gap-10">
 //               {megaMenus[activeDropdown].map((section) => (
-//                 <div key={section.title} className="space-y-8">
-//                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 border-b border-foreground/5 pb-4">
+//                 <div key={section.title} className="space-y-6">
+//                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary border-l-4 border-primary pl-3">
 //                     {section.title}
 //                   </h4>
-//                   <ul className="space-y-4">
+//                   <div className="flex flex-col gap-y-3">
 //                     {section.links.map((link) => (
-//                       <li key={link.label}>
-//                         <Link
-//                           to={link.path}
-//                           className="text-[12px] font-black text-foreground uppercase tracking-tight hover:text-primary flex items-center justify-between group"
-//                         >
-//                           {link.label}
-//                           <ArrowRight
-//                             size={14}
-//                             className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-primary"
-//                           />
-//                         </Link>
-//                       </li>
+//                       <Link
+//                         key={link.label}
+//                         to={link.path}
+//                         className="text-sm font-bold uppercase tracking-wide hover:text-primary transition-colors flex items-center group"
+//                       >
+//                         <ArrowRight
+//                           size={14}
+//                           className="mr-2 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all text-primary"
+//                         />
+//                         {link.label}
+//                       </Link>
 //                     ))}
-//                   </ul>
+//                   </div>
 //                 </div>
 //               ))}
 //             </div>
@@ -328,46 +337,17 @@
 //         )}
 //       </AnimatePresence>
 
-//       <AnimatePresence>
-//         {isSearchOpen && (
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             exit={{ opacity: 0 }}
-//             className="fixed inset-0 z-[2000] bg-white/98 backdrop-blur-xl flex items-center justify-center p-6"
-//           >
-//             <button
-//               onClick={() => setIsSearchOpen(false)}
-//               className="absolute top-10 right-10 w-14 h-14 bg-foreground text-background flex items-center justify-center shadow-[4px_4px_0px_0px_#00D4FF]"
-//             >
-//               <X size={32} strokeWidth={3} />
-//             </button>
-//             <form
-//               onSubmit={handleSearch}
-//               className="w-full max-w-5xl text-center"
-//             >
-//               <input
-//                 autoFocus
-//                 type="text"
-//                 placeholder="EXECUTE SEARCH..."
-//                 className="w-full bg-transparent border-b-8 border-foreground py-8 text-4xl md:text-9xl font-black uppercase tracking-tighter outline-none text-center italic"
-//                 value={searchQuery}
-//                 onChange={(e) => setSearchQuery(e.target.value)}
-//               />
-//             </form>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-
+//       {/* Mobile Menu Overlay */}
 //       <AnimatePresence>
 //         {mobileOpen && (
 //           <motion.div
 //             initial={{ x: "100%" }}
 //             animate={{ x: 0 }}
 //             exit={{ x: "100%" }}
-//             className="fixed inset-0 z-[3000] bg-white flex flex-col p-8 lg:hidden"
+//             transition={{ type: "tween", duration: 0.3, ease: "circOut" }}
+//             className="fixed inset-0 z-[3000] bg-white flex flex-col lg:hidden"
 //           >
-//             <div className="flex justify-between items-center mb-16">
+//             <div className="flex justify-between items-center px-6 h-[70px] border-b-2 border-foreground">
 //               {mobileSubMenu ? (
 //                 <button
 //                   onClick={() => setMobileSubMenu(null)}
@@ -376,49 +356,72 @@
 //                   <ChevronLeft size={16} strokeWidth={3} /> Back
 //                 </button>
 //               ) : (
-//                 <img src="/logo.png" alt="Logo" className="h-8 brightness-0" />
+//                 <img src="/MainLogo.png" alt="Logo" className="h-8 w-auto" />
 //               )}
-//               <X size={28} onClick={() => setMobileOpen(false)} />
+//               <X
+//                 size={28}
+//                 className="cursor-pointer"
+//                 onClick={() => setMobileOpen(false)}
+//               />
 //             </div>
 
-//             <div className="flex flex-col h-full overflow-y-auto">
+//             <div className="flex-1 overflow-y-auto px-6 py-8">
 //               {!mobileSubMenu ? (
-//                 <div className="flex flex-col gap-y-6">
-//                   {navLinks.map((link) => (
-//                     <button
-//                       key={link.label}
-//                       onClick={() => {
-//                         if (megaMenus[link.id]) setMobileSubMenu(link.id);
-//                         else navigate(link.path);
-//                       }}
-//                       className="text-4xl font-black uppercase tracking-tighter text-left border-b-2 border-foreground/5 pb-4 italic"
-//                     >
-//                       {link.label}
-//                     </button>
-//                   ))}
-//                   <button
-//                     onClick={handleAccountClick}
-//                     className="mt-10 py-6 bg-foreground text-background font-black uppercase text-xs shadow-[5px_5px_0px_0px_#00D4FF]"
-//                   >
-//                     {user ? "PROFILE" : "LOGIN"}
-//                   </button>
-//                 </div>
+//                 <>
+//                   <form onSubmit={handleSearch} className="mb-10 relative">
+//                     <input
+//                       type="text"
+//                       placeholder="SEARCH COLLECTIONS..."
+//                       value={searchQuery}
+//                       onChange={(e) => setSearchQuery(e.target.value)}
+//                       className="w-full bg-foreground/5 border-2 border-foreground p-4 text-[10px] font-black uppercase outline-none"
+//                     />
+//                     <Search
+//                       size={18}
+//                       className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/40"
+//                     />
+//                   </form>
+
+//                   <div className="flex flex-col gap-y-4">
+//                     {navLinks.map((link) => (
+//                       <button
+//                         key={link.label}
+//                         onClick={() => {
+//                           if (megaMenus[link.id]) setMobileSubMenu(link.id);
+//                           else navigate(link.path);
+//                         }}
+//                         className="flex justify-between items-center text-xl font-black uppercase tracking-widest text-left border-b-2 border-foreground/5 py-4 hover:text-primary transition-colors"
+//                       >
+//                         {link.label}
+//                         {megaMenus[link.id] && (
+//                           <ChevronDown
+//                             size={18}
+//                             className="-rotate-90 text-foreground/20"
+//                           />
+//                         )}
+//                       </button>
+//                     ))}
+//                   </div>
+//                 </>
 //               ) : (
-//                 <div className="flex flex-col gap-y-12">
+//                 <div className="flex flex-col gap-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
 //                   {megaMenus[mobileSubMenu].map((section) => (
 //                     <div key={section.title} className="space-y-6">
-//                       <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30">
+//                       <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 border-l-4 border-primary pl-3">
 //                         {section.title}
 //                       </h4>
-//                       <div className="flex flex-col gap-y-4 pl-4">
+//                       <div className="flex flex-col gap-y-4">
 //                         {section.links.map((link) => (
 //                           <Link
 //                             key={link.label}
 //                             to={link.path}
-//                             className="text-2xl font-black uppercase tracking-tight italic flex justify-between"
+//                             className="text-lg font-black uppercase tracking-widest flex justify-between items-center group"
 //                           >
-//                             {link.label}{" "}
-//                             <ArrowRight size={20} className="text-primary" />
+//                             {link.label}
+//                             <ArrowRight
+//                               size={18}
+//                               className="text-primary opacity-0 group-active:opacity-100"
+//                             />
 //                           </Link>
 //                         ))}
 //                       </div>
@@ -426,6 +429,57 @@
 //                   ))}
 //                 </div>
 //               )}
+//             </div>
+
+//             <div className="p-6 border-t-4 border-foreground bg-foreground text-background">
+//               <button
+//                 onClick={handleAccountClick}
+//                 className="w-full flex items-center justify-center gap-3 py-4 text-[12px] font-black uppercase tracking-[0.2em]"
+//               >
+//                 <User size={20} strokeWidth={3} />
+//                 {user ? "ACCESS TERMINAL (PROFILE)" : "LOGIN / CREATE ACCOUNT"}
+//               </button>
+//             </div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+
+//       {/* Search Overlay */}
+//       <AnimatePresence>
+//         {isSearchOpen && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             className="fixed inset-0 z-[4000] bg-white flex items-center justify-center p-6"
+//           >
+//             <div className="max-w-[800px] w-full">
+//               <div className="flex justify-between items-center mb-12">
+//                 <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+//                   Global Search Protocol
+//                 </span>
+//                 <X
+//                   size={32}
+//                   className="cursor-pointer hover:rotate-90 transition-transform"
+//                   onClick={() => setIsSearchOpen(false)}
+//                 />
+//               </div>
+//               <form onSubmit={handleSearch} className="relative">
+//                 <input
+//                   autoFocus
+//                   type="text"
+//                   placeholder="WHAT ARE YOU LOOKING FOR?"
+//                   className="w-full bg-transparent border-b-4 border-foreground py-8 text-2xl md:text-5xl font-black uppercase outline-none placeholder:text-foreground/10"
+//                   value={searchQuery}
+//                   onChange={(e) => setSearchQuery(e.target.value)}
+//                 />
+//                 <button
+//                   type="submit"
+//                   className="absolute right-0 top-1/2 -translate-y-1/2 p-4"
+//                 >
+//                   <ArrowRight size={40} className="text-primary" />
+//                 </button>
+//               </form>
 //             </div>
 //           </motion.div>
 //         )}
@@ -607,7 +661,6 @@ const Navbar = (): JSX.Element => {
       {
         title: "Logistics",
         links: [
-          // { label: "Track Order", path: "/track-order" },
           { label: "Contact Us", path: "/contact" },
           { label: "FAQs", path: "/faqs" },
         ],
@@ -625,8 +678,6 @@ const Navbar = (): JSX.Element => {
 
   const navLinks: NavLink[] = [
     { label: "Posters", id: "shop", path: "/shop" },
-    // { label: "Collage Kits", id: "multi", path: "/multi-collections" },
-    // { label: "Retro", id: "retro", path: "/retro-studio" },
     { label: "Custom", id: "custom", path: "/custom-studio" },
     { label: "Stickers", id: "stickers", path: "/shop?cat=stickers" },
     { label: "About", id: "about", path: "/about" },
@@ -652,28 +703,27 @@ const Navbar = (): JSX.Element => {
               : "blur(0px)",
           borderBottom:
             scrolled || activeDropdown || isSearchOpen
-              ? "2px solid #000"
+              ? "2px solid black"
               : "2px solid transparent",
         }}
         className="absolute inset-0 pointer-events-none"
       />
 
       <div className="max-w-[1536px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-6 md:px-10 relative z-10">
-        <Link to="/" className="group flex items-center">
+        <Link to="/" className="group flex items-center shrink-0">
           <motion.div
             animate={{ scale: scrolled ? 0.9 : 1 }}
-            className="relative z-20"
+            className="relative z-20 shrink-0"
           >
             <img
               src="/MainLogo.png"
               alt="Imprinto"
-              className="h-10 md:h-14 w-auto object-contain"
+              className="h-12 lg:h-16 w-auto object-contain shrink-0 max-w-none"
             />
           </motion.div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-x-8 h-full">
+        <div className="hidden lg:flex items-center gap-x-4 xl:gap-x-8 h-full">
           {navLinks.map((link) => {
             const isCurrentActive = activeDropdown === link.id;
             const hasMega = !!megaMenus[link.id];
@@ -688,7 +738,7 @@ const Navbar = (): JSX.Element => {
               >
                 <div className="flex items-center gap-1.5 transition-all">
                   <span
-                    className={`text-[10px] font-black uppercase tracking-widest ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
+                    className={`text-xs font-black uppercase tracking-widest whitespace-nowrap ${isCurrentActive ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
                   >
                     {link.label}
                   </span>
@@ -704,7 +754,7 @@ const Navbar = (): JSX.Element => {
           })}
         </div>
 
-        <div className="flex items-center gap-x-4 md:gap-x-6">
+        <div className="flex items-center gap-x-4 md:gap-x-6 shrink-0">
           <Search
             size={20}
             onClick={() => setIsSearchOpen(true)}
@@ -716,14 +766,14 @@ const Navbar = (): JSX.Element => {
 
           <button
             onClick={() => navigate("/cart")}
-            className="relative group flex items-center gap-2 bg-foreground text-background px-4 md:px-6 py-2.5 md:py-3 shadow-[4px_4px_0px_0px_#00D4FF] hover:bg-primary hover:text-foreground transition-all"
+            className="relative group flex items-center gap-2 bg-foreground text-background px-4 md:px-6 py-2.5 md:py-3 shadow-[4px_4px_0px_0px_rgb(0,212,255)] hover:bg-primary hover:text-foreground transition-all shrink-0"
           >
             <ShoppingBag size={18} strokeWidth={3} />
-            <span className="text-[10px] font-black uppercase tracking-widest hidden md:block">
+            <span className="text-xs font-black uppercase tracking-widest hidden md:block">
               Cart
             </span>
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-foreground text-[10px] font-black flex items-center justify-center border-2 border-foreground">
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-foreground text-xs font-black flex items-center justify-center border-2 border-foreground">
                 {totalItems}
               </span>
             )}
@@ -738,7 +788,6 @@ const Navbar = (): JSX.Element => {
         </div>
       </div>
 
-      {/* DESKTOP MEGA MENU DROPDOWN - This was missing */}
       <AnimatePresence>
         {activeDropdown && megaMenus[activeDropdown] && (
           <motion.div
@@ -750,7 +799,7 @@ const Navbar = (): JSX.Element => {
             <div className="max-w-[1536px] mx-auto grid grid-cols-4 gap-10">
               {megaMenus[activeDropdown].map((section) => (
                 <div key={section.title} className="space-y-6">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary border-l-4 border-primary pl-3">
+                  <h4 className="text-xs font-black uppercase tracking-[0.2em] text-primary border-l-4 border-primary pl-3">
                     {section.title}
                   </h4>
                   <div className="flex flex-col gap-y-3">
@@ -775,7 +824,6 @@ const Navbar = (): JSX.Element => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -789,7 +837,7 @@ const Navbar = (): JSX.Element => {
               {mobileSubMenu ? (
                 <button
                   onClick={() => setMobileSubMenu(null)}
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary"
+                  className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary"
                 >
                   <ChevronLeft size={16} strokeWidth={3} /> Back
                 </button>
@@ -812,7 +860,7 @@ const Navbar = (): JSX.Element => {
                       placeholder="SEARCH COLLECTIONS..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-foreground/5 border-2 border-foreground p-4 text-[10px] font-black uppercase outline-none"
+                      className="w-full bg-foreground/5 border-2 border-foreground p-4 text-xs font-black uppercase outline-none"
                     />
                     <Search
                       size={18}
@@ -845,7 +893,7 @@ const Navbar = (): JSX.Element => {
                 <div className="flex flex-col gap-y-10 animate-in fade-in slide-in-from-right-4 duration-300">
                   {megaMenus[mobileSubMenu].map((section) => (
                     <div key={section.title} className="space-y-6">
-                      <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/30 border-l-4 border-primary pl-3">
+                      <h4 className="text-xs font-black uppercase tracking-[0.3em] text-foreground/30 border-l-4 border-primary pl-3">
                         {section.title}
                       </h4>
                       <div className="flex flex-col gap-y-4">
@@ -872,7 +920,7 @@ const Navbar = (): JSX.Element => {
             <div className="p-6 border-t-4 border-foreground bg-foreground text-background">
               <button
                 onClick={handleAccountClick}
-                className="w-full flex items-center justify-center gap-3 py-4 text-[12px] font-black uppercase tracking-[0.2em]"
+                className="w-full flex items-center justify-center gap-3 py-4 text-xs font-black uppercase tracking-[0.2em]"
               >
                 <User size={20} strokeWidth={3} />
                 {user ? "ACCESS TERMINAL (PROFILE)" : "LOGIN / CREATE ACCOUNT"}
@@ -882,7 +930,6 @@ const Navbar = (): JSX.Element => {
         )}
       </AnimatePresence>
 
-      {/* Search Overlay */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
@@ -893,7 +940,7 @@ const Navbar = (): JSX.Element => {
           >
             <div className="max-w-[800px] w-full">
               <div className="flex justify-between items-center mb-12">
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+                <span className="text-xs font-black uppercase tracking-widest text-primary">
                   Global Search Protocol
                 </span>
                 <X
