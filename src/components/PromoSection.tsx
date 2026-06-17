@@ -141,7 +141,7 @@ const PromoSection = () => {
 
               <div className="flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start w-full">
                 <Link
-                  className="w-full sm:w-auto px-8 md:px-10 h-14 md:h-16 bg-foreground text-background font-black uppercase text-[10px] md:text-xs flex items-center justify-center gap-3 hover:bg-primary hover:text-foreground transition-all duration-300 shadow-[4px_4px_0px_0px_rgb(255,46,99)] md:shadow-[6px_6px_0px_0px_rgb(255,46,99)]"
+                  className="w-full sm:w-auto px-8 md:px-10 h-14 md:h-16 bg-foreground text-background font-black uppercase text-[10px] md:text-xs flex items-center justify-center gap-3 hover:bg-primary hover:text-foreground transition-all duration-300 shadow-[4px_4px_0  px_0px_rgb(255,46,99)] md:shadow-[6px_6px_0px_0px_rgb(255,46,99)]"
                   to="/shop?sort=trending"
                 >
                   Shop Now
