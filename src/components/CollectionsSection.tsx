@@ -241,7 +241,7 @@ const CollectionsSection = (): JSX.Element => {
               </span>
             </div>
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase leading-none">
-              CURATED <span className="text-primary italic">DROPS.</span>
+              CURATED <span className="text-primary">DROPS.</span>
             </h2>
           </div>
           <Link

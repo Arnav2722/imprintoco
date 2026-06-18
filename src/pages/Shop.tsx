@@ -317,7 +317,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useProducts, DbProduct } from "@/hooks/use-products";
@@ -411,7 +411,7 @@ const Shop = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body selection:bg-primary selection:text-black">
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="pt-28 md:pt-40 pb-20 px-6 max-w-[1400px] mx-auto">
         <header className="mb-12 md:mb-16 flex flex-col lg:flex-row lg:items-end justify-between gap-8 md:gap-10">
