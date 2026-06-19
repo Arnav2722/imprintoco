@@ -143,7 +143,6 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const About = () => {
@@ -151,19 +150,19 @@ const About = () => {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-black">
       <Navbar />
 
-      <main className="pt-28 md:pt-32 pb-20 px-6">
-        {/* <main className="pt-24 pb-20 px-6 mt-10"> */}
+      <main className="pt-32 md:pt-48 pb-20 px-6">
         <div className="max-w-[1200px] mx-auto">
           {/* Header */}
           <div className="mb-20 md:mb-32">
-            <h1 className="text-[12vw] md:text-6xl font-black uppercase tracking-tighter leading-[1.1] mb-8">
-              ABOUT US
+            <h1 className="text-[16vw] md:text-8xl font-black uppercase tracking-tighter leading-[1.1] md:leading-[0.9] mb-8">
+              ABOUT <br /> US
             </h1>
             <div className="flex flex-col md:flex-row justify-between gap-6 border-t-2 border-foreground pt-6">
-              <p className="text-sm md:text-base font-bold max-w-lg uppercase leading-relaxed opacity-80 align-justify">
-                Imprinto start hua tha ek simple goal ke saath: boring deewaron
-                ko khatam karna. Hum mass-market nahi, balki un logon ke liye
-                visual banate hain jo apni pasand se jeete hain.
+              <p className="text-sm md:text-base font-bold max-w-lg uppercase leading-relaxed opacity-80">
+                Imprinto started with one simple idea: walls are meant to be
+                more than just blank space. We don't believe in mass-produced,
+                soulless decor. We build visuals for people who care about what
+                they put on their walls.
               </p>
             </div>
           </div>
@@ -181,39 +180,39 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-32">
             <div className="md:col-span-1">
               <h3 className="text-xs font-black uppercase tracking-widest mb-4 border-l-4 border-primary pl-4">
-                Hum kya karte hain?
+                Our approach
               </h3>
             </div>
             <div className="md:col-span-2 space-y-6">
               <p className="text-xl md:text-2xl font-bold uppercase tracking-tight">
-                "Hum sirf poster nahi bech rahe, hum aapke shauk ka visual proof
-                de rahe hain."
+                We aren't just selling posters. We are helping you display what
+                actually matters to you.
               </p>
               <p className="text-xs md:text-sm font-bold opacity-60 uppercase tracking-wide leading-relaxed">
-                Design se lekar printing tak, hum sab khud karte hain. 300gsm
-                matte paper use karte hain taaki aapki wall par quality dikhe.
-                Hum corporate nahi hain, hum fans hain jo fans ke liye kamaal ka
-                art bana rahe hain.
+                Everything here is handled by us. We use heavy 300gsm matte paper because quality
+                matters, and we don't think you should settle for flimsy prints.
+                We are just a team of fans making things we'd be proud to hang
+                in our own rooms.
               </p>
             </div>
           </div>
 
-          {/* Process - Center aligned on mobile */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Process */}
+          <div className="grid md:grid-cols-3 gap-6 gap-y-10">
             <ProcessBox
               num="01"
-              title="DESIGN"
-              desc="In-house original concepts."
+              title="Original Design"
+              desc="We draw our own concepts. No generic templates."
             />
             <ProcessBox
               num="02"
-              title="QUALITY"
-              desc="Premium paper, sharp ink."
+              title="Real Quality"
+              desc="Heavy paper, sharp ink, and built to last."
             />
             <ProcessBox
               num="03"
-              title="DELIVERY"
-              desc="Fast and safe everywhere."
+              title="Reliable Shipping"
+              desc="Packed safe, delivered fast, all across India."
             />
           </div>
         </div>
@@ -236,7 +235,7 @@ const ProcessBox = ({
   <div className="bg-background p-8 border-4 border-foreground hover:bg-primary transition-colors group flex flex-col items-center text-center">
     <span className="text-3xl font-black opacity-20 block mb-4">{num}</span>
     <h4 className="text-lg font-black uppercase mb-2">{title}</h4>
-    <p className="text-[10px] md:text-xs font-black uppercase opacity-60 group-hover:opacity-100">
+    <p className="text-[10px] md:text-xs font-black uppercase opacity-60 group-hover:opacity-100 leading-tight">
       {desc}
     </p>
   </div>

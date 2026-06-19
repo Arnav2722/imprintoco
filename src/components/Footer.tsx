@@ -183,7 +183,7 @@ const Footer = (): JSX.Element => {
           <div className="flex flex-col gap-6 md:gap-8 items-start">
             <Link to="/" className="group">
               <img
-                src="/MainLogo.png"
+                src="/MainLogo2.png"
                 alt="Imprinto Co."
                 className="h-10 md:h-12 w-auto transition-transform group-hover:scale-105"
               />
@@ -228,7 +228,7 @@ const Footer = (): JSX.Element => {
               Support
             </h4>
             <ul className="flex flex-col gap-4">
-              <FooterLink to="/track-order" label="Track" />
+              {/* <FooterLink to="/track-order" label="Track" /> */}
               <FooterLink to="/faqs" label="Help" />
               <FooterLink to="/contact" label="Contact" />
               <FooterLink to="/shipping-policy" label="Shipping" />
@@ -238,7 +238,7 @@ const Footer = (): JSX.Element => {
           {/* Status Panel */}
           <div className="flex flex-col">
             <h4 className="font-display text-sm md:text-xl font-black uppercase tracking-tighter mb-6 md:mb-8 border-b-4 border-accent-lime inline-block">
-              Status
+              Contact Us
             </h4>
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-3 text-foreground/50 hover:text-primary transition-colors cursor-pointer">
@@ -246,10 +246,12 @@ const Footer = (): JSX.Element => {
                 <span className="text-[7px] md:text-[9px] font-black tracking-widest uppercase">
                   support.imprinto@gmail.com
                 </span>
-                {/* <Phone size={16} strokeWidth={3} />
-                <span className="text-[7px] md:text-[9px] font-black tracking-widest uppercase">
-                  +91 9852364170
-                </span> */}
+              </div>
+              <div className="flex items-center gap-3 text-foreground/50 hover:text-primary transition-colors cursor-pointer">
+                <Phone size={16} strokeWidth={3} />
+                <span className="text-[10px] md:text-[11px] font-black tracking-widest uppercase">
+                  +91 9635287415
+                </span>
               </div>
               {/* <div className="p-4 border-2 border-dashed border-foreground/10 bg-muted/30">
                 <p className="text-[7px] font-black uppercase text-foreground/40 mb-2 tracking-widest">
