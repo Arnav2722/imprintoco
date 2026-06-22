@@ -187,7 +187,7 @@ const CollectionsSection = (): JSX.Element => {
         span: "sm:col-span-2 sm:row-span-1",
       },
       {
-        targetSub: "Formula 1",
+        targetSub: "Movies",
         title: "CINEMATIC",
         fallbackImage: "/Posters/motivation1.jpg",
         span: "sm:col-span-1 sm:row-span-1",
