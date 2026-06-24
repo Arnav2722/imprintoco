@@ -6,11 +6,23 @@
 //   useEffect,
 // } from "react";
 // import { DbProduct } from "@/hooks/use-products";
+// import { db } from "@/lib/firebase";
+// import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 
 // interface CartItem {
 //   product: DbProduct;
 //   quantity: number;
 //   selectedSize?: string;
+// }
+
+// interface CustomerData {
+//   customerName: string;
+//   email: string;
+//   phone: string;
+//   address: string;
+//   city: string;
+//   state: string;
+//   pincode: string;
 // }
 
 // interface CartContextType {
@@ -23,6 +35,7 @@
 //     quantity: number,
 //   ) => void;
 //   clearCart: () => void;
+//   processCheckout: (customerData: CustomerData) => Promise<string>;
 //   totalItems: number;
 //   totalPrice: number;
 //   isCartOpen: boolean;
@@ -32,14 +45,12 @@
 // const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // export const CartProvider = ({ children }: { children: ReactNode }) => {
-//   // Initial state localstorage se uthayega
 //   const [items, setItems] = useState<CartItem[]>(() => {
 //     const savedCart = localStorage.getItem("imprinto_cart");
 //     return savedCart ? JSON.parse(savedCart) : [];
 //   });
 //   const [isCartOpen, setIsCartOpen] = useState(false);
 
-//   // Jab bhi items change honge, localstorage update hoga
 //   useEffect(() => {
 //     localStorage.setItem("imprinto_cart", JSON.stringify(items));
 //   }, [items]);
@@ -48,7 +59,7 @@
 //     product: DbProduct,
 //     size?: string,
 //     quantity: number = 1,
-//   ) => {
+//   ): void => {
 //     setItems((prev) => {
 //       const existing = prev.find(
 //         (i) => i.product.id === product.id && i.selectedSize === size,
@@ -65,7 +76,7 @@
 //     setIsCartOpen(true);
 //   };
 
-//   const removeFromCart = (productId: string, size?: string) => {
+//   const removeFromCart = (productId: string, size?: string): void => {
 //     setItems((prev) =>
 //       prev.filter(
 //         (i) => !(i.product.id === productId && i.selectedSize === size),
@@ -77,7 +88,7 @@
 //     productId: string,
 //     size: string | undefined,
 //     quantity: number,
-//   ) => {
+//   ): void => {
 //     if (quantity <= 0) {
 //       removeFromCart(productId, size);
 //       return;
@@ -91,13 +102,44 @@
 //     );
 //   };
 
-//   const clearCart = () => {
+//   const clearCart = (): void => {
 //     setItems([]);
 //     localStorage.removeItem("imprinto_cart");
 //   };
 
-//   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-//   const totalPrice = items.reduce(
+//   const processCheckout = async (
+//     customerData: CustomerData,
+//   ): Promise<string> => {
+//     const ordersRef = collection(db, "orders");
+//     const snapshot = await getDocs(ordersRef);
+//     const orderNumber: number = 1000 + snapshot.size + 1;
+//     const generatedId: string = `IMP-${orderNumber}`;
+
+//     const orderPayload = {
+//       ...customerData,
+//       orderId: generatedId,
+//       items: items
+//         .map(
+//           (i) =>
+//             `${i.quantity} x ${i.product.name} (${i.selectedSize || "Standard"})`,
+//         )
+//         .join(", "),
+//       totalAmount: items.reduce(
+//         (sum, i) => sum + i.product.price * i.quantity,
+//         0,
+//       ),
+//       status: "pending",
+//       createdAt: Timestamp.now(),
+//       updatedAt: Timestamp.now(),
+//     };
+
+//     await addDoc(ordersRef, orderPayload);
+//     clearCart();
+//     return generatedId;
+//   };
+
+//   const totalItems: number = items.reduce((sum, i) => sum + i.quantity, 0);
+//   const totalPrice: number = items.reduce(
 //     (sum, i) => sum + i.product.price * i.quantity,
 //     0,
 //   );
@@ -110,6 +152,7 @@
 //         removeFromCart,
 //         updateQuantity,
 //         clearCart,
+//         processCheckout,
 //         totalItems,
 //         totalPrice,
 //         isCartOpen,
@@ -167,9 +210,37 @@ interface CartContextType {
   processCheckout: (customerData: CustomerData) => Promise<string>;
   totalItems: number;
   totalPrice: number;
+  discountAmount: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
 }
+
+// Logic bahar nikaal diya for Fast Refresh
+const calculateTotals = (items: CartItem[]) => {
+  const groups: { [key: string]: DbProduct[] } = {};
+  items.forEach((item) => {
+    const size = item.selectedSize || "Standard";
+    if (!groups[size]) groups[size] = [];
+    for (let j = 0; j < item.quantity; j++) groups[size].push(item.product);
+  });
+
+  let total = 0;
+  let discountAmount = 0;
+
+  Object.keys(groups).forEach((size) => {
+    const products = groups[size];
+    if (products.length >= 5) {
+      products.sort((a, b) => a.price - b.price);
+      discountAmount += products
+        .slice(0, 2)
+        .reduce((sum, item) => sum + item.price, 0);
+      total += products.slice(2).reduce((sum, item) => sum + item.price, 0);
+    } else {
+      total += products.reduce((sum, item) => sum + item.price, 0);
+    }
+  });
+  return { total, discountAmount };
+};
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -243,6 +314,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const snapshot = await getDocs(ordersRef);
     const orderNumber: number = 1000 + snapshot.size + 1;
     const generatedId: string = `IMP-${orderNumber}`;
+    const { total, discountAmount } = calculateTotals(items);
 
     const orderPayload = {
       ...customerData,
@@ -253,10 +325,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             `${i.quantity} x ${i.product.name} (${i.selectedSize || "Standard"})`,
         )
         .join(", "),
-      totalAmount: items.reduce(
-        (sum, i) => sum + i.product.price * i.quantity,
-        0,
-      ),
+      totalAmount: total,
+      discount: discountAmount,
       status: "pending",
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
@@ -267,11 +337,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return generatedId;
   };
 
+  const { total, discountAmount } = calculateTotals(items);
   const totalItems: number = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice: number = items.reduce(
-    (sum, i) => sum + i.product.price * i.quantity,
-    0,
-  );
 
   return (
     <CartContext.Provider
@@ -283,7 +350,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         clearCart,
         processCheckout,
         totalItems,
-        totalPrice,
+        totalPrice: total,
+        discountAmount,
         isCartOpen,
         setIsCartOpen,
       }}

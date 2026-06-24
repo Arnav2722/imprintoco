@@ -76,6 +76,10 @@
 //   );
 //   const [shippingFee, setShippingFee] = useState<number>(45);
 
+//   // Coupon State
+//   const [couponCode, setCouponCode] = useState("");
+//   const [discount, setDiscount] = useState(0);
+
 //   // Prefill from Auth
 //   useEffect(() => {
 //     if (userData) {
@@ -100,7 +104,16 @@
 //     setShippingFee(shippingMethod === "cod" ? 99 : 42);
 //   }, [shippingMethod]);
 
-//   const finalAmount = totalPrice + shippingFee;
+//   const applyCoupon = () => {
+//     if (couponCode === "FRIENDS10") {
+//       setDiscount(totalPrice * 0.1);
+//       alert("10% discount applied successfully!");
+//     } else {
+//       alert("Invalid coupon code");
+//     }
+//   };
+
+//   const finalAmount = totalPrice - discount + shippingFee;
 
 //   const saveOrderToFirestore = async (
 //     paymentId: string = "COD_ORDER",
@@ -143,26 +156,22 @@
 //   };
 
 //   const bookShipment = async (orderId: string, mode: string) => {
-//     try {
-//       const shipRes = await fetch(`${API_BASE}/api/create-shipment`, {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//           customerName: `${firstName} ${lastName}`,
-//           address: `${address}, ${city}`,
-//           pincode,
-//           phone,
-//           orderId: orderId,
-//           totalAmount: Number(finalAmount),
-//           paymentMode: mode,
-//         }),
-//       });
-//       const shipData = await shipRes.json();
-//       return shipData.trackingId || "PENDING";
-//     } catch (error) {
-//       console.error("Shipping Booking Error:", error);
-//       return "BOOKING_FAILED";
-//     }
+//     const shipRes = await fetch(`${API_BASE}/api/create-shipment`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         customerName: `${firstName} ${lastName}`,
+//         address: `${address}, ${city}`,
+//         pincode,
+//         phone,
+//         orderId: orderId,
+//         totalAmount: Number(finalAmount),
+//         paymentMode: mode,
+//       }),
+//     });
+//     if (!shipRes.ok) throw new Error("Shipping Booking Failed");
+//     const shipData = await shipRes.json();
+//     return shipData.trackingId || "PENDING";
 //   };
 
 //   const handlePayment = async () => {
@@ -177,75 +186,62 @@
 //       alert("Please fill all required fields correctly!");
 //       return;
 //     }
-
 //     setProcessing(true);
 
-//     if (shippingMethod === "cod") {
-//       const generatedId = `POST-${Date.now().toString().slice(-4)}`;
-//       const tId = await bookShipment(generatedId, "COD");
-//       await saveOrderToFirestore("COD_ORDER", tId, generatedId);
-//       setProcessing(false);
-//       return;
-//     }
-
 //     try {
-//       const amountInPaise = Math.round(finalAmount * 100);
+//       if (shippingMethod === "cod") {
+//         const generatedId = `POST-${Date.now().toString().slice(-4)}`;
+//         const tId = await bookShipment(generatedId, "COD");
+//         await saveOrderToFirestore("COD_ORDER", tId, generatedId);
+//       } else {
+//         const amountInPaise = Math.round(finalAmount * 100);
+//         const res = await fetch(`${API_BASE}/create-order`, {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({ amount: amountInPaise }),
+//         });
+//         if (!res.ok) throw new Error("Order creation failed");
+//         const orderData = await res.json();
 
-//       const res = await fetch(`${API_BASE}/create-order`, {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ amount: amountInPaise }),
-//       });
-
-//       if (!res.ok) throw new Error("Order creation failed");
-//       const orderData = await res.json();
-
-//       const options: RazorpayOptions = {
-//         key: import.meta.env.VITE_RAZORPAY_KEY_ID as string,
-//         amount: orderData.amount,
-//         currency: orderData.currency,
-//         order_id: orderData.id,
-//         name: "Imprinto Co.",
-//         description: "Art Terminal Checkout",
-//         prefill: {
-//           name: `${firstName} ${lastName}`,
-//           email,
-//           contact: phone,
-//         },
-//         handler: async (response: RazorpayResponse) => {
-//           setProcessing(true);
-//           const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(response),
-//           });
-
-//           const result = await verifyRes.json();
-//           if (result.status === "success") {
-//             const tId = await bookShipment(
-//               response.razorpay_order_id,
-//               "Prepaid",
-//             );
-//             await saveOrderToFirestore(
-//               response.razorpay_payment_id,
-//               tId,
-//               `POST-${response.razorpay_order_id.slice(-4)}`,
-//             );
-//           } else {
-//             alert("Payment Verification Failed!");
-//           }
-//           setProcessing(false);
-//         },
-//         theme: { color: "#00D4FF" },
-//       };
-
-//       if (window.Razorpay) {
-//         const rzp = new window.Razorpay(options);
-//         rzp.open();
+//         const options: RazorpayOptions = {
+//           key: import.meta.env.VITE_RAZORPAY_KEY_ID as string,
+//           amount: orderData.amount,
+//           currency: orderData.currency,
+//           order_id: orderData.id,
+//           name: "Imprinto Co.",
+//           description: "Art Terminal Checkout",
+//           prefill: { name: `${firstName} ${lastName}`, email, contact: phone },
+//           handler: async (response: RazorpayResponse) => {
+//             setProcessing(true);
+//             const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
+//               method: "POST",
+//               headers: { "Content-Type": "application/json" },
+//               body: JSON.stringify(response),
+//             });
+//             const result = await verifyRes.json();
+//             if (result.status === "success") {
+//               const customId = `POST-${response.razorpay_order_id.slice(-4)}`;
+//               const tId = await bookShipment(customId, "Prepaid");
+//               await saveOrderToFirestore(
+//                 response.razorpay_payment_id,
+//                 tId,
+//                 customId,
+//               );
+//             } else {
+//               alert("Payment Verification Failed!");
+//             }
+//             setProcessing(false);
+//           },
+//           theme: { color: "#00D4FF" },
+//         };
+//         if (window.Razorpay) {
+//           const rzp = new window.Razorpay(options);
+//           rzp.open();
+//         }
 //       }
 //     } catch (err) {
 //       console.error(err);
-//       alert("Payment Error. Check server.");
+//       alert("Order could not be processed. Check server/connection.");
 //     } finally {
 //       setProcessing(false);
 //     }
@@ -296,7 +292,6 @@
 //                 className={inputClass}
 //               />
 //             </section>
-
 //             <section className="space-y-6">
 //               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
 //                 Delivery
@@ -363,7 +358,6 @@
 //                 </div>
 //               </div>
 //             </section>
-
 //             <section className="space-y-6">
 //               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
 //                 Shipping method
@@ -420,8 +414,6 @@
 //                   </span>
 //                 </label>
 //               </div>
-
-//               {/* COD UPSELL ALERT */}
 //               <AnimatePresence>
 //                 {shippingMethod === "cod" && (
 //                   <motion.div
@@ -454,7 +446,6 @@
 //                 )}
 //               </AnimatePresence>
 //             </section>
-
 //             <div className="pt-6">
 //               <button
 //                 onClick={handlePayment}
@@ -476,12 +467,28 @@
 //               </button>
 //             </div>
 //           </div>
-
 //           <div className="lg:col-span-5">
 //             <div className="lg:sticky lg:top-32 bg-[#F9F9F9] border-2 border-foreground/5 p-6 md:p-8 space-y-8">
 //               <h2 className="font-display text-lg font-black uppercase border-b-2 border-foreground/5 pb-4 text-black">
 //                 Order Summary
 //               </h2>
+
+//               {/* COUPON INPUT */}
+//               <div className="flex gap-2 mb-4">
+//                 <input
+//                   value={couponCode}
+//                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+//                   placeholder="COUPON CODE"
+//                   className={inputClass}
+//                 />
+//                 <button
+//                   onClick={applyCoupon}
+//                   className="bg-black text-white px-4 text-[8px] font-black uppercase hover:bg-primary transition-all"
+//                 >
+//                   Apply
+//                 </button>
+//               </div>
+
 //               <div className="max-h-[400px] overflow-y-auto space-y-6 pr-2">
 //                 {items.map((item) => (
 //                   <div
@@ -514,11 +521,17 @@
 //                   </div>
 //                 ))}
 //               </div>
-//               <div className="space-y-4 pt-6 border-t-2 border-foreground/5 text-[10px] font-black uppercase">
+//               <div className="space-y-4 pt-6 border-t-2 border-foreground/10 text-[10px] font-black uppercase">
 //                 <div className="flex justify-between opacity-60 text-black">
 //                   <span>Subtotal</span>
 //                   <span>₹{totalPrice}</span>
 //                 </div>
+//                 {discount > 0 && (
+//                   <div className="flex justify-between text-primary">
+//                     <span>Discount</span>
+//                     <span>-₹{discount}</span>
+//                   </div>
+//                 )}
 //                 <div className="flex justify-between opacity-60 text-black">
 //                   <span>Shipping</span>
 //                   <span>₹{shippingFee}.00</span>
@@ -602,7 +615,7 @@ const API_BASE =
     : "https://imprinto.onrender.com";
 
 const Checkout = (): JSX.Element => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, discountAmount, clearCart } = useCart();
   const { userData } = useAuth();
   const navigate = useNavigate();
 
@@ -624,9 +637,17 @@ const Checkout = (): JSX.Element => {
   );
   const [shippingFee, setShippingFee] = useState<number>(45);
 
-  // Coupon State
+  // Coupon States
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+
+  // Calculation logic
+  const originalPrice = items.reduce(
+    (sum, i) => sum + i.product.price * i.quantity,
+    0,
+  );
+  const finalAmount = totalPrice + shippingFee - discount;
 
   // Prefill from Auth
   useEffect(() => {
@@ -653,15 +674,14 @@ const Checkout = (): JSX.Element => {
   }, [shippingMethod]);
 
   const applyCoupon = () => {
-    if (couponCode === "FRIENDS10") {
+    if (couponCode.toUpperCase() === "SAVE10") {
       setDiscount(totalPrice * 0.1);
-      alert("10% discount applied successfully!");
+      setAppliedCoupon(couponCode.toUpperCase());
+      alert("Coupon Applied!");
     } else {
-      alert("Invalid coupon code");
+      alert("Invalid Coupon");
     }
   };
-
-  const finalAmount = totalPrice - discount + shippingFee;
 
   const saveOrderToFirestore = async (
     paymentId: string = "COD_ORDER",
@@ -758,7 +778,11 @@ const Checkout = (): JSX.Element => {
           order_id: orderData.id,
           name: "Imprinto Co.",
           description: "Art Terminal Checkout",
-          prefill: { name: `${firstName} ${lastName}`, email, contact: phone },
+          prefill: {
+            name: `${firstName} ${lastName}`,
+            email,
+            contact: phone,
+          },
           handler: async (response: RazorpayResponse) => {
             setProcessing(true);
             const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
@@ -766,6 +790,7 @@ const Checkout = (): JSX.Element => {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(response),
             });
+
             const result = await verifyRes.json();
             if (result.status === "success") {
               const customId = `POST-${response.razorpay_order_id.slice(-4)}`;
@@ -782,6 +807,7 @@ const Checkout = (): JSX.Element => {
           },
           theme: { color: "#00D4FF" },
         };
+
         if (window.Razorpay) {
           const rzp = new window.Razorpay(options);
           rzp.open();
@@ -840,6 +866,7 @@ const Checkout = (): JSX.Element => {
                 className={inputClass}
               />
             </section>
+
             <section className="space-y-6">
               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
                 Delivery
@@ -906,6 +933,7 @@ const Checkout = (): JSX.Element => {
                 </div>
               </div>
             </section>
+
             <section className="space-y-6">
               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
                 Shipping method
@@ -994,6 +1022,7 @@ const Checkout = (): JSX.Element => {
                 )}
               </AnimatePresence>
             </section>
+
             <div className="pt-6">
               <button
                 onClick={handlePayment}
@@ -1015,14 +1044,14 @@ const Checkout = (): JSX.Element => {
               </button>
             </div>
           </div>
+
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-32 bg-[#F9F9F9] border-2 border-foreground/5 p-6 md:p-8 space-y-8">
               <h2 className="font-display text-lg font-black uppercase border-b-2 border-foreground/5 pb-4 text-black">
                 Order Summary
               </h2>
 
-              {/* COUPON INPUT */}
-              <div className="flex gap-2 mb-4">
+              <div className="flex gap-2">
                 <input
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
@@ -1069,15 +1098,22 @@ const Checkout = (): JSX.Element => {
                   </div>
                 ))}
               </div>
+
               <div className="space-y-4 pt-6 border-t-2 border-foreground/10 text-[10px] font-black uppercase">
                 <div className="flex justify-between opacity-60 text-black">
                   <span>Subtotal</span>
-                  <span>₹{totalPrice}</span>
+                  <span>₹{originalPrice}.00</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-green-600 font-black">
+                    <span>Buy 3 Get 2 Offer</span>
+                    <span>-₹{discountAmount}.00</span>
+                  </div>
+                )}
                 {discount > 0 && (
-                  <div className="flex justify-between text-primary">
-                    <span>Discount</span>
-                    <span>-₹{discount}</span>
+                  <div className="flex justify-between text-green-600 font-black">
+                    <span>Coupon ({appliedCoupon})</span>
+                    <span>-₹{discount}.00</span>
                   </div>
                 )}
                 <div className="flex justify-between opacity-60 text-black">
@@ -1091,7 +1127,7 @@ const Checkout = (): JSX.Element => {
                       INR
                     </span>
                     <span className="text-3xl tracking-tighter">
-                      ₹{finalAmount}.00
+                      ₹{Math.max(0, finalAmount)}.00
                     </span>
                   </div>
                 </div>
