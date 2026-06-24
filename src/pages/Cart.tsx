@@ -15,20 +15,14 @@
 // import { motion } from "framer-motion";
 
 // const Cart = () => {
-//   const { items, removeFromCart, updateQuantity, totalPrice } = useCart();
+//   const { items, removeFromCart, updateQuantity, totalPrice, discountAmount } =
+//     useCart();
 //   const navigate = useNavigate();
 //   const [agreed, setAgreed] = useState(false);
 
 //   const MIN_ORDER_VALUE = 249;
 //   const isBelowMinimum = totalPrice < MIN_ORDER_VALUE;
 //   const amountNeededForMin = MIN_ORDER_VALUE - totalPrice;
-
-//   const freeShippingThreshold = 500;
-//   const remainingForOffer = Math.max(0, freeShippingThreshold - totalPrice);
-//   const progressPercent = Math.min(
-//     100,
-//     (totalPrice / freeShippingThreshold) * 100,
-//   );
 
 //   return (
 //     <div className="min-h-screen bg-[#FAF9F6] text-foreground font-body selection:bg-primary selection:text-black">
@@ -150,7 +144,7 @@
 //                 />
 //                 <label
 //                   htmlFor="terms"
-//                   className="text-[7px] md:text-[10px] font-black uppercase tracking-tight cursor-pointer leading-relaxed"
+//                   className="text-[10px] md:text-[15px] font-black uppercase tracking-tight cursor-pointer leading-relaxed"
 //                 >
 //                   I agree to the{" "}
 //                   <Link
@@ -163,21 +157,39 @@
 //               </div>
 
 //               <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-t-2 border-black/5 pt-8 gap-4">
-//                 <div className="flex flex-col">
-//                   <span className="text-[7px] md:text-[10px] font-black uppercase text-black/40 tracking-widest mb-2">
-//                     Total Amount
-//                   </span>
-//                   <span className="text-3xl md:text-4xl font-black">
-//                     ₹{totalPrice}
-//                     <span className="text-[14px] md:text-[18px] font-black">
-//                       {/* <span className="text-xl md:text-xl font-black"> */}
-//                       (Incl. of Taxes)
+//                 <div className="flex flex-col w-full">
+//                   <div className="flex justify-between w-full mb-2">
+//                     <span className="text-[12px] md:text-[15px] font-black uppercase text-black/40 tracking-widest">
+//                       Subtotal
 //                     </span>
-//                   </span>
+//                     <span className="font-black text-sm md:text-xl">
+//                       ₹{totalPrice + discountAmount}
+//                     </span>
+//                   </div>
+
+//                   {discountAmount > 0 && (
+//                     <div className="flex justify-between w-full mb-2 text-green-600">
+//                       <span className="text-[12px] md:text-[15px] font-black uppercase tracking-widest">
+//                         Buy 3 Get 2 Offer
+//                       </span>
+//                       <span className="font-black text-sm md:text-xl">
+//                         -₹{discountAmount}.00
+//                       </span>
+//                     </div>
+//                   )}
+
+//                   <div className="flex flex-col mt-4">
+//                     <span className="text-[12px] md:text-[15px] font-black uppercase text-black/40 tracking-widest mb-2">
+//                       Total Amount
+//                     </span>
+//                     <span className="text-3xl md:text-4xl font-black">
+//                       ₹{totalPrice}
+//                       <span className="text-[14px] md:text-[18px] font-black ml-2">
+//                         (Incl. of Taxes)
+//                       </span>
+//                     </span>
+//                   </div>
 //                 </div>
-//                 <p className="text-[7px] md:text-[9px] font-black text-accent uppercase">
-//                   + Shipping calculated at checkout
-//                 </p>
 //               </div>
 
 //               <button
@@ -235,9 +247,14 @@ const Cart = () => {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
 
+  // FIX: Minimum order check ab originalTotal (discount se pehle) par depend karega
   const MIN_ORDER_VALUE = 249;
-  const isBelowMinimum = totalPrice < MIN_ORDER_VALUE;
-  const amountNeededForMin = MIN_ORDER_VALUE - totalPrice;
+  const originalTotal = items.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0,
+  );
+  const isBelowMinimum = originalTotal < MIN_ORDER_VALUE;
+  const amountNeededForMin = Math.max(0, MIN_ORDER_VALUE - originalTotal);
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-foreground font-body selection:bg-primary selection:text-black">
@@ -359,7 +376,7 @@ const Cart = () => {
                 />
                 <label
                   htmlFor="terms"
-                  className="text-[10px] md:text-[15px] font-black uppercase tracking-tight cursor-pointer leading-relaxed"
+                  className="text-[7px] md:text-[10px] font-black uppercase tracking-tight cursor-pointer leading-relaxed"
                 >
                   I agree to the{" "}
                   <Link
@@ -374,32 +391,32 @@ const Cart = () => {
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-t-2 border-black/5 pt-8 gap-4">
                 <div className="flex flex-col w-full">
                   <div className="flex justify-between w-full mb-2">
-                    <span className="text-[12px] md:text-[15px] font-black uppercase text-black/40 tracking-widest">
+                    <span className="text-[7px] md:text-[9px] font-black uppercase text-black/40 tracking-widest self-center">
                       Subtotal
                     </span>
-                    <span className="font-black text-sm md:text-xl">
-                      ₹{totalPrice + discountAmount}
+                    <span className="font-black text-sm md:text-2xl">
+                      ₹{originalTotal}
                     </span>
                   </div>
 
                   {discountAmount > 0 && (
-                    <div className="flex justify-between w-full mb-2 text-green-600">
-                      <span className="text-[12px] md:text-[15px] font-black uppercase tracking-widest">
+                    <div className="flex justify-between w-full mb-4 text-green-600">
+                      <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest self-center">
                         Buy 3 Get 2 Offer
                       </span>
-                      <span className="font-black text-sm md:text-xl">
+                      <span className="font-black text-sm md:text-2xl">
                         -₹{discountAmount}.00
                       </span>
                     </div>
                   )}
 
-                  <div className="flex flex-col mt-4">
-                    <span className="text-[12px] md:text-[15px] font-black uppercase text-black/40 tracking-widest mb-2">
+                  <div className="flex flex-col mt-2 pt-4 border-t border-black/10">
+                    <span className="text-[7px] md:text-[9px] font-black uppercase text-black/40 tracking-widest mb-1">
                       Total Amount
                     </span>
                     <span className="text-3xl md:text-4xl font-black">
                       ₹{totalPrice}
-                      <span className="text-[14px] md:text-[18px] font-black ml-2">
+                      <span className="text-[12px] md:text-[16px] font-black ml-2 text-black/60">
                         (Incl. of Taxes)
                       </span>
                     </span>
