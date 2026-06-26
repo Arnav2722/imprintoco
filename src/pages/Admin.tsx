@@ -1088,6 +1088,7 @@ const Admin = (): JSX.Element | null => {
   return (
     <div className="min-h-screen bg-background text-foreground font-display selection:bg-primary">
       <Navbar />
+      <br />
 
       {!showForm ? (
         <>

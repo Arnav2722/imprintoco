@@ -376,7 +376,7 @@ const Shop = (): JSX.Element => {
     return result;
   }, [allProducts, activeCategory, activeSub, sortBy]);
 
-  const categories = ["all", "stickers", "posters",  "combo"];
+  const categories = ["all", "stickers", "posters"];
   // const categories = ["all", "stickers", "posters", "collage", "combo"];
 
   const layoutSpecs = ["2_piece", "3_piece", "5_panel", "30_piece", "50_piece"];
@@ -623,7 +623,7 @@ const Shop = (): JSX.Element => {
             </AnimatePresence>
 
             {/* Products Grid */}
-            {isLoading ? (
+            {/* {isLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="space-y-4">
@@ -643,6 +643,32 @@ const Shop = (): JSX.Element => {
                   ))}
                 </AnimatePresence>
               </motion.div>
+            )} */}
+
+            {isLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <div className="bg-muted aspect-[3/4] border-2 border-foreground/5 animate-pulse" />
+                    <div className="h-3 bg-muted w-3/4 animate-pulse" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-10">
+                {/* Layout aur popLayout hataya, sirf simple fade-in rakha hai */}
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </div>
             )}
 
             {filteredProducts.length === 0 && !isLoading && (
