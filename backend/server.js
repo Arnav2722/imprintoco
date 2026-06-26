@@ -8,7 +8,6 @@
 
 // const app = express();
 
-// // CORS Configuration - Allow specific origins for better security
 // app.use(cors({
 //     origin: "*",
 //     methods: ["GET", "POST", "OPTIONS"],
@@ -17,37 +16,30 @@
 
 // app.use(express.json());
 
-// // Razorpay Instance
+// app.get("/health", (req, res) => {
+//     res.status(200).send("Imprinto server is active.");
+// });
+
+// app.get("/", (req, res) => {
+//     res.status(200).json({ status: "Imprinto API is live." });
+// });
+
 // const razorpay = new Razorpay({
 //     key_id: process.env.RAZORPAY_KEY_ID,
 //     key_secret: process.env.RAZORPAY_KEY_SECRET,
 // });
 
-// // ✅ ROOT ROUTE (Fixes Cannot GET / error)
-// app.get("/", (req, res) => {
-//     res.status(200).json({ status: "Imprinto API is live and running." });
-// });
-
-// // ✅ 1. REGISTER SHIPPING ROUTES
 // app.use("/api", shippingRoutes);
 
-// // ✅ 2. CREATE ORDER (Razorpay)
 // app.post("/create-order", async (req, res) => {
 //     try {
-//         console.log("RAZORPAY ORDER BODY:", req.body);
 //         const amount = Number(req.body.amount);
-
-//         if (!amount || amount < 1) {
-//             return res.status(400).json({ error: "Invalid amount" });
-//         }
-
-//         const options = {
+//         if (!amount || amount < 1) return res.status(400).json({ error: "Invalid amount" });
+//         const order = await razorpay.orders.create({
 //             amount: amount,
 //             currency: "INR",
 //             receipt: "receipt_" + Date.now(),
-//         };
-
-//         const order = await razorpay.orders.create(options);
+//         });
 //         res.json(order);
 //     } catch (err) {
 //         console.error("ORDER ERROR:", err);
@@ -55,24 +47,18 @@
 //     }
 // });
 
-// // ✅ 3. VERIFY PAYMENT (Razorpay)
 // app.post("/verify-payment", (req, res) => {
 //     try {
 //         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 //         const body = razorpay_order_id + "|" + razorpay_payment_id;
-
 //         const expectedSignature = crypto
 //             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
 //             .update(body.toString())
 //             .digest("hex");
 
-//         if (expectedSignature === razorpay_signature) {
-//             res.json({ status: "success" });
-//         } else {
-//             res.status(400).json({ status: "failure", message: "Signature mismatch" });
-//         }
+//         if (expectedSignature === razorpay_signature) res.json({ status: "success" });
+//         else res.status(400).json({ status: "failure", message: "Signature mismatch" });
 //     } catch (err) {
-//         console.error("VERIFY ERROR:", err);
 //         res.status(500).json({ error: "Verification failed" });
 //     }
 // });
@@ -80,7 +66,6 @@
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => {
 //     console.log(`Server running on port ${PORT}`);
-//     console.log("Shipping routes active at /api/create-shipment");
 // });
 
 require("dotenv").config();
@@ -88,6 +73,7 @@ const express = require("express");
 const Razorpay = require("razorpay");
 const cors = require("cors");
 const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 const shippingRoutes = require("./routes/shipping");
 
@@ -101,21 +87,54 @@ app.use(cors({
 
 app.use(express.json());
 
+// Transporter for Email
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// ✅ Health Endpoint for Cron-job (Render Uptime Fix)
 app.get("/health", (req, res) => {
     res.status(200).send("Imprinto server is active.");
 });
 
+// Root Route
 app.get("/", (req, res) => {
     res.status(200).json({ status: "Imprinto API is live." });
 });
 
+// Razorpay Instance
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// Shipping Routes
 app.use("/api", shippingRoutes);
 
+// ✅ Email Confirmation Route
+app.post("/send-confirmation", async (req, res) => {
+    const { email, customerName, orderId } = req.body;
+    try {
+        await transporter.sendMail({
+            from: '"Imprinto" <support.imprinto@gmail.com>',
+            to: email,
+            subject: `Order Confirmed: ${orderId}`,
+            html: `<h1>Order Received!</h1>
+                   <p>Hi ${customerName},</p>
+                   <p>Your order <strong>${orderId}</strong> is confirmed.</p>`
+        });
+        res.json({ success: true });
+    } catch (err) {
+        console.error("EMAIL ERROR:", err);
+        res.status(500).json({ error: "Email failed" });
+    }
+});
+
+// Razorpay Create Order
 app.post("/create-order", async (req, res) => {
     try {
         const amount = Number(req.body.amount);
@@ -132,6 +151,7 @@ app.post("/create-order", async (req, res) => {
     }
 });
 
+// Razorpay Verify Payment
 app.post("/verify-payment", (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
