@@ -121,3 +121,5 @@ const createShipment = async (orderData) => {
 };
 
 module.exports = { createShipment };
+
+console.log("TOKEN VALUE:", process.env.DELHIVERY_TOKEN);
