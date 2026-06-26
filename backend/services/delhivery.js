@@ -61,15 +61,12 @@
 
 // module.exports = { createShipment };
 
-
 const axios = require('axios');
 
 const DELHI_API = 'https://track.delhivery.com/api/cmu/create.json';
 
 const createShipment = async (orderData) => {
     const mode = orderData.paymentMode === "COD" ? "COD" : "Prepaid";
-
-    // 🔴 Force convert amount to Number to prevent API rejection
     const totalAmount = Number(orderData.totalAmount);
     const codAmount = mode === "COD" ? totalAmount : 0;
 
@@ -77,19 +74,21 @@ const createShipment = async (orderData) => {
         shipments: [{
             name: orderData.customerName,
             add: orderData.address,
-            pin: orderData.pincode,
-            city: orderData.city,       
-            state: orderData.state,    
+            pin: String(orderData.pincode), // Pincode ko string enforce kiya
+            city: orderData.city,
+            state: orderData.state,
             phone: orderData.phone,
             order: orderData.orderId,
             payment_mode: mode,
             total_amount: totalAmount,
-            cod_amount: codAmount,      
+            cod_amount: codAmount,
             quantity: "1",
             description: "Art Prints",
             weight: 0.5
         }],
         pickup_location: {
+            // 🔴 TIP: Portal par 'Pickup Locations' mein check kar, 
+            // agar wahan naam "Primary" ya kuch aur hai, toh wahi yahan likh.
             name: "Home"
         }
     };
@@ -106,15 +105,18 @@ const createShipment = async (orderData) => {
             }
         });
 
-        console.log("Delhivery Response:", JSON.stringify(response.data));
-
-        if (response.data?.packages?.[0]?.waybill) {
+        // Delhivery ka success response check
+        if (response.data.success === true) {
             return { success: true, packages: response.data.packages };
+        } else {
+            // Agar API success:false bhejti hai par status code 200 hota hai
+            return { success: false, errors: response.data.rmk || response.data.packet_errors?.[0]?.error || "Unknown Error" };
         }
-        return { success: false, errors: response.data.remarks || "No package created" };
     } catch (error) {
-        console.error("Delhivery API Exception:", error.response?.data || error.message);
-        return { success: false, errors: error.message };
+        // Detailed error capture
+        const errorMsg = error.response?.data?.rmk || error.message;
+        console.error("Delhivery API Exception:", errorMsg);
+        return { success: false, errors: errorMsg };
     }
 };
 
