@@ -38,9 +38,37 @@
 //   processCheckout: (customerData: CustomerData) => Promise<string>;
 //   totalItems: number;
 //   totalPrice: number;
+//   discountAmount: number;
 //   isCartOpen: boolean;
 //   setIsCartOpen: (open: boolean) => void;
 // }
+
+// // Logic bahar nikaal diya for Fast Refresh
+// const calculateTotals = (items: CartItem[]) => {
+//   const groups: { [key: string]: DbProduct[] } = {};
+//   items.forEach((item) => {
+//     const size = item.selectedSize || "Standard";
+//     if (!groups[size]) groups[size] = [];
+//     for (let j = 0; j < item.quantity; j++) groups[size].push(item.product);
+//   });
+
+//   let total = 0;
+//   let discountAmount = 0;
+
+//   Object.keys(groups).forEach((size) => {
+//     const products = groups[size];
+//     if (products.length >= 5) {
+//       products.sort((a, b) => a.price - b.price);
+//       discountAmount += products
+//         .slice(0, 2)
+//         .reduce((sum, item) => sum + item.price, 0);
+//       total += products.slice(2).reduce((sum, item) => sum + item.price, 0);
+//     } else {
+//       total += products.reduce((sum, item) => sum + item.price, 0);
+//     }
+//   });
+//   return { total, discountAmount };
+// };
 
 // const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -114,6 +142,7 @@
 //     const snapshot = await getDocs(ordersRef);
 //     const orderNumber: number = 1000 + snapshot.size + 1;
 //     const generatedId: string = `IMP-${orderNumber}`;
+//     const { total, discountAmount } = calculateTotals(items);
 
 //     const orderPayload = {
 //       ...customerData,
@@ -124,10 +153,8 @@
 //             `${i.quantity} x ${i.product.name} (${i.selectedSize || "Standard"})`,
 //         )
 //         .join(", "),
-//       totalAmount: items.reduce(
-//         (sum, i) => sum + i.product.price * i.quantity,
-//         0,
-//       ),
+//       totalAmount: total,
+//       discount: discountAmount,
 //       status: "pending",
 //       createdAt: Timestamp.now(),
 //       updatedAt: Timestamp.now(),
@@ -138,11 +165,8 @@
 //     return generatedId;
 //   };
 
+//   const { total, discountAmount } = calculateTotals(items);
 //   const totalItems: number = items.reduce((sum, i) => sum + i.quantity, 0);
-//   const totalPrice: number = items.reduce(
-//     (sum, i) => sum + i.product.price * i.quantity,
-//     0,
-//   );
 
 //   return (
 //     <CartContext.Provider
@@ -154,7 +178,8 @@
 //         clearCart,
 //         processCheckout,
 //         totalItems,
-//         totalPrice,
+//         totalPrice: total,
+//         discountAmount,
 //         isCartOpen,
 //         setIsCartOpen,
 //       }}
@@ -215,30 +240,27 @@ interface CartContextType {
   setIsCartOpen: (open: boolean) => void;
 }
 
-// Logic bahar nikaal diya for Fast Refresh
+// Updated Logic: Global Buy 3 Get 2 (Highest price items paid, lowest free)
 const calculateTotals = (items: CartItem[]) => {
-  const groups: { [key: string]: DbProduct[] } = {};
-  items.forEach((item) => {
-    const size = item.selectedSize || "Standard";
-    if (!groups[size]) groups[size] = [];
-    for (let j = 0; j < item.quantity; j++) groups[size].push(item.product);
-  });
+  const allItems: DbProduct[] = items.flatMap((item) =>
+    Array(item.quantity).fill(item.product),
+  );
+
+  // Prices ko High to Low sort karo
+  allItems.sort((a, b) => b.price - a.price);
 
   let total = 0;
   let discountAmount = 0;
 
-  Object.keys(groups).forEach((size) => {
-    const products = groups[size];
-    if (products.length >= 5) {
-      products.sort((a, b) => a.price - b.price);
-      discountAmount += products
-        .slice(0, 2)
-        .reduce((sum, item) => sum + item.price, 0);
-      total += products.slice(2).reduce((sum, item) => sum + item.price, 0);
+  allItems.forEach((item, index) => {
+    // Har 5 ka group: index 0, 1, 2 (Paid) | index 3, 4 (Free)
+    if (index % 5 >= 3) {
+      discountAmount += item.price;
     } else {
-      total += products.reduce((sum, item) => sum + item.price, 0);
+      total += item.price;
     }
   });
+
   return { total, discountAmount };
 };
 

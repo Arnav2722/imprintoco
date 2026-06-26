@@ -194,12 +194,24 @@ import TermsConditions from "./pages/TermsConditions.tsx";
 const queryClient = new QueryClient();
 
 // Offer Banner Component
+// const OfferBanner = () => (
+//   <div className="bg-primary text-black text-center py-2 text-[10px] font-black uppercase tracking-widest sticky top-0 z-40">
+//     🔥 Limited Offer: Buy 3 Get 2 Free On All Posters!
+//   </div>
+// );
+
 const OfferBanner = () => (
-  <div className="bg-primary text-black text-center py-2 text-[10px] font-black uppercase tracking-widest sticky top-0 z-40">
-    🔥 Limited Offer: Buy 3 Get 2 Free On All Posters!
+  <div className="bg-primary text-black text-center py-2 px-4 sticky top-0 z-40 w-full overflow-hidden">
+    <p
+      className="font-black uppercase tracking-widest whitespace-nowrap"
+      style={{
+        fontSize: "clamp(7px, 2vw, 10px)",
+      }}
+    >
+      🔥 Limited Offer: Buy 3 Get 2 Free On All Posters!
+    </p>
   </div>
 );
-
 // 1. Scroll to Top on Page Change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
