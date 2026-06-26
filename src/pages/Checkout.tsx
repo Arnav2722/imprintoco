@@ -54,7 +54,7 @@
 //     : "https://imprinto.onrender.com";
 
 // const Checkout = (): JSX.Element => {
-//   const { items, totalPrice, clearCart } = useCart();
+//   const { items, totalPrice, discountAmount, clearCart } = useCart();
 //   const { userData } = useAuth();
 //   const navigate = useNavigate();
 
@@ -76,9 +76,17 @@
 //   );
 //   const [shippingFee, setShippingFee] = useState<number>(45);
 
-//   // Coupon State
+//   // Coupon States
 //   const [couponCode, setCouponCode] = useState("");
 //   const [discount, setDiscount] = useState(0);
+//   const [appliedCoupon, setAppliedCoupon] = useState("");
+
+//   // Calculation logic
+//   const originalPrice = items.reduce(
+//     (sum, i) => sum + i.product.price * i.quantity,
+//     0,
+//   );
+//   const finalAmount = totalPrice + shippingFee - discount;
 
 //   // Prefill from Auth
 //   useEffect(() => {
@@ -105,15 +113,14 @@
 //   }, [shippingMethod]);
 
 //   const applyCoupon = () => {
-//     if (couponCode === "FRIENDS10") {
+//     if (couponCode.toUpperCase() === "SAVE10") {
 //       setDiscount(totalPrice * 0.1);
-//       alert("10% discount applied successfully!");
+//       setAppliedCoupon(couponCode.toUpperCase());
+//       alert("Coupon Applied!");
 //     } else {
-//       alert("Invalid coupon code");
+//       alert("Invalid Coupon");
 //     }
 //   };
-
-//   const finalAmount = totalPrice - discount + shippingFee;
 
 //   const saveOrderToFirestore = async (
 //     paymentId: string = "COD_ORDER",
@@ -210,7 +217,11 @@
 //           order_id: orderData.id,
 //           name: "Imprinto Co.",
 //           description: "Art Terminal Checkout",
-//           prefill: { name: `${firstName} ${lastName}`, email, contact: phone },
+//           prefill: {
+//             name: `${firstName} ${lastName}`,
+//             email,
+//             contact: phone,
+//           },
 //           handler: async (response: RazorpayResponse) => {
 //             setProcessing(true);
 //             const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
@@ -218,6 +229,7 @@
 //               headers: { "Content-Type": "application/json" },
 //               body: JSON.stringify(response),
 //             });
+
 //             const result = await verifyRes.json();
 //             if (result.status === "success") {
 //               const customId = `POST-${response.razorpay_order_id.slice(-4)}`;
@@ -234,6 +246,7 @@
 //           },
 //           theme: { color: "#00D4FF" },
 //         };
+
 //         if (window.Razorpay) {
 //           const rzp = new window.Razorpay(options);
 //           rzp.open();
@@ -292,6 +305,7 @@
 //                 className={inputClass}
 //               />
 //             </section>
+
 //             <section className="space-y-6">
 //               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
 //                 Delivery
@@ -358,6 +372,7 @@
 //                 </div>
 //               </div>
 //             </section>
+
 //             <section className="space-y-6">
 //               <h2 className="font-display text-lg md:text-xl font-black uppercase text-black">
 //                 Shipping method
@@ -446,6 +461,7 @@
 //                 )}
 //               </AnimatePresence>
 //             </section>
+
 //             <div className="pt-6">
 //               <button
 //                 onClick={handlePayment}
@@ -467,14 +483,14 @@
 //               </button>
 //             </div>
 //           </div>
+
 //           <div className="lg:col-span-5">
 //             <div className="lg:sticky lg:top-32 bg-[#F9F9F9] border-2 border-foreground/5 p-6 md:p-8 space-y-8">
 //               <h2 className="font-display text-lg font-black uppercase border-b-2 border-foreground/5 pb-4 text-black">
 //                 Order Summary
 //               </h2>
 
-//               {/* COUPON INPUT */}
-//               <div className="flex gap-2 mb-4">
+//               <div className="flex gap-2">
 //                 <input
 //                   value={couponCode}
 //                   onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
@@ -521,15 +537,22 @@
 //                   </div>
 //                 ))}
 //               </div>
+
 //               <div className="space-y-4 pt-6 border-t-2 border-foreground/10 text-[10px] font-black uppercase">
 //                 <div className="flex justify-between opacity-60 text-black">
 //                   <span>Subtotal</span>
-//                   <span>₹{totalPrice}</span>
+//                   <span>₹{originalPrice}.00</span>
 //                 </div>
+//                 {discountAmount > 0 && (
+//                   <div className="flex justify-between text-green-600 font-black">
+//                     <span>Buy 3 Get 2 Offer</span>
+//                     <span>-₹{discountAmount}.00</span>
+//                   </div>
+//                 )}
 //                 {discount > 0 && (
-//                   <div className="flex justify-between text-primary">
-//                     <span>Discount</span>
-//                     <span>-₹{discount}</span>
+//                   <div className="flex justify-between text-green-600 font-black">
+//                     <span>Coupon ({appliedCoupon})</span>
+//                     <span>-₹{discount}.00</span>
 //                   </div>
 //                 )}
 //                 <div className="flex justify-between opacity-60 text-black">
@@ -543,7 +566,7 @@
 //                       INR
 //                     </span>
 //                     <span className="text-3xl tracking-tighter">
-//                       ₹{finalAmount}.00
+//                       ₹{Math.max(0, finalAmount)}.00
 //                     </span>
 //                   </div>
 //                 </div>
@@ -558,7 +581,6 @@
 // };
 
 // export default Checkout;
-
 import { useEffect, useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -735,11 +757,13 @@ const Checkout = (): JSX.Element => {
         orderId: orderId,
         totalAmount: Number(finalAmount),
         paymentMode: mode,
+        city,
+        state,
       }),
     });
     if (!shipRes.ok) throw new Error("Shipping Booking Failed");
     const shipData = await shipRes.json();
-    return shipData.trackingId || "PENDING";
+    return shipData.packages?.[0]?.waybill || "PENDING";
   };
 
   const handlePayment = async () => {
@@ -761,6 +785,17 @@ const Checkout = (): JSX.Element => {
         const generatedId = `POST-${Date.now().toString().slice(-4)}`;
         const tId = await bookShipment(generatedId, "COD");
         await saveOrderToFirestore("COD_ORDER", tId, generatedId);
+
+        // EMAIL TRIGGER ADDED
+        await fetch(`${API_BASE}/send-confirmation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            customerName: `${firstName} ${lastName}`,
+            orderId: generatedId,
+          }),
+        }).catch((err) => console.error("Email failed", err));
       } else {
         const amountInPaise = Math.round(finalAmount * 100);
         const res = await fetch(`${API_BASE}/create-order`, {
@@ -800,6 +835,17 @@ const Checkout = (): JSX.Element => {
                 tId,
                 customId,
               );
+
+              // EMAIL TRIGGER ADDED
+              await fetch(`${API_BASE}/send-confirmation`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email,
+                  customerName: `${firstName} ${lastName}`,
+                  orderId: customId,
+                }),
+              }).catch((err) => console.error("Email failed", err));
             } else {
               alert("Payment Verification Failed!");
             }
