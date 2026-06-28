@@ -76,6 +76,7 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
 const shippingRoutes = require("./routes/shipping");
+const { sendOrderConfirmation } = require("./services/email");
 
 const app = express();
 
@@ -117,20 +118,31 @@ app.use("/api", shippingRoutes);
 
 // ✅ Email Confirmation Route
 app.post("/send-confirmation", async (req, res) => {
-    const { email, customerName, orderId } = req.body;
     try {
-        await transporter.sendMail({
-            from: '"Imprinto" <support.imprinto@gmail.com>',
-            to: email,
-            subject: `Order Confirmed: ${orderId}`,
-            html: `<h1>Order Received!</h1>
-                   <p>Hi ${customerName},</p>
-                   <p>Your order <strong>${orderId}</strong> is confirmed.</p>`
-        });
+        const {
+            email,
+            customerName,
+            orderId,
+            orderDate,
+            orderTotal
+        } = req.body;
+
+        await sendOrderConfirmation(
+            email,
+            customerName,
+            orderId,
+            orderDate,
+            orderTotal
+        );
+
         res.json({ success: true });
+
     } catch (err) {
         console.error("EMAIL ERROR:", err);
-        res.status(500).json({ error: "Email failed" });
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
     }
 });
 

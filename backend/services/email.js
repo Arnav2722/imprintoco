@@ -2,7 +2,7 @@
 
 // const transporter = nodemailer.createTransport({
 //     host: 'smtp-relay.brevo.com',
-//     port: 587, // Brevo ke liye ye port use hota hai
+//     port: 587,
 //     secure: false,
 //     auth: {
 //         user: process.env.EMAIL_USER,
@@ -10,37 +10,32 @@
 //     }
 // });
 
-// const sendOrderConfirmation = async (customerEmail, customerName, orderId) => {
+// const sendOrderConfirmation = async (email, customerName, orderId) => {
 //     const mailOptions = {
-//         from: '"Imprinto" <support.imprinto@gmail.com>',
-//         to: customerEmail,
-//         subject: `Order Confirmed: ${orderId}`,
+//         from: '"Imprinto" <hello@imprinto.store>', // Jo sender address verify kiya hai
+//         to: email,
+//         subject: 'Order Confirmation - Imprinto',
 //         html: `
 //             <div style="font-family: sans-serif; padding: 20px;">
-//                 <h1 style="color: #000;">Order Received!</h1>
-//                 <p>Hi ${customerName},</p>
-//                 <p>Your order <strong>${orderId}</strong> is confirmed and will be shipped soon.</p>
-//                 <p>Thanks for shopping with Imprinto.</p>
+//                 <h1>Order Confirmed!</h1>
+//                 <p>Hello ${customerName},</p>
+//                 <p>Your order <strong>${orderId}</strong> has been received and is being processed.</p>
+//                 <p>We will notify you once it ships.</p>
+//                 <br>
+//                 <p>Best regards,<br>Team Imprinto</p>
 //             </div>
 //         `
 //     };
 
-//     try {
-//         const info = await transporter.sendMail(mailOptions);
-//         console.log("Email sent successfully: " + info.response);
-//         return info;
-//     } catch (error) {
-//         console.error("Error sending email: ", error);
-//         throw error;
-//     }
+//     return await transporter.sendMail(mailOptions);
 // };
 
 // module.exports = { sendOrderConfirmation };
 
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
+    host: "smtp-relay.brevo.com",
     port: 587,
     secure: false,
     auth: {
@@ -49,20 +44,91 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendOrderConfirmation = async (email, customerName, orderId) => {
+// SMTP Check
+transporter.verify((error) => {
+    if (error) {
+        console.error("SMTP ERROR:", error);
+    } else {
+        console.log("BREVO SMTP READY");
+    }
+});
+
+const sendOrderConfirmation = async (
+    email,
+    customerName,
+    orderId,
+    orderDate,
+    orderTotal
+) => {
     const mailOptions = {
-        from: '"Imprinto" <hello@imprinto.store>', // Jo sender address verify kiya hai
+        from: '"Imprinto Co." <support.imprinto@gmail.com>',
         to: email,
-        subject: 'Order Confirmation - Imprinto',
+        subject: "Your Imprinto Order Has Been Confirmed 💙",
+
         html: `
-            <div style="font-family: sans-serif; padding: 20px;">
-                <h1>Order Confirmed!</h1>
-                <p>Hello ${customerName},</p>
-                <p>Your order <strong>${orderId}</strong> has been received and is being processed.</p>
-                <p>We will notify you once it ships.</p>
-                <br>
-                <p>Best regards,<br>Team Imprinto</p>
+        <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;background:#ffffff;padding:40px;color:#111111;">
+
+            <h1 style="margin-bottom:10px;">
+                Thank you for shopping with Imprinto Co. 💙
+            </h1>
+
+            <p>Hi ${customerName},</p>
+
+            <p>
+                Your order has been successfully placed, and we're excited to bring your obsession to life.
+            </p>
+
+            <div style="
+                border:1px solid #e5e5e5;
+                padding:20px;
+                margin:30px 0;
+                border-radius:8px;
+                background:#fafafa;
+            ">
+                <h3 style="margin-top:0;">Order Details</h3>
+
+                <p><strong>Order ID:</strong> ${orderId}</p>
+                <p><strong>Order Date:</strong> ${orderDate}</p>
+                <p><strong>Total Amount:</strong> ₹${orderTotal}</p>
             </div>
+
+            <p>
+                Our team has started preparing your order.
+            </p>
+
+            <p>
+                As soon as your order is packed and shipped, we'll send you another email with your tracking details.
+            </p>
+
+            <p>
+                At Imprinto, every poster is carefully packed to ensure it arrives in perfect condition.
+            </p>
+
+            <p>
+                If you have any questions, simply reply to this email — we're always happy to help.
+            </p>
+
+            <br>
+
+            <p>
+                Thank you for choosing Imprinto.
+            </p>
+
+            <p>
+                <strong>Own Your Obsession.</strong>
+            </p>
+
+            <hr style="margin:30px 0;">
+
+            <p>
+                Team Imprinto Co.
+            </p>
+
+            <p>
+                imprintoco.in
+            </p>
+
+        </div>
         `
     };
 

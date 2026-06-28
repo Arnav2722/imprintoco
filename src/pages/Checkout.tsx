@@ -223,6 +223,8 @@ const Checkout = (): JSX.Element => {
             email,
             customerName: `${firstName} ${lastName}`,
             orderId: generatedId,
+            orderDate: new Date().toLocaleDateString("en-IN"),
+            orderTotal: finalAmount,
           }),
         }).catch((err) => console.error("Email failed", err));
       } else {
@@ -273,6 +275,8 @@ const Checkout = (): JSX.Element => {
                   email,
                   customerName: `${firstName} ${lastName}`,
                   orderId: customId,
+                  orderDate: new Date().toLocaleDateString("en-IN"),
+                  orderTotal: finalAmount,
                 }),
               }).catch((err) => console.error("Email failed", err));
             } else {
