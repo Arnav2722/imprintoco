@@ -60,11 +60,13 @@ const createShipment = async (orderData) => {
 
                 description: productName,
                 contents: productName,
+                products_desc: productName,
+                product_name: productName,
 
                 weight: packageDetails.weight,
                 length: packageDetails.length,
                 breadth: packageDetails.breadth,
-                height: packageDetails.height
+                height: packageDetails.height,
             }
         ],
 
