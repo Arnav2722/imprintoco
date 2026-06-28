@@ -2,8 +2,18 @@ const nodemailer = require('nodemailer');
 
 // Yahan process.env.EMAIL_USER aur EMAIL_PASS use ho raha hai
 // Jo tumne .env file mein set kiya hai
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS
+//     }
+// });
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp-relay.brevo.com',
+    port: 587, // Brevo ke liye ye port use hota hai
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS

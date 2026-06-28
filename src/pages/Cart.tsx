@@ -356,7 +356,7 @@ const Cart = () => {
 
             {/* CHECKOUT BOX */}
             <div className="bg-white border-4 border-black p-6 md:p-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-              {isBelowMinimum && (
+              {/* {isBelowMinimum && (
                 <div className="mb-8 p-4 bg-red-50 border-2 border-red-500 flex items-center gap-3 text-red-600">
                   <AlertCircle size={18} />
                   <p className="text-[7px] md:text-[10px] font-black uppercase tracking-tight leading-normal">
@@ -364,7 +364,7 @@ const Cart = () => {
                     MORE.
                   </p>
                 </div>
-              )}
+              )} */}
 
               <div className="flex items-start gap-3 mb-8">
                 <input
