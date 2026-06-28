@@ -92,12 +92,17 @@ const createShipment = async (orderData) => {
             name: "Home"
         }
     };
+    console.log("DELHIVERY REQUEST:");
+    console.log(JSON.stringify(shipmentData, null, 2));
 
     const params = new URLSearchParams();
     params.append('format', 'json');
     params.append('data', JSON.stringify(shipmentData));
 
     try {
+        console.log("DELHIVERY REQUEST:");
+        console.log(JSON.stringify(shipmentData, null, 2));
+        
         const response = await axios.post(DELHI_API, params.toString(), {
             headers: {
                 'Authorization': `Token ${process.env.DELHIVERY_TOKEN}`,

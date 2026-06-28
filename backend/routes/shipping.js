@@ -27,7 +27,9 @@ router.post('/create-shipment', async (req, res) => {
     try {
         console.log("Shipping Request Received for:", req.body.customerName);
 
-        // Service ko call kar rahe hain
+        console.log("FULL SHIPPING PAYLOAD:");
+        console.log(JSON.stringify(req.body, null, 2));
+
         const result = await createShipment(req.body);
 
         if (result.success) {
