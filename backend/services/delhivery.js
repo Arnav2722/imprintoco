@@ -70,6 +70,12 @@ const createShipment = async (orderData) => {
             }
         });
 
+        console.log("DELHIVERY STATUS:", response.status);
+        console.log(
+            "DELHIVERY RESPONSE:",
+            JSON.stringify(response.data, null, 2)
+        );
+
         // Delhivery ka success response check
         if (response.data.success === true) {
             return { success: true, packages: response.data.packages };
