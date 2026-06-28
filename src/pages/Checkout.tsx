@@ -312,10 +312,10 @@ const Checkout = (): JSX.Element => {
             Transmission complete.
           </p>
           <button
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/")}
             className="w-full h-14 bg-foreground text-background font-black uppercase text-[10px] shadow-[4px_4px_0px_0px_#00D4FF] hover:bg-primary transition-all"
           >
-            MY ORDERS
+            Go to Homepage
           </button>
         </motion.div>
       </div>
