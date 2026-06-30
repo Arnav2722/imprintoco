@@ -376,10 +376,10 @@ const Shop = (): JSX.Element => {
     return result;
   }, [allProducts, activeCategory, activeSub, sortBy]);
 
-  const categories = ["all", "stickers", "posters"];
+  const categories = ["all", "stickers", "posters", "collage kit"];
   // const categories = ["all", "stickers", "posters", "collage", "combo"];
 
-  const layoutSpecs = ["2_piece", "3_piece", "5_panel", "30_piece", "50_piece"];
+  const layoutSpecs = ["16_Pieces_Set", "24_Pieces_Set", "52_Pieces_Set"];
 
   const themes = [
     "all",
@@ -388,6 +388,10 @@ const Shop = (): JSX.Element => {
     "f1",
     "motogp",
     "anime",
+    "space",
+    "star_wars",
+    "fighter_jets",
+    "gym",
     // "marvel",
     // "dc",
     "superhero",
@@ -513,7 +517,8 @@ const Shop = (): JSX.Element => {
               </div>
 
               {/* DYNAMIC LAYOUT SPECS (Only for Collage) */}
-              {/* {(activeCategory === "collage" || activeCategory === "multi") && (
+              {(activeCategory === "collage kit" ||
+                activeCategory === "multi") && (
                 <div className="space-y-6 pt-10 border-t-2 border-foreground/5 animate-in fade-in slide-in-from-left-4">
                   <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-2">
                     <Box size={12} className="text-primary" /> Layout Specs
@@ -537,7 +542,7 @@ const Shop = (): JSX.Element => {
                     ))}
                   </div>
                 </div>
-              )} */}
+              )}
 
               {/* Core Themes */}
               <div className="space-y-6 pt-10 border-t-2 border-foreground/5">

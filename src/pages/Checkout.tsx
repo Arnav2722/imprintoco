@@ -131,7 +131,7 @@ const Checkout = (): JSX.Element => {
       const itemsFormatted = items
         .map(
           (i) =>
-            `${i.quantity} x ${i.product.name} ${i.selectedSize || "Standard"}`,
+            `${i.quantity} x ${i.product.name} (${i.selectedSize || "Standard"}${i.selectedPack ? ` - ${i.selectedPack}` : ""})`,
         )
         .join(", ");
 
@@ -186,6 +186,7 @@ const Checkout = (): JSX.Element => {
         items: items.map((i) => ({
           name: i.product.name,
           size: i.selectedSize,
+          pack: i.selectedPack,
           quantity: i.quantity,
         })),
       }),
@@ -548,7 +549,7 @@ const Checkout = (): JSX.Element => {
               <div className="max-h-[400px] overflow-y-auto space-y-6 pr-2">
                 {items.map((item) => (
                   <div
-                    key={`${item.product.id}-${item.selectedSize}`}
+                    key={`${item.product.id}-${item.selectedSize}-${item.selectedPack || "default"}`}
                     className="flex gap-4 items-center"
                   >
                     <div className="relative">
@@ -569,6 +570,7 @@ const Checkout = (): JSX.Element => {
                       </h3>
                       <p className="text-[8px] font-black text-foreground/40 uppercase mt-1">
                         {item.selectedSize}
+                        {item.selectedPack ? ` • ${item.selectedPack}` : ""}
                       </p>
                     </div>
                     <span className="text-[10px] font-black text-black">

@@ -237,10 +237,10 @@ interface UploadedFile {
 }
 
 const SIZE_INFO: Record<ValidSize, { dims: string; basePrice: number }> = {
-  A5: { dims: "14.8 x 21 cm", basePrice: 69 },
-  A4: { dims: "21 x 29.7 cm", basePrice: 109 },
-  A3: { dims: "29.7 x 42 cm", basePrice: 139 },
-  "13x19": { dims: "33 x 48.2 cm", basePrice: 159 },
+  A5: { dims: "14.8 x 21 cm", basePrice: 79 },
+  A4: { dims: "21 x 29.7 cm", basePrice: 119 },
+  A3: { dims: "29.7 x 42 cm", basePrice: 149 },
+  "13x19": { dims: "33 x 48.2 cm", basePrice: 169 },
 };
 
 const CustomPrints = (): JSX.Element => {
