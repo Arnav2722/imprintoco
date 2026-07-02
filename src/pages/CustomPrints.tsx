@@ -290,7 +290,7 @@ const CustomPrints = (): JSX.Element => {
       subcategory: selectedSize,
     } as unknown as DbProduct;
 
-    addToCart(cartItem, selectedSize, stats.count);
+    addToCart(cartItem, selectedSize, undefined, stats.count);
     toast({
       title: "ADDED TO CART",
       description: `${stats.count} custom prints added.`,
