@@ -595,7 +595,7 @@ const Auth = () => {
         >
           <div className="flex flex-col items-center mb-10">
             <img
-              src="/MainLogo.png"
+              src="/MainLogo2.png"
               alt="Imprinto Co."
               className="h-10 md:h-12 w-auto mb-6"
             />
